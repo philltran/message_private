@@ -1,0 +1,122 @@
+<?php
+/**
+ * @file
+ * Message access permissions based on message fields.
+ */
+
+/**
+ * Implements hook_permission().
+ */
+function message_private_permission() {
+
+    // Build the permissions.
+    $permissions = array();
+
+    $permissions['bypass private message access control'] = array(
+        'title' => t('Bypass message access control'),
+        'description' => t('Grant to the user the permission to apply CRUD option on any private messages. Grant this permission to trusty users!'),
+    );
+
+    return $permissions;
+}
+
+/**
+ * Implements hook_menu_alter().
+ *
+ * Override some of the menu paths set in message ui module
+ */
+function message_private_menu_alter(&$items) {
+
+    $items['message/%message'] = array(
+        'title' => 'Viewing a message',
+        'description' => 'Select a message to create an instance.',
+        'page callback' => 'message_ui_show_message',
+        'page arguments' => array(1),
+        'access callback' => 'message_private_access_control',
+        'access arguments' => array('view', 1),
+    );
+
+    $items['message/%message/view'] = array(
+        'title' => 'View',
+        'type' => MENU_DEFAULT_LOCAL_TASK,
+        'weight' => -10,
+        'access callback' => 'message_private_access_control',
+        'access arguments' => array('view', 1),
+    );
+
+    $items['message/%message/edit'] = array(
+        'title' => 'Edit',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('message_ui_instance_message_manage', 1),
+        'access callback' => 'message_private_access_control',
+        'access arguments' => array('edit', 1),
+        'type' => MENU_LOCAL_TASK,
+        'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
+        'weight' => 0,
+    );
+
+    $items['message/%message/delete'] = array(
+        'title' => 'Delete',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('message_ui_instance_delete', 1),
+        'access callback' => 'message_private_access_control',
+        'access arguments' => array('delete', 1),
+        'type' => MENU_LOCAL_TASK,
+        'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
+        'weight' => 10,
+    );
+
+    return $items;
+}
+
+/**
+ * Message module access callback.
+ *
+ * @param $operation
+ *  The operation - create, view, update, delete.
+ * @param $message
+ *  The message object or message type.
+ * @param stdClass $user
+ *  A user object. Optional.
+ *
+ * @return bool True or false.
+ */
+function message_private_access_control($operation, $message, stdClass $user = NULL) {
+
+    if (empty($user)) {
+        global $user;
+        $account = user_load($user->uid);
+    }
+    else {
+        $account = user_load($user->uid);
+    }
+
+    // Get the message type from the function argument or from the message object.
+    $type = is_object($message) ? $message->type : $message;
+
+    if($type == 'private_message' && (user_access('bypass private message access control', $account))) {
+        return TRUE;
+    } else if(user_access('bypass message access control', $account)) {
+        return TRUE;
+    }
+
+    // Verify that the user can apply the op.
+    if (user_access($operation . ' any message instance', $account) || user_access($operation . ' a ' . $type . ' message instance', $account)) {
+        if($type == 'private_message' && $operation != 'create') {
+            if(isset($message->field_message_user_ref['und'])) {
+                foreach ($message->field_message_user_ref['und'] as $index => $user_ref) {
+                    if ($user_ref['target_id'] == $user->uid) {
+                        return TRUE;
+                    }
+                }
+            }
+            if(module_exists('og') && isset($message->field_node_groups_ref['und'])) {
+                foreach($message->field_node_groups_ref['und'] as $index => $group_ref) {
+                    if(og_is_member('node', $group_ref['target_id'])) {
+                        return TRUE;
+                    }
+                }
+            }
+        } else return TRUE;
+    }
+}

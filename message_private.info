@@ -1,0 +1,6 @@
+name = Message Private
+description = Private messages with message access based on message fields.
+core = 7.x
+dependencies[] = message
+dependencies[] = message_ui
+package = Message
