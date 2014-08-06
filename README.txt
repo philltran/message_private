@@ -12,3 +12,4 @@ Groups	field_node_groups_ref	Entity Reference
 
 - We can use these fields to check if the user belongs to them before providing access to the message
 
+- A OG Group type called "Group" is required

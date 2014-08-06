@@ -1,7 +1,0 @@
-<?php
-/**
- * @file
- * Code for the Message Private Views feature.
- */
-
-include_once 'message_private_views.features.inc';

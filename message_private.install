@@ -9,7 +9,7 @@
  * Implements hook_uninstall().
  */
 function message_private_uninstall() {
-    /*
-     * TODO: Do we need to remove custom defined permissions?
-     */
+  /*
+   * TODO: Do we need to remove custom defined permissions, views?
+   */
 }

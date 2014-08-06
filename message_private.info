@@ -1,6 +1,34 @@
 name = Message Private
 description = Private messages with message access based on message fields.
 core = 7.x
+
+
 dependencies[] = message
 dependencies[] = message_ui
+dependencies[] = ctools
+dependencies[] = entity
+dependencies[] = entityreference
+dependencies[] = features
+dependencies[] = message
+dependencies[] = options
+dependencies[] = text
+dependencies[] = views
+
+features[ctools][] = views:views_default:3.0
+
+features[features_api][] = api:2
+
+features[field_base][] = field_message_body
+features[field_base][] = field_message_subject
+features[field_base][] = field_message_user_ref
+
+features[field_instance][] = message-private_message-field_message_body
+features[field_instance][] = message-private_message-field_message_subject
+features[field_instance][] = message-private_message-field_message_user_ref
+
+features[message_type][] = private_message
+
+features[views_view][] = message_private
+
+
 package = Message

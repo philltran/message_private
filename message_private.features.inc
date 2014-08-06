@@ -1,25 +1,13 @@
 <?php
 /**
  * @file
- * message_private_message.features.inc
+ * message_private.features.inc
  */
-
-/**
- * Implements hook_ctools_plugin_api().
- */
-function message_private_message_ctools_plugin_api($module = NULL, $api = NULL) {
-  if ($module == "field_group" && $api == "field_group") {
-    return array("version" => "1");
-  }
-  if ($module == "strongarm" && $api == "strongarm") {
-    return array("version" => "1");
-  }
-}
 
 /**
  * Implements hook_default_message_type().
  */
-function message_private_message_default_message_type() {
+function message_private_default_message_type() {
   $items = array();
   $items['private_message'] = entity_import('message_type', '{
     "name" : "private_message",

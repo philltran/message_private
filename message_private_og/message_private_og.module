@@ -1,0 +1,9 @@
+<?php
+/**
+ * @file
+ * Includes only, initially.
+ */
+
+module_load_include('inc', 'message_private_og', 'message_private_og.features.field_base');
+module_load_include('inc', 'message_private_og', 'message_private_og.features.field_instance');
+module_load_include('inc', 'message_private_og', 'message_private_og.views');
