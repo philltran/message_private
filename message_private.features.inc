@@ -23,9 +23,9 @@ function message_private_default_message_type() {
     "arguments" : null,
     "message_text" : { "en" : [
         {
-          "value" : "A private message to users and organic groups.",
+          "value" : "A private message between drupal entities.",
           "format" : "filtered_html",
-          "safe_value" : "\\u003Cp\\u003EA private message to users and organic groups.\\u003C\\/p\\u003E\\n"
+          "safe_value" : "\\u003Cp\\u003EA private message between drupal entities.\\u003C\\/p\\u003E\\n"
         }
       ]
     },
