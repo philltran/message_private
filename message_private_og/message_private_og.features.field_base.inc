@@ -33,7 +33,6 @@ function message_private_og_field_default_field_bases() {
     'locked' => 0,
     'module' => 'entityreference',
     'settings' => array(
-      'entity_translation_sync' => FALSE,
       'handler' => 'base',
       'handler_settings' => array(
         'behaviors' => array(
@@ -48,10 +47,8 @@ function message_private_og_field_default_field_bases() {
           'group' => 'group',
         ),
       ),
-      'profile2_private' => FALSE,
       'target_type' => 'node',
     ),
-    'translatable' => 0,
     'type' => 'entityreference',
   );
 

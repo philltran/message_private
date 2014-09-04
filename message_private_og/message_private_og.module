@@ -6,4 +6,48 @@
 
 module_load_include('inc', 'message_private_og', 'message_private_og.features.field_base');
 module_load_include('inc', 'message_private_og', 'message_private_og.features.field_instance');
-module_load_include('inc', 'message_private_og', 'message_private_og.views');
+
+/**
+ * Implements hook_views_api().
+ */
+function message_private_og_views_api() {
+  list($module, $api) = func_get_args();
+  if ($module == "views" && $api == "views_default") {
+    return array("version" => "3.0");
+  }
+}
+
+/**
+ * Implements hook_views_default_views_alter().
+ *
+ * @param $views
+ */
+function message_private_og_views_default_views_alter(&$views) {
+  if(isset($views['message_private']) && is_object($views['message_private'])) {
+    $handler =& $views['message_private']->new_display('page', 'OG Messages', 'page_2');
+    include(module_load_include('inc', 'message_private_og', 'message_private_og.views'));
+  }
+}
+
+/**
+ * Implements hook_entity_insert()
+ *
+ * Send an email if a private message has been created.
+ *
+ * @param $node
+ */
+function message_private_og_entity_insert($entity, $type) {
+  /*//Use message load as the $entity object seems to have issues with the mail function
+  $message = message_load($entity->mid);
+  $wrapper = entity_metadata_wrapper('message', $message);
+  $users = $wrapper->field_message_user_ref->value();
+  $mail = array();
+  if(is_array($users)) {
+    foreach($users as $user) {
+      $mail[] = $user->mail;
+    }
+  }
+  if($type == 'message' && $entity->type == 'private_message') {
+    message_notify_send_message($message, array('mail' => implode(',', $mail)));
+  }*/
+}

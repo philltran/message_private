@@ -109,7 +109,8 @@ function message_private_access_control($operation, $message, stdClass $user = N
   }
 
   // Verify that the user can apply the op.
-  if (user_access($operation . ' any message instance', $account) || user_access($operation . ' a ' . $type . ' message instance', $account)) {
+  if (user_access($operation . ' any message instance', $account)
+    || user_access($operation . ' a ' . $type . ' message instance', $account)) {
     if ($type == 'private_message' && $operation != 'create') {
       if (isset($message->field_message_user_ref['und'])) {
         foreach ($message->field_message_user_ref['und'] as $index => $user_ref) {
@@ -129,5 +130,32 @@ function message_private_access_control($operation, $message, stdClass $user = N
     else {
       return TRUE;
     }
+  }
+}
+
+/**
+ * Implements hook_entity_insert()
+ *
+ * Send an email if a private message has been created.
+ *
+ * Currently addslashes() or equivalent is not used on the email,
+ * this may be an issue with the message module itself as I don't
+ * think escaping strings for email should be done in this module.
+ *
+ * @param $node
+ */
+function message_private_entity_insert($entity, $type) {
+  //Use message load as the $entity object seems to have issues with the mail function
+  $message = message_load($entity->mid);
+  $wrapper = entity_metadata_wrapper('message', $message);
+  $users = $wrapper->field_message_user_ref->value();
+  $mail = array();
+  if(is_array($users)) {
+    foreach($users as $user) {
+      $mail[] = $user->mail;
+    }
+  }
+  if($type == 'message' && $entity->type == 'private_message') {
+    message_notify_send_message($message, array('mail' => implode(',', $mail)));
   }
 }

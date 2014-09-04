@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * @file
+ * Tests for message_private.module
+ */
+class MessagePrivateTestCase extends DrupalUnitTestCase {
+
+  /**
+   * One using of this function is to enable the module used for testing, any dependencies
+   * or anything else that might be universal for all tests
+   */
+  function setUp($modules = array()) {
+    $modules = array_merge($modules, array('message_private'));
+    parent::setUp($modules);
+  }
+}

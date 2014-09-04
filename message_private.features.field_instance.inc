@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * message_private_og.features.field_instance.inc
+ * message_private.features.field_instance.inc
  */
 
 /**
@@ -10,8 +10,8 @@
 function message_private_field_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'message-private_message-field_message_user_ref'
-  $field_instances['message-private_message-field_message_user_ref'] = array(
+  // Exported field_instance: 'message-private_message-field_message_body'
+  $field_instances['message-private_message-field_message_body'] = array(
     'bundle' => 'private_message',
     'default_value' => NULL,
     'deleted' => 0,
@@ -19,44 +19,41 @@ function message_private_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'above',
-        'module' => 'entityreference',
-        'settings' => array(
-          'link' => FALSE,
-        ),
-        'type' => 'entityreference_label',
-        'weight' => 1,
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 2,
       ),
       'message_notify_email_body' => array(
-        'label' => 'above',
+        'label' => 'hidden',
+        'module' => 'text',
         'settings' => array(),
-        'type' => 'hidden',
+        'type' => 'text_default',
         'weight' => 0,
       ),
       'message_notify_email_subject' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 0,
+        'weight' => 2,
       ),
     ),
     'entity_type' => 'message',
-    'field_name' => 'field_message_user_ref',
-    'label' => 'Users',
+    'field_name' => 'field_message_body',
+    'label' => 'Body',
     'required' => 0,
     'settings' => array(
-      'entity_translation_sync' => FALSE,
+      'text_processing' => 0,
       'user_register_form' => FALSE,
     ),
     'widget' => array(
       'active' => 1,
-      'module' => 'entityreference',
+      'module' => 'text',
       'settings' => array(
-        'match_operator' => 'CONTAINS',
-        'path' => '',
-        'size' => 60,
+        'rows' => 5,
       ),
-      'type' => 'entityreference_autocomplete',
-      'weight' => -1,
+      'type' => 'text_textarea',
+      'weight' => 2,
     ),
   );
 
@@ -78,12 +75,13 @@ function message_private_field_default_field_instances() {
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 0,
+        'weight' => 2,
       ),
       'message_notify_email_subject' => array(
-        'label' => 'above',
+        'label' => 'hidden',
+        'module' => 'text',
         'settings' => array(),
-        'type' => 'hidden',
+        'type' => 'text_default',
         'weight' => 0,
       ),
     ),
@@ -92,7 +90,6 @@ function message_private_field_default_field_instances() {
     'label' => 'Subject',
     'required' => 0,
     'settings' => array(
-      'entity_translation_sync' => FALSE,
       'text_processing' => 0,
       'user_register_form' => FALSE,
     ),
@@ -107,8 +104,8 @@ function message_private_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'message-private_message-field_message_body'
-  $field_instances['message-private_message-field_message_body'] = array(
+  // Exported field_instance: 'message-private_message-field_message_user_ref'
+  $field_instances['message-private_message-field_message_user_ref'] = array(
     'bundle' => 'private_message',
     'default_value' => NULL,
     'deleted' => 0,
@@ -116,41 +113,43 @@ function message_private_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'above',
-        'module' => 'text',
-        'settings' => array(),
-        'type' => 'text_default',
-        'weight' => 2,
+        'module' => 'entityreference',
+        'settings' => array(
+          'link' => FALSE,
+        ),
+        'type' => 'entityreference_label',
+        'weight' => 1,
       ),
       'message_notify_email_body' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 0,
+        'weight' => 3,
       ),
       'message_notify_email_subject' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 0,
+        'weight' => 3,
       ),
     ),
     'entity_type' => 'message',
-    'field_name' => 'field_message_body',
-    'label' => 'Body',
+    'field_name' => 'field_message_user_ref',
+    'label' => 'Users',
     'required' => 0,
     'settings' => array(
-      'entity_translation_sync' => FALSE,
-      'text_processing' => 1,
       'user_register_form' => FALSE,
     ),
     'widget' => array(
       'active' => 1,
-      'module' => 'text',
+      'module' => 'entityreference',
       'settings' => array(
-        'rows' => 5,
+        'match_operator' => 'CONTAINS',
+        'path' => '',
+        'size' => 60,
       ),
-      'type' => 'text_textarea',
-      'weight' => 2,
+      'type' => 'entityreference_autocomplete',
+      'weight' => -1,
     ),
   );
 

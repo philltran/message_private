@@ -43,10 +43,6 @@ function message_private_og_field_default_field_instances() {
     'field_name' => 'field_message_groups_ref',
     'label' => 'Groups',
     'required' => 0,
-    'settings' => array(
-      'entity_translation_sync' => FALSE,
-      'user_register_form' => FALSE,
-    ),
     'widget' => array(
       'active' => 1,
       'module' => 'options',

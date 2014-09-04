@@ -21,14 +21,7 @@ function message_private_default_message_type() {
     },
     "language" : "en",
     "arguments" : null,
-    "message_text" : { "en" : [
-        {
-          "value" : "A private message between drupal entities.",
-          "format" : "filtered_html",
-          "safe_value" : "\\u003Cp\\u003EA private message between drupal entities.\\u003C\\/p\\u003E\\n"
-        }
-      ]
-    },
+    "message_text" : [],
     "rdf_mapping" : []
   }');
   return $items;

@@ -4,10 +4,9 @@ core = 7.x
 
 dependencies[] = message_private
 dependencies[] = og
-features[ctools][] = views:views_default:3.0
+
 features[features_api][] = api:2
 features[field_base][] = field_message_groups_ref
 features[field_instance][] = message-private_message-field_message_groups_ref
-features[views_view][] = message_private
 
 package = Message

@@ -47,27 +47,44 @@ function message_private_views_default_views() {
   $handler->display->display_options['pager']['options']['id'] = '0';
   $handler->display->display_options['style_plugin'] = 'table';
   $handler->display->display_options['style_options']['columns'] = array(
-    'timestamp' => 'timestamp',
-    'message_render' => 'message_render',
     'name' => 'name',
+    'field_message_subject' => 'field_message_subject',
+    'view' => 'view',
+    'delete' => 'view',
+    'timestamp' => 'timestamp',
   );
   $handler->display->display_options['style_options']['default'] = '-1';
   $handler->display->display_options['style_options']['info'] = array(
-    'timestamp' => array(
-      'sortable' => 1,
-      'default_sort_order' => 'asc',
-      'align' => '',
-      'separator' => '',
-    ),
-    'message_render' => array(
-      'align' => '',
-      'separator' => '',
-    ),
     'name' => array(
       'sortable' => 1,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
+      'empty_column' => 0,
+    ),
+    'field_message_subject' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'view' => array(
+      'align' => '',
+      'separator' => ' ',
+      'empty_column' => 0,
+    ),
+    'delete' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'timestamp' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
     ),
   );
   $handler->display->display_options['style_options']['sticky'] = TRUE;
@@ -80,7 +97,7 @@ function message_private_views_default_views() {
         <li><a href="/en/admin/content/message/create">Create a new message</a></li>
         </ul>
           </div>';
-  $handler->display->display_options['header']['area']['format'] = 'wetkit_wysiwyg_text';
+  $handler->display->display_options['header']['area']['format'] = 'filtered_html';
   /* No results behavior: Global: Text area */
   $handler->display->display_options['empty']['area']['id'] = 'area';
   $handler->display->display_options['empty']['area']['table'] = 'views';
@@ -105,15 +122,8 @@ function message_private_views_default_views() {
   $handler->display->display_options['fields']['view']['id'] = 'view';
   $handler->display->display_options['fields']['view']['table'] = 'message';
   $handler->display->display_options['fields']['view']['field'] = 'view';
-  $handler->display->display_options['fields']['view']['label'] = '';
+  $handler->display->display_options['fields']['view']['label'] = 'Operations';
   $handler->display->display_options['fields']['view']['element_label_colon'] = FALSE;
-  /* Field: Message: Edit message */
-  $handler->display->display_options['fields']['edit']['id'] = 'edit';
-  $handler->display->display_options['fields']['edit']['table'] = 'message';
-  $handler->display->display_options['fields']['edit']['field'] = 'edit';
-  $handler->display->display_options['fields']['edit']['label'] = '';
-  $handler->display->display_options['fields']['edit']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['edit']['element_label_colon'] = FALSE;
   /* Field: Message: Delete message */
   $handler->display->display_options['fields']['delete']['id'] = 'delete';
   $handler->display->display_options['fields']['delete']['table'] = 'message';
@@ -150,13 +160,43 @@ function message_private_views_default_views() {
     'private_message' => 'private_message',
   );
 
-  /* Display: User Messages */
-  $handler = $view->new_display('page', 'User Messages', 'page_1');
-  $handler->display->display_options['display_description'] = 'Private messages associates to the groups the current user is a member of.';
-  $handler->display->display_options['path'] = 'admin/messages-user';
+  /* Display: Received Messages */
+  $handler = $view->new_display('page', 'Received Messages', 'page_1');
+  $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['title'] = 'Inbox';
+  $handler->display->display_options['display_description'] = 'Private messages received by the user.';
+  $handler->display->display_options['defaults']['relationships'] = FALSE;
+  /* Relationship: Message: User uid */
+  $handler->display->display_options['relationships']['user']['id'] = 'user';
+  $handler->display->display_options['relationships']['user']['table'] = 'message';
+  $handler->display->display_options['relationships']['user']['field'] = 'user';
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  /* Contextual filter: Message: Users (field_message_user_ref) */
+  $handler->display->display_options['arguments']['field_message_user_ref_target_id']['id'] = 'field_message_user_ref_target_id';
+  $handler->display->display_options['arguments']['field_message_user_ref_target_id']['table'] = 'field_data_field_message_user_ref';
+  $handler->display->display_options['arguments']['field_message_user_ref_target_id']['field'] = 'field_message_user_ref_target_id';
+  $handler->display->display_options['arguments']['field_message_user_ref_target_id']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['field_message_user_ref_target_id']['default_argument_type'] = 'current_user';
+  $handler->display->display_options['arguments']['field_message_user_ref_target_id']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['field_message_user_ref_target_id']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['field_message_user_ref_target_id']['summary_options']['items_per_page'] = '25';
+  $handler->display->display_options['path'] = 'user/%/messages';
+  $handler->display->display_options['menu']['type'] = 'tab';
   $handler->display->display_options['menu']['title'] = 'Messages';
-  $handler->display->display_options['menu']['weight'] = '0';
-  $handler->display->display_options['menu']['context'] = 0;
+  $handler->display->display_options['menu']['weight'] = '2';
+  $handler->display->display_options['menu']['context'] = 1;
+  $handler->display->display_options['menu']['context_only_inline'] = 0;
+
+  /* Display: Sent Messages */
+  $handler = $view->new_display('page', 'Sent Messages', 'page_3');
+  $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['title'] = 'Sent';
+  $handler->display->display_options['display_description'] = 'Private messages sent by the user.';
+  $handler->display->display_options['path'] = 'user/%/messages/sent';
+  $handler->display->display_options['menu']['type'] = 'tab';
+  $handler->display->display_options['menu']['title'] = 'Sent';
+  $handler->display->display_options['menu']['weight'] = '5';
+  $handler->display->display_options['menu']['context'] = 1;
   $handler->display->display_options['menu']['context_only_inline'] = 0;
 
   $export['message_private'] = $view;

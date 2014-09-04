@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * message_private_og.features.field_base.inc
+ * message_private.features.field_base.inc
  */
 
 /**
@@ -32,10 +32,7 @@ function message_private_field_default_field_bases() {
     ),
     'locked' => 0,
     'module' => 'text',
-    'settings' => array(
-      'entity_translation_sync' => FALSE,
-      'profile2_private' => FALSE,
-    ),
+    'settings' => array(),
     'translatable' => 0,
     'type' => 'text_long',
   );
@@ -62,10 +59,7 @@ function message_private_field_default_field_bases() {
     ),
     'locked' => 0,
     'module' => 'text',
-    'settings' => array(
-      'entity_translation_sync' => FALSE,
-      'profile2_private' => FALSE,
-    ),
+    'settings' => array(),
     'translatable' => 0,
     'type' => 'text_long',
   );
@@ -93,7 +87,6 @@ function message_private_field_default_field_bases() {
     'locked' => 0,
     'module' => 'entityreference',
     'settings' => array(
-      'entity_translation_sync' => FALSE,
       'handler' => 'base',
       'handler_settings' => array(
         'behaviors' => array(
@@ -106,7 +99,6 @@ function message_private_field_default_field_bases() {
         ),
         'target_bundles' => array(),
       ),
-      'profile2_private' => FALSE,
       'target_type' => 'user',
     ),
     'translatable' => 0,
