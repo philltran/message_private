@@ -192,6 +192,38 @@ function message_private_views_default_views() {
   $handler->display->display_options['defaults']['title'] = FALSE;
   $handler->display->display_options['title'] = 'Sent';
   $handler->display->display_options['display_description'] = 'Private messages sent by the user.';
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Message: Users */
+  $handler->display->display_options['fields']['field_message_user_ref']['id'] = 'field_message_user_ref';
+  $handler->display->display_options['fields']['field_message_user_ref']['table'] = 'field_data_field_message_user_ref';
+  $handler->display->display_options['fields']['field_message_user_ref']['field'] = 'field_message_user_ref';
+  $handler->display->display_options['fields']['field_message_user_ref']['label'] = 'To Users';
+  $handler->display->display_options['fields']['field_message_user_ref']['settings'] = array(
+    'link' => 1,
+  );
+  $handler->display->display_options['fields']['field_message_user_ref']['delta_offset'] = '0';
+  /* Field: Message: Subject */
+  $handler->display->display_options['fields']['field_message_subject']['id'] = 'field_message_subject';
+  $handler->display->display_options['fields']['field_message_subject']['table'] = 'field_data_field_message_subject';
+  $handler->display->display_options['fields']['field_message_subject']['field'] = 'field_message_subject';
+  /* Field: Message: View message */
+  $handler->display->display_options['fields']['view']['id'] = 'view';
+  $handler->display->display_options['fields']['view']['table'] = 'message';
+  $handler->display->display_options['fields']['view']['field'] = 'view';
+  $handler->display->display_options['fields']['view']['label'] = 'Operations';
+  $handler->display->display_options['fields']['view']['element_label_colon'] = FALSE;
+  /* Field: Message: Delete message */
+  $handler->display->display_options['fields']['delete']['id'] = 'delete';
+  $handler->display->display_options['fields']['delete']['table'] = 'message';
+  $handler->display->display_options['fields']['delete']['field'] = 'delete';
+  $handler->display->display_options['fields']['delete']['label'] = '';
+  $handler->display->display_options['fields']['delete']['element_label_colon'] = FALSE;
+  /* Field: Message: Timestamp */
+  $handler->display->display_options['fields']['timestamp']['id'] = 'timestamp';
+  $handler->display->display_options['fields']['timestamp']['table'] = 'message';
+  $handler->display->display_options['fields']['timestamp']['field'] = 'timestamp';
+  $handler->display->display_options['fields']['timestamp']['date_format'] = 'short';
+  $handler->display->display_options['fields']['timestamp']['second_date_format'] = 'long';
   $handler->display->display_options['path'] = 'user/%/messages/sent';
   $handler->display->display_options['menu']['type'] = 'tab';
   $handler->display->display_options['menu']['title'] = 'Sent';

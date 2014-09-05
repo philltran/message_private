@@ -33,22 +33,23 @@ function message_private_og_field_default_field_bases() {
     'locked' => 0,
     'module' => 'entityreference',
     'settings' => array(
+      'entity_translation_sync' => FALSE,
       'handler' => 'base',
       'handler_settings' => array(
         'behaviors' => array(
           'views-select-list' => array(
-            'status' => 0,
+            'status' => 1,
           ),
         ),
         'sort' => array(
           'type' => 'none',
         ),
-        'target_bundles' => array(
-          'group' => 'group',
-        ),
+        'target_bundles' => array(),
       ),
+      'profile2_private' => FALSE,
       'target_type' => 'node',
     ),
+    'translatable' => 0,
     'type' => 'entityreference',
   );
 

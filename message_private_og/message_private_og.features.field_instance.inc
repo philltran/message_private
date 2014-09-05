@@ -18,10 +18,10 @@ function message_private_og_field_default_field_instances() {
     'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'above',
+        'label' => 'inline',
         'module' => 'entityreference',
         'settings' => array(
-          'link' => FALSE,
+          'link' => 1,
         ),
         'type' => 'entityreference_label',
         'weight' => 1,
@@ -30,19 +30,22 @@ function message_private_og_field_default_field_instances() {
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 0,
+        'weight' => 2,
       ),
       'message_notify_email_subject' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 0,
+        'weight' => 3,
       ),
     ),
     'entity_type' => 'message',
     'field_name' => 'field_message_groups_ref',
     'label' => 'Groups',
     'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
     'widget' => array(
       'active' => 1,
       'module' => 'options',

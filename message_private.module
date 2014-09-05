@@ -19,7 +19,8 @@ function message_private_permission() {
 
   $permissions['bypass private message access control'] = array(
     'title' => t('Bypass message access control'),
-    'description' => t('Grant to the user the permission to apply CRUD option on any private messages. Grant this permission to trusty users!'),
+    'description' => t('Grant to the user the permission to apply CRUD option on
+    any private messages. Grant this permission to trusty users!'),
   );
 
   return $permissions;
@@ -99,7 +100,8 @@ function message_private_access_control($operation, $message, stdClass $user = N
   // Get the message type from the function argument or from the message object.
   $type = is_object($message) ? $message->type : $message;
 
-  if ($type == 'private_message' && (user_access('bypass private message access control', $account))) {
+  if ($type == 'private_message'
+    && (user_access('bypass private message access control', $account))) {
     return TRUE;
   }
   else {
@@ -145,17 +147,19 @@ function message_private_access_control($operation, $message, stdClass $user = N
  * @param $node
  */
 function message_private_entity_insert($entity, $type) {
-  //Use message load as the $entity object seems to have issues with the mail function
-  $message = message_load($entity->mid);
-  $wrapper = entity_metadata_wrapper('message', $message);
-  $users = $wrapper->field_message_user_ref->value();
-  $mail = array();
-  if(is_array($users)) {
-    foreach($users as $user) {
-      $mail[] = $user->mail;
-    }
-  }
   if($type == 'message' && $entity->type == 'private_message') {
-    message_notify_send_message($message, array('mail' => implode(',', $mail)));
+    //Use message load as the $entity object seems to have issues with mail function
+    $message = message_load($entity->mid);
+    $wrapper = entity_metadata_wrapper('message', $message);
+    $users = $wrapper->field_message_user_ref->value();
+    $mail = array();
+    if (is_array($users)) {
+      foreach ($users as $user) {
+        $mail[] = $user->mail;
+      }
+    }
+    if (!empty($mail)) {
+      message_notify_send_message($message, array('mail' => implode(',', $mail)));
+    }
   }
 }

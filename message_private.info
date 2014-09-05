@@ -13,6 +13,8 @@ dependencies[] = message
 dependencies[] = options
 dependencies[] = text
 dependencies[] = views
+dependencies[] = token
+dependencies[] = entity_token
 
 features[ctools][] = views:views_default:3.0
 features[features_api][] = api:2

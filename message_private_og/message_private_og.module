@@ -37,17 +37,31 @@ function message_private_og_views_default_views_alter(&$views) {
  * @param $node
  */
 function message_private_og_entity_insert($entity, $type) {
-  /*//Use message load as the $entity object seems to have issues with the mail function
-  $message = message_load($entity->mid);
-  $wrapper = entity_metadata_wrapper('message', $message);
-  $users = $wrapper->field_message_user_ref->value();
-  $mail = array();
-  if(is_array($users)) {
-    foreach($users as $user) {
-      $mail[] = $user->mail;
+  if($type == 'message' && $entity->type == 'private_message') {
+    //Use message load as the $entity object seems to have issues with mail function
+    $message = message_load($entity->mid);
+    $wrapper = entity_metadata_wrapper('message', $message);
+    $groups = $wrapper->field_message_groups_ref->value();
+    $mail = array();
+    if (is_array($groups)) {
+      foreach ($groups as $group) {
+        if (isset($group->nid)) {
+          $query = new EntityFieldQuery();
+          $query->entityCondition('entity_type', 'user')
+            ->fieldCondition('og_user_node', 'target_id', $group->nid, '=');
+
+          $result = $query->execute();
+
+          $uids = array_keys($result['user']);
+          $users = user_load_multiple($uids);
+          foreach ($users as $user) {
+            $mail[] = $user->mail;
+          }
+        }
+      }
+    }
+    if (!empty($mail)) {
+      message_notify_send_message($message, array('mail' => implode(',', $mail)));
     }
   }
-  if($type == 'message' && $entity->type == 'private_message') {
-    message_notify_send_message($message, array('mail' => implode(',', $mail)));
-  }*/
 }

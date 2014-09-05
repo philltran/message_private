@@ -4,13 +4,12 @@ CONTENTS OF THIS FILE
  * Requirements
  * Installation
  * Configuration
- * Troubleshooting
  * Development & Test
  * Maintainers
 
 INTRODUCTION
 ------------
-Customised message type and entity reference fields to enable Message Stack to
+A message type and entity reference fields to enable Message Stack to
 send and receive private messages. Messages of type "Private Message" are created
 and associated to user entities. The CRUD permissions associated to this message type
 are based on these entity reference fields, with the exception of CREATE, it uses the
@@ -30,6 +29,7 @@ REQUIREMENTS
 The message_private module requires the following modules:
  * Message (https://drupal.org/project/message)
  * Message UI (https://drupal.org/project/message_ui)
+ * Message Notify (https://drupal.org/project/message_notify)
 
 The message_private_og module requires the following modules:
  * OG (https://drupal.org/project/og)
@@ -50,15 +50,9 @@ configuration.  When enabled, the module will provide a new message type
 "Private Message" and a Message Private View.
 
 
-TROUBLESHOOTING
----------------
- * If the OG view does not display after reverting the view
-   - Uninstall and reinstall the message_private_og module
-
-
 DEVELOPMENT & TEST
 ------------------
- * Solve issue of Inbox, Sent, Group messages and add tabs to the /user page
+ * Add "Messages" tab to message entity view
  * Add to admin screen the option to turn on or off email notifications. Also per user basis using a flag on user account.
  * Threads can be created using a hidden message reference field that gets populated using a reply link
    on each message. A new permission to reply to messages can be created if necessary. An admin screen can
