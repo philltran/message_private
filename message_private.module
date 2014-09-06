@@ -96,7 +96,7 @@ function message_private_menu_alter(&$items) {
  * @param object|null $user_obj
  *   A user object. Optional.
  *
- * @return boolean
+ * @return bool
  *   TRUE or FALSE.
  */
 function message_private_access_control($operation, $message, $user_obj = NULL) {
