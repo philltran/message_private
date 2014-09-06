@@ -159,6 +159,15 @@ function message_private_views_default_views() {
   $handler->display->display_options['filters']['type_1']['value'] = array(
     'private_message' => 'private_message',
   );
+  /* Filter criterion: Message: Groups (field_message_groups_ref) */
+  $handler->display->display_options['filters']['field_message_groups_ref_target_id']['id'] = 'field_message_groups_ref_target_id';
+  $handler->display->display_options['filters']['field_message_groups_ref_target_id']['table'] = 'field_data_field_message_groups_ref';
+  $handler->display->display_options['filters']['field_message_groups_ref_target_id']['field'] = 'field_message_groups_ref_target_id';
+  $handler->display->display_options['filters']['field_message_groups_ref_target_id']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_message_groups_ref_target_id']['expose']['operator_id'] = 'field_message_groups_ref_target_id_op';
+  $handler->display->display_options['filters']['field_message_groups_ref_target_id']['expose']['label'] = 'Groups (field_message_groups_ref)';
+  $handler->display->display_options['filters']['field_message_groups_ref_target_id']['expose']['operator'] = 'field_message_groups_ref_target_id_op';
+  $handler->display->display_options['filters']['field_message_groups_ref_target_id']['expose']['identifier'] = 'field_message_groups_ref_target_id';
 
   /* Display: Received Messages */
   $handler = $view->new_display('page', 'Received Messages', 'page_1');
@@ -180,10 +189,10 @@ function message_private_views_default_views() {
   $handler->display->display_options['arguments']['field_message_user_ref_target_id']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['field_message_user_ref_target_id']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['field_message_user_ref_target_id']['summary_options']['items_per_page'] = '25';
-  $handler->display->display_options['path'] = 'user/%/messages';
+  $handler->display->display_options['path'] = 'user/%/messages/inbox';
   $handler->display->display_options['menu']['type'] = 'tab';
-  $handler->display->display_options['menu']['title'] = 'Messages';
-  $handler->display->display_options['menu']['weight'] = '2';
+  $handler->display->display_options['menu']['title'] = 'Inbox';
+  $handler->display->display_options['menu']['weight'] = '10';
   $handler->display->display_options['menu']['context'] = 1;
   $handler->display->display_options['menu']['context_only_inline'] = 0;
 
@@ -227,7 +236,7 @@ function message_private_views_default_views() {
   $handler->display->display_options['path'] = 'user/%/messages/sent';
   $handler->display->display_options['menu']['type'] = 'tab';
   $handler->display->display_options['menu']['title'] = 'Sent';
-  $handler->display->display_options['menu']['weight'] = '5';
+  $handler->display->display_options['menu']['weight'] = '11';
   $handler->display->display_options['menu']['context'] = 1;
   $handler->display->display_options['menu']['context_only_inline'] = 0;
 

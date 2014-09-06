@@ -46,13 +46,19 @@ INSTALLATION
 
 CONFIGURATION
 -------------
-The module has no menu or modifiable settings.  There is no
+The module has no menu or modifiable settings.  There is not much
 configuration.  When enabled, the module will provide a new message type
 "Private Message" and a Message Private View.
+
+When using the Message Private OG sub-module, the Group Messages display has
+a contextual filter which filters by group ID of the logged in user. This is
+developed taking into account that a content type called "Group" exists for all
+Group instances. Anything other than this setup requires user customisation.
 
 
 DEVELOPMENT & TEST
 ------------------
+ * Combine "Inbox", "Sent" and "Group" as sub-tabs under one called "Messages"
  * Add "Messages" tab to message entity view
  * Add to admin screen the option to turn on or off email notifications. Also per
    user basis using a flag on user account.

@@ -22,7 +22,7 @@ function message_private_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
-        'weight' => 3,
+        'weight' => 2,
       ),
       'message_notify_email_body' => array(
         'label' => 'hidden',
@@ -69,13 +69,13 @@ function message_private_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
-        'weight' => 2,
+        'weight' => 1,
       ),
       'message_notify_email_body' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 4,
+        'weight' => 3,
       ),
       'message_notify_email_subject' => array(
         'label' => 'hidden',
@@ -124,7 +124,7 @@ function message_private_field_default_field_instances() {
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 5,
+        'weight' => 4,
       ),
       'message_notify_email_subject' => array(
         'label' => 'above',
