@@ -99,18 +99,20 @@ function message_private_menu_alter(&$items) {
  *  The operation - create, view, update, delete.
  * @param $message
  *  The message object or message type.
- * @param stdClass $user
+ * @param stdClass $user_obj
  *  A user object. Optional.
  *
  * @return bool True or false.
  */
-function message_private_access_control($operation, $message, stdClass $user = NULL) {
+function message_private_access_control($operation, $message, stdClass $user_obj = NULL) {
 
+  global $user;
+  
   if (empty($user)) {
-    global $user;
     $account = user_load($user->uid);
   }
   else {
+    $user = $user_obj;
     $account = user_load($user->uid);
   }
 
