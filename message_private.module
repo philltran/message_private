@@ -97,8 +97,9 @@ function message_private_menu_alter(&$items) {
  *   A user object. Optional.
  *
  * @return bool
+ *   TRUE or FALSE.
  */
-function message_private_access_control($operation, $message, object $user_obj = NULL) {
+function message_private_access_control($operation, $message, Object $user_obj = NULL) {
 
   global $user;
 
