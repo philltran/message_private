@@ -37,7 +37,8 @@ function message_private_permission() {
   return $permissions;
 }
 
-/* Implements hook_menu_alter().
+/**
+ * Implements hook_menu_alter().
  *
  * Override some of the menu paths set in message ui module.
  */
@@ -88,14 +89,14 @@ function message_private_menu_alter(&$items) {
 /**
  * Message module access callback.
  *
- * @param $operation
- *  The operation - create, view, update, delete.
+ * @param string $operation
+ *   The operation - create, view, update, delete.
  * @param $message
- *  The message object or message type.
- * @param stdClass $user_obj
- *  A user object. Optional.
+ *   The message object or message type.
+ * @param object $user_obj
+ *   A user object. Optional.
  *
- * @return bool True or false.
+ * @return bool
  */
 function message_private_access_control($operation, $message, object $user_obj = NULL) {
 
