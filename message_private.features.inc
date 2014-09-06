@@ -1,7 +1,6 @@
 <?php
 /**
- * Features definition file
- * message_private.features.inc.
+ * Features definition file.
  */
 
 /**

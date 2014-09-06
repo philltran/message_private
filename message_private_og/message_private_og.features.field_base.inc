@@ -1,7 +1,6 @@
 <?php
 /**
- * Features base fields
- * message_private_og.features.field_base.inc.
+ * Features base fields.
  */
 
 /**

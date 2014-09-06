@@ -107,7 +107,7 @@ function message_private_menu_alter(&$items) {
 function message_private_access_control($operation, $message, stdClass $user_obj = NULL) {
 
   global $user;
-  
+
   if (empty($user)) {
     $account = user_load($user->uid);
   }

@@ -1,7 +1,6 @@
 <?php
 /**
- * Features views include file
- * message_private_og.views.inc.
+ * Features views include file.
  */
 
 /**
