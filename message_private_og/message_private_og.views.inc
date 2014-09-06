@@ -4,7 +4,7 @@
  * message_private_og.views.inc
  */
 
-if(!empty($handler)) {
+if(!isset($handler)) {
   /* Display: OG Messages */
   $handler->display->display_options['defaults']['title'] = FALSE;
   $handler->display->display_options['title'] = 'OG Messages';

@@ -124,7 +124,7 @@ function message_private_access_control($operation, $message, stdClass $user = N
           }
         }
       }
-      if (module_exists('og') && isset($message->field_node_groups_ref['und'])) {
+      if (module_exists('og') && isset($message->field_node_groups_ref[LANGUAGE_NONE])) {
         foreach ($message->field_node_groups_ref[LANGUAGE_NONE] as $group_ref) {
           if (og_is_member('node', $group_ref['target_id'])) {
             return TRUE;
