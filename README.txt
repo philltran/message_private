@@ -10,10 +10,10 @@ CONTENTS OF THIS FILE
 INTRODUCTION
 ------------
 A message type and entity reference fields to enable Message Stack to
-send and receive private messages. Messages of type "Private Message" are created
-and associated to user entities. The CRUD permissions associated to this message
-type are based on these entity reference fields, with the exception of CREATE, it
-uses the standard permission defined in the message_ui module.
+send and receive private messages. Messages of type "Private Message" are
+created and associated to user entities. The CRUD permissions associated to this
+message type are based on these entity reference fields, with the exception of
+CREATE, it uses the standard permission defined in the message_ui module.
 
 The message_private module includes the following.
 + A message type "Private Message" with entity reference field referencing users
@@ -60,12 +60,12 @@ DEVELOPMENT & TEST
 ------------------
  * Combine "Inbox", "Sent" and "Group" as sub-tabs under one called "Messages"
  * Add "Messages" tab to message entity view
- * Add to admin screen the option to turn on or off email notifications. Also per
-   user basis using a flag on user account.
+ * Add to admin screen the option to turn on or off email notifications. Also
+   per user basis using a flag on user account.
  * Threads can be created using a hidden message reference field that gets
    populated using a reply link on each message. A new permission to reply to
-   messages can be created if necessary. An admin screen can be used to enable or
-   disable threads to turn on/off replies on all private messages
+   messages can be created if necessary. An admin screen can be used to enable
+   or disable threads to turn on/off replies on all private messages
    (Reply, Reply All). A tpl.php template will need to be added for
    indentation/presentation.
  * Flag module could be used to show/hide messages from users own display

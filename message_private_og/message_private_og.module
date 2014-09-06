@@ -1,7 +1,6 @@
 <?php
 /**
- * Private Message OG
- * Define view display and email notifications.
+ * Private Message OG.
  */
 
 module_load_include('inc', 'message_private_og', 'message_private_og.features.field_base');
@@ -19,13 +18,10 @@ function message_private_og_views_api() {
 
 /**
  * Implements hook_views_default_views_alter().
- *
- * @param $views
  */
 function message_private_og_views_default_views_alter(&$views) {
-  if(isset($views['message_private']) && is_object($views['message_private'])) {
-    $handler =& $views['message_private']
-      ->new_display('page', 'OG Messages', 'page_2');
+  if (isset($views['message_private']) && is_object($views['message_private'])) {
+    $handler =& $views['message_private']->new_display('page', 'OG Messages', 'page_2');
 
     /* Display: OG Messages */
     $handler->display->display_options['defaults']['fields'] = FALSE;
@@ -109,17 +105,13 @@ function message_private_og_views_default_views_alter(&$views) {
 }
 
 /**
- * Implements hook_entity_insert()
+ * Implements hook_entity_insert().
  *
  * Send an email if a private message has been created.
- *
- * @param $entity
- * @param $type
- * @throws MessageNotifyException
  */
 function message_private_og_entity_insert($entity, $type) {
-  if($type == 'message' && $entity->type == 'private_message') {
-    //Use message load as the $entity object seems to have issues with mail function
+  if ($type == 'message' && $entity->type == 'private_message') {
+    // Use message load as the $entity object has issue with mail function here.
     $message = message_load($entity->mid);
     $wrapper = entity_metadata_wrapper('message', $message);
     $groups = $wrapper->field_message_groups_ref->value();
