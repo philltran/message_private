@@ -34,7 +34,9 @@ function message_private_og_views_default_views_alter(&$views) {
  *
  * Send an email if a private message has been created.
  *
- * @param $node
+ * @param $entity
+ * @param $type
+ * @throws MessageNotifyException
  */
 function message_private_og_entity_insert($entity, $type) {
   if($type == 'message' && $entity->type == 'private_message') {

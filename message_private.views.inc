@@ -1,7 +1,7 @@
 <?php
 /**
- * @file
- * message_private_og.views.inc
+ * Features views include file
+ * message_private_og.views.inc.
  */
 
 /**
@@ -29,7 +29,7 @@ function message_private_views_default_views() {
   $view->human_name = 'Message Private';
   $view->core = 7;
   $view->api_version = '3.0';
-  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+  $view->disabled = FALSE;
 
   /* Display: Defaults */
   $handler = $view->new_display('default', 'Defaults', 'default');

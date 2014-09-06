@@ -26,10 +26,12 @@ function message_private_permission() {
   return $permissions;
 }
 
-/**
- * Implements hook_menu_alter().
+/* Implements hook_menu_alter().
  *
  * Override some of the menu paths set in message ui module
+ *
+ * @param $items
+ * @return mixed
  */
 function message_private_menu_alter(&$items) {
 
@@ -144,7 +146,9 @@ function message_private_access_control($operation, $message, stdClass $user = N
  * this may be an issue with the message module itself as I don't
  * think escaping strings for email should be done in this module.
  *
- * @param $node
+ * @param $entity
+ * @param $type
+ * @throws MessageNotifyException
  */
 function message_private_entity_insert($entity, $type) {
   if($type == 'message' && $entity->type == 'private_message') {

@@ -1,6 +1,6 @@
 <?php
 /**
- * @file
+ * Features field instances
  * message_private.features.field_instance.inc
  */
 
