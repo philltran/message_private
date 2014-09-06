@@ -21,7 +21,7 @@ function message_private_og_views_api() {
  */
 function message_private_og_views_default_views_alter(&$views) {
   if (isset($views['message_private']) && is_object($views['message_private'])) {
-    $handler =& $views['message_private']->new_display('page', 'OG Messages', 'page_2');
+    $handler =& $views['message_private']->new_display('page', 'OG Messages', 'page_3');
 
     /* Display: OG Messages */
     $handler->display->display_options['defaults']['fields'] = FALSE;
