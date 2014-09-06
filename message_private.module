@@ -92,7 +92,8 @@ function message_private_menu_alter(&$items) {
 function message_private_access_control($operation, $message, stdClass $user = NULL) {
 
   if (empty($user)) {
-    global $user;
+    global $global_user;
+    $user = $global_user;
     $account = user_load($user->uid);
   }
   else {
@@ -116,15 +117,15 @@ function message_private_access_control($operation, $message, stdClass $user = N
   if (user_access($operation . ' any message instance', $account)
     || user_access($operation . ' a ' . $type . ' message instance', $account)) {
     if ($type == 'private_message' && $operation != 'create') {
-      if (isset($message->field_message_user_ref['und'])) {
-        foreach ($message->field_message_user_ref['und'] as $index => $user_ref) {
+      if (isset($message->field_message_user_ref[LANGUAGE_NONE])) {
+        foreach ($message->field_message_user_ref[LANGUAGE_NONE] as $user_ref) {
           if ($user_ref['target_id'] == $user->uid) {
             return TRUE;
           }
         }
       }
       if (module_exists('og') && isset($message->field_node_groups_ref['und'])) {
-        foreach ($message->field_node_groups_ref['und'] as $index => $group_ref) {
+        foreach ($message->field_node_groups_ref[LANGUAGE_NONE] as $group_ref) {
           if (og_is_member('node', $group_ref['target_id'])) {
             return TRUE;
           }
