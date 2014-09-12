@@ -53,11 +53,15 @@ configuration.  When enabled, the module will provide a new message type
 When using the Message Private OG sub-module, the Group Messages display has
 a contextual filter which filters by group ID of the logged in user. This is
 developed taking into account that a content type called "Group" exists for all
-Group instances. Anything other than this setup requires user customisation.
+Group instances. Anything other than this setup requires user customisation. You
+must set field_message_groups_ref to use group bundle to enable group filter on
+views.
 
 
 DEVELOPMENT & TEST
 ------------------
+ * Make field_message_groups_ref preselect group bundle to enable group filter
+   on views. Dynamically set to gid called "Group"?
  * Combine "Inbox", "Sent" and "Group" as sub-tabs under one called "Messages"
  * Add "Messages" tab to message entity view
  * Add to admin screen the option to turn on or off email notifications. Also
