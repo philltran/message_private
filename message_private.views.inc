@@ -91,11 +91,11 @@ function message_private_views_default_views() {
   $handler->display->display_options['header']['area']['id'] = 'area';
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
-  $handler->display->display_options['header']['area']['content'] =
-    '<div class="actions">
+  $handler->display->display_options['header']['area']['content']
+    = '<div class="actions">
             <ul class="action-links">
         <li>' .
-    l('Create a new message', 'admin/content/message/create/private-message') .
+    l(t('Create a new message'), 'admin/content/message/create/private-message') .
     '</li>
         </ul>
           </div>';
@@ -104,11 +104,11 @@ function message_private_views_default_views() {
   $handler->display->display_options['empty']['area']['id'] = 'area';
   $handler->display->display_options['empty']['area']['table'] = 'views';
   $handler->display->display_options['empty']['area']['field'] = 'area';
-  $handler->display->display_options['empty']['area']['content'] =
-    '<div class="actions">
+  $handler->display->display_options['empty']['area']['content']
+    = '<div class="actions">
             <ul class="action-links">
         <li>' .
-    l('Create a new message', 'admin/content/message/create/private-message') .
+    l(t('Create a new message'), 'admin/content/message/create/private-message') .
     '</li>
         </ul>
           </div>'
