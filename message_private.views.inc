@@ -91,9 +91,12 @@ function message_private_views_default_views() {
   $handler->display->display_options['header']['area']['id'] = 'area';
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
-  $handler->display->display_options['header']['area']['content'] = '<div class="actions">
+  $handler->display->display_options['header']['area']['content'] =
+    '<div class="actions">
             <ul class="action-links">
-        <li><a href="/en/admin/content/message/create">Create a new message</a></li>
+        <li>' .
+    l('Create a new message', 'admin/content/message/create/private-message') .
+    '</li>
         </ul>
           </div>';
   $handler->display->display_options['header']['area']['format'] = 'filtered_html';
@@ -101,7 +104,16 @@ function message_private_views_default_views() {
   $handler->display->display_options['empty']['area']['id'] = 'area';
   $handler->display->display_options['empty']['area']['table'] = 'views';
   $handler->display->display_options['empty']['area']['field'] = 'area';
-  $handler->display->display_options['empty']['area']['content'] = 'No messages created yet.';
+  $handler->display->display_options['empty']['area']['content'] =
+    '<div class="actions">
+            <ul class="action-links">
+        <li>' .
+    l('Create a new message', 'admin/content/message/create/private-message') .
+    '</li>
+        </ul>
+          </div>'
+    .
+    'No messages created yet.';
   $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
   /* Relationship: Message: User uid */
   $handler->display->display_options['relationships']['user']['id'] = 'user';

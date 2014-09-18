@@ -1,9 +1,11 @@
 CONTENTS OF THIS FILE
 ---------------------
  * Introduction
- * Requirements
+ * Dependencies
  * Installation
  * Configuration
+ * How to use
+ * Security
  * Development & Test
  * Maintainers
 
@@ -24,12 +26,15 @@ The sub-module message_private_og includes the following.
 + A "Group Messages" display for the message_private view
 
 
-REQUIREMENTS
+DEPENDENCIES
 ------------
 The message_private module requires the following modules:
  * Message (https://drupal.org/project/message)
  * Message UI (https://drupal.org/project/message_ui)
  * Message Notify (https://drupal.org/project/message_notify)
+ * Token (https://www.drupal.org/project/token
+ * Features (https://www.drupal.org/project/features)
+ * Entity Reference (https://www.drupal.org/project/entityreference)
 
 The message_private_og module requires the following modules:
  * OG (https://drupal.org/project/og)
@@ -46,6 +51,10 @@ INSTALLATION
 
 CONFIGURATION
 -------------
+Enable the permission "View a new message instance for Private Message" and
+"Create a new message instance for Private Message" for users needing to create
+and view private messages.
+
 The module has no menu or modifiable settings.  There is not much
 configuration.  When enabled, the module will provide a new message type
 "Private Message" and a Message Private View.
@@ -54,14 +63,39 @@ When using the Message Private OG sub-module, the Group Messages display has
 a contextual filter which filters by group ID of the logged in user. This is
 developed taking into account that a content type called "Group" exists for all
 Group instances. Anything other than this setup requires user customisation. You
-must set field_message_groups_ref to use group bundle to enable group filter on
-views.
+must manually set the field_message_groups_ref contextual filter to use group
+bundle to enable group filter on views.
+
+HOW TO USE
+----------
+To create messages:
+Visit /admin/content/message/create/private-message and Save the message to send
+
+For received messages:
+Visit your user page at /user and find the "Inbox" tab which displays received
+messages /user/USER_ID/messages/inbox
+
+For sent messages:
+Visit your user page at /user and find the "Sent" tab which displays sent
+messages /user/USER_ID/messages/sent
+
+For group messages:
+Visit your user page at /user and find the "Group" tab which displays group
+messages /user/USER_ID/messages/group
+
+SECURITY
+--------
+This module does not come with any security features out-of-the-box, but you can
+easily configure your own using methods and modules of you choice.
+
+Examples:
+
+Honeypot and timestamp methods: https://www.drupal.org/project/honeypot
+CAPTCHA method: https://www.drupal.org/project/recaptcha
 
 
 DEVELOPMENT & TEST
 ------------------
- * Make field_message_groups_ref preselect group bundle to enable group filter
-   on views. Dynamically set to gid called "Group"?
  * Combine "Inbox", "Sent" and "Group" as sub-tabs under one called "Messages"
  * Add "Messages" tab to message entity view
  * Add to admin screen the option to turn on or off email notifications. Also

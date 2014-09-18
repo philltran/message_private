@@ -116,20 +116,13 @@ function message_private_og_entity_insert($entity, $type) {
     $wrapper = entity_metadata_wrapper('message', $message);
     $groups = $wrapper->field_message_groups_ref->value();
     $mail = array();
-    if (is_array($groups)) {
+    if (!empty($groups) && is_array($groups)) {
       foreach ($groups as $group) {
-        if (isset($group->nid)) {
-          $query = new EntityFieldQuery();
-          $query->entityCondition('entity_type', 'user')
-            ->fieldCondition('og_user_node', 'target_id', $group->nid, '=');
-
-          $result = $query->execute();
-
-          $uids = array_keys($result['user']);
-          $users = user_load_multiple($uids);
-          foreach ($users as $user) {
-            $mail[] = $user->mail;
-          }
+        $uids = og_get_group_members_properties($group,
+          array(), 'members', 'node');
+        $users = user_load_multiple($uids);
+        foreach ($users as $user) {
+          $mail[] = $user->mail;
         }
       }
     }
