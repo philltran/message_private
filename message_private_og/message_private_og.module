@@ -44,7 +44,7 @@ function message_private_og_og_permission() {
  *
  * Override some of the menu paths set in message ui module.
  */
-function message_private_menu_alter(&$items) {
+function message_private_og_menu_alter(&$items) {
 
   $items['message/%message'] = array(
     'title' => 'Viewing a message',
