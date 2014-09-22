@@ -7,6 +7,240 @@ module_load_include('inc', 'message_private_og', 'message_private_og.features.fi
 module_load_include('inc', 'message_private_og', 'message_private_og.features.field_instance');
 
 /**
+ * Implement hook_og_permission().
+ *
+ * Provides OG permissions for sending private messages to group users and group
+ */
+function message_private_og_og_permission() {
+  $permissions = array();
+
+  $permissions['view a private message instance'] = array(
+    'title' => t('View a private message instance'),
+    'default role' => array(OG_ADMINISTRATOR_ROLE),
+  );
+
+  $permissions['delete a private message instance'] = array(
+    'title' => t('Delete a private message instance'),
+    'default role' => array(OG_ADMINISTRATOR_ROLE),
+  );
+
+  $permissions['send a private message to users'] = array(
+    'title' => t('Send private message to users'),
+    'description' => t('Send a private message to individual users of the group.'),
+    'default role' => array(OG_ADMINISTRATOR_ROLE),
+  );
+
+  $permissions['send a private message to group'] = array(
+    'title' => t('Send a private message to the group'),
+    'description' => t('Send a private message to al users of the group.'),
+    'default role' => array(OG_ADMINISTRATOR_ROLE),
+  );
+
+  return $permissions;
+}
+
+/**
+ * Implements hook_menu_alter().
+ *
+ * Override some of the menu paths set in message ui module.
+ */
+function message_private_menu_alter(&$items) {
+
+  $items['message/%message'] = array(
+    'title' => 'Viewing a message',
+    'description' => 'Select a message to create an instance.',
+    'page callback' => 'message_ui_show_message',
+    'page arguments' => array(1),
+    'access callback' => 'message_private_og_access_control',
+    'access arguments' => array('view', 1),
+  );
+
+  $items['message/%message/view'] = array(
+    'title' => 'View',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
+    'access callback' => 'message_private_og_access_control',
+    'access arguments' => array('view', 1),
+  );
+
+  $items['message/%message/delete'] = array(
+    'title' => 'Delete',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('message_ui_instance_delete', 1),
+    'access callback' => 'message_private_og_access_control',
+    'access arguments' => array('delete', 1),
+    'type' => MENU_LOCAL_TASK,
+    'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
+    'weight' => 10,
+  );
+
+  $items['admin/content/message/create/private-message'] = array(
+    'title' => 'Create a new Private Message',
+    'description' => 'Create a new Private Message instance',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('message_ui_instance_message_manage', 'private_message'),
+    'access arguments' => array('create', 'private_message'),
+    'access callback' => 'message_private_og_access_control',
+  );
+
+  return $items;
+}
+
+/**
+ * Message module access callback.
+ *
+ * @param string $operation
+ *   The operation - create, view, update, delete.
+ * @param object $message
+ *   The message object or message type.
+ * @param object|null $user_obj
+ *   A user object. Optional.
+ *
+ * @return bool
+ *   TRUE or FALSE.
+ */
+function message_private_og_access_control($operation, $message, $user_obj = NULL) {
+
+  if (empty($user_obj)) {
+    global $user;
+    $account = user_load($user->uid);
+  }
+  else {
+    $user = $user_obj;
+    $account = user_load($user->uid);
+  }
+
+  // Get the message type from the function argument or from the message object.
+  $type = is_object($message) ? $message->type : $message;
+
+  if ($type == 'private_message'
+    && (user_access('bypass private message access control', $account))
+  ) {
+    return TRUE;
+  }
+
+  if($type == 'private_message') {
+    // Verify that the user can apply the op.
+    if ($operation != 'create') {
+      // For users with global message permissions for any message types
+      if (user_access($operation . ' any message instance', $account)
+        || user_access($operation . ' a ' . $type . ' message instance', $account)) {
+        if (isset($message->field_message_user_ref[LANGUAGE_NONE])) {
+          foreach ($message->field_message_user_ref[LANGUAGE_NONE] as $user_ref) {
+            if ($user_ref['target_id'] == $user->uid) {
+              return TRUE;
+            }
+          }
+        } else {
+          // do not allow the deletion of group messages
+          if (isset($message->field_node_groups_ref[LANGUAGE_NONE]) &&
+            $operation != 'delete'
+          ) {
+            foreach ($message->field_node_groups_ref[LANGUAGE_NONE] as $group_ref) {
+              if (og_user_access('message', $group_ref['target_id'],
+                $operation . ' a private message instance', $account)) {
+                return TRUE;
+              }
+            }
+          }
+        }
+      } else {
+        // Get all user groups and cycle through to verify og permissions
+        $groups = og_get_groups_by_user($account);
+        foreach ($groups as $group => $gid) {
+          if (og_user_access('message', $gid,
+            $operation . ' a private message instance', $account)) {
+            if (isset($message->field_message_user_ref[LANGUAGE_NONE])) {
+              foreach ($message->field_message_user_ref[LANGUAGE_NONE] as $user_ref) {
+                if ($user_ref['target_id'] == $user->uid) {
+                  return TRUE;
+                }
+              }
+            }
+            else {
+              // do not allow the deletion of group messages
+              if (isset($message->field_node_groups_ref[LANGUAGE_NONE]) &&
+                $operation != 'delete'
+              ) {
+                foreach ($message->field_node_groups_ref[LANGUAGE_NONE] as $group_ref) {
+                  if (og_user_access('message', $group_ref['target_id'],
+                    $operation . ' a private message instance', $account)) {
+                    return TRUE;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    else if ($operation == 'create') {
+      // For users with global message permissions
+      if (user_access($operation . ' any message instance', $account)
+        || user_access($operation . ' a ' . $type . ' message instance', $account)) {
+        return TRUE;
+      } else {
+        // For users with og message permissions check create for each group
+        $groups = og_get_groups_by_user($account);
+        foreach ($groups as $group => $gid) {
+          if (og_user_access('message', $gid,
+              'send a private message to users', $account) ||
+            og_user_access('message', $gid,
+              'send a private message to group', $account)
+          ) {
+            return TRUE;
+          }
+        }
+      }
+    }
+  }
+  // For users with global message permissions for any message types
+  if (user_access($operation . ' any message instance', $account)
+    || user_access($operation . ' a ' . $type . ' message instance', $account)) {
+    // TODO: The delete message and edit message permissions may need to display
+    // warnings in the permission description.
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+ * Hide the message_text field from the node edit form.
+ *
+ * The message_text field  is only useful post creation.
+ * i.e. - contains user data. Also, set the custom validator.
+ */
+function message_private_og_form_message_ui_instance_message_manage_alter(&$form, &$form_state, $form_id) {
+  /*
+   * TODO: hide group or user field depending on the permissions had for any group
+   * i.e. - cycle through groups and set to unhide if any permission found in a group.
+   * If bypass permissions then we just display everything.
+   */
+  if ($form['#bundle'] == 'private_message') {
+    $form['#validate'][] = 'message_private_og_form_message_ui_instance_message_manage_validate';
+  }
+}
+
+/**
+ * Validation for Private Message form.
+ *
+ * @param $form
+ * @param $form_state
+ */
+function message_private_og_form_message_ui_instance_message_manage_validate($form, &$form_state) {
+  /*
+   * TODO:
+   * Make sure the user has send to group permissions for any group requested to send
+   * Make sure the user has send to person permissions for any person requested to send
+   * Make sure any person who has been requested to send is in the same group as the user
+   * has permissions to send to.
+   *
+   * If bypass private message access then you can send to any group/person.
+   */
+  //user_access('bypass private message access control')
+}
+
+/**
  * Implements hook_views_api().
  */
 function message_private_og_views_api() {
