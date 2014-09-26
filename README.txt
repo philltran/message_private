@@ -96,8 +96,11 @@ CAPTCHA method: https://www.drupal.org/project/recaptcha
 
 DEVELOPMENT & TEST
 ------------------
- * Combine "Inbox", "Sent" and "Group" as sub-tabs under one called "Messages"
- * Add "Messages" tab to message entity view
+ * Create og permissions and permission checking for private messages.
+ * Auto set the group in views code for group messages or provide warning.
+ * Integrate with Help or Advanced Help module to hold all instructions.
+ * Combine "Inbox", "Sent" and "Group" as sub-tabs under one called "Messages".
+ * Add "Messages" tab to private_message entity view.
  * Add to admin screen the option to turn on or off email notifications. Also
    per user basis using a flag on user account.
  * Threads can be created using a hidden message reference field that gets
@@ -107,7 +110,8 @@ DEVELOPMENT & TEST
    (Reply, Reply All). A tpl.php template will need to be added for
    indentation/presentation.
  * Flag module could be used to show/hide messages from users own display
- * Tests should be created in the 'tests' folder
+ * Research the benefits of Rules module integration and what could be provided.
+ * Tests should be created in the 'tests' folder.
 
 MAINTAINERS
 -----------

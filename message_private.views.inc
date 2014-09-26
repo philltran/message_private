@@ -87,34 +87,6 @@ function message_private_views_default_views() {
     ),
   );
   $handler->display->display_options['style_options']['sticky'] = TRUE;
-  /* Header: Global: Text area */
-  $handler->display->display_options['header']['area']['id'] = 'area';
-  $handler->display->display_options['header']['area']['table'] = 'views';
-  $handler->display->display_options['header']['area']['field'] = 'area';
-  $handler->display->display_options['header']['area']['content']
-    = '<div class="actions">
-            <ul class="action-links">
-        <li>' .
-    l(t('Create a new message'), 'admin/content/message/create/private-message') .
-    '</li>
-        </ul>
-          </div>';
-  $handler->display->display_options['header']['area']['format'] = 'filtered_html';
-  /* No results behavior: Global: Text area */
-  $handler->display->display_options['empty']['area']['id'] = 'area';
-  $handler->display->display_options['empty']['area']['table'] = 'views';
-  $handler->display->display_options['empty']['area']['field'] = 'area';
-  $handler->display->display_options['empty']['area']['content']
-    = '<div class="actions">
-            <ul class="action-links">
-        <li>' .
-    l(t('Create a new message'), 'admin/content/message/create/private-message') .
-    '</li>
-        </ul>
-          </div>'
-    .
-    'No messages created yet.';
-  $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
   /* Relationship: Message: User uid */
   $handler->display->display_options['relationships']['user']['id'] = 'user';
   $handler->display->display_options['relationships']['user']['table'] = 'message';
