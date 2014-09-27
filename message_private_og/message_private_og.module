@@ -46,42 +46,10 @@ function message_private_og_og_permission() {
  */
 function message_private_og_menu_alter(&$items) {
 
-  $items['message/%message'] = array(
-    'title' => 'Viewing a message',
-    'description' => 'Select a message to create an instance.',
-    'page callback' => 'message_ui_show_message',
-    'page arguments' => array(1),
-    'access callback' => 'message_private_og_access_control',
-    'access arguments' => array('view', 1),
-  );
-
-  $items['message/%message/view'] = array(
-    'title' => 'View',
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-    'weight' => -10,
-    'access callback' => 'message_private_og_access_control',
-    'access arguments' => array('view', 1),
-  );
-
-  $items['message/%message/delete'] = array(
-    'title' => 'Delete',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('message_ui_instance_delete', 1),
-    'access callback' => 'message_private_og_access_control',
-    'access arguments' => array('delete', 1),
-    'type' => MENU_LOCAL_TASK,
-    'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
-    'weight' => 10,
-  );
-
-  $items['admin/content/message/create/private-message'] = array(
-    'title' => 'Create a new Private Message',
-    'description' => 'Create a new Private Message instance',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('message_ui_instance_message_manage', 'private_message'),
-    'access arguments' => array('create', 'private_message'),
-    'access callback' => 'message_private_og_access_control',
-  );
+  $items['message/%message']['access callback'] = 'message_private_og_access_control';
+  $items['message/%message/view']['access callback'] = 'message_private_og_access_control';
+  $items['message/%message/delete']['access callback'] = 'message_private_og_access_control';
+  $items['admin/content/message/create/private-message']['access callback'] = 'message_private_og_access_control';
 
   return $items;
 }
@@ -101,6 +69,9 @@ function message_private_og_menu_alter(&$items) {
  */
 function message_private_og_access_control($operation, $message, $user_obj = NULL) {
 
+  // TODO: Code a smart way to call message_ui_access_control if not
+  // private_message and similarly call message_private_access_control possibly
+  // the user has global messaging permissions or other appropriate check.
   if (empty($user_obj)) {
     global $user;
     $account = user_load($user->uid);
