@@ -6,7 +6,7 @@ CONTENTS OF THIS FILE
  * Configuration
  * How to use
  * Security
- * Development & Test
+ * Development and Test
  * Maintainers
 
 INTRODUCTION
@@ -94,7 +94,7 @@ Honeypot and timestamp methods: https://www.drupal.org/project/honeypot
 CAPTCHA method: https://www.drupal.org/project/recaptcha
 
 
-DEVELOPMENT & TEST
+DEVELOPMENT AND TEST
 ------------------
  * Create og permissions and permission checking for private messages.
  * Auto set the group in views code for group messages or provide warning.
