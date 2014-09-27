@@ -97,7 +97,7 @@ function message_private_permission() {
  */
 function message_private_form_user_register_form_alter(&$form, &$form_state, $form_id) {
   // Set default with hook due to issue: https://www.drupal.org/node/701666
-  if(isset($form['flag']['private_message_notify'])) {
+  if (isset($form['flag']['private_message_notify'])) {
     $form['flag']['private_message_notify']['#default_value'] = TRUE;
   }
 }
