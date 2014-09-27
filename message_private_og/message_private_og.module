@@ -348,15 +348,21 @@ function message_private_og_entity_insert($entity, $type) {
     // Use message load as the $entity object has issue with mail function here.
     $message = message_load($entity->mid);
     $wrapper = entity_metadata_wrapper('message', $message);
-    $groups = $wrapper->field_message_groups_ref->value();
+
     $mail = array();
+    $flag = flag_get_flag('private_message_notify');
+    $groups = $wrapper->field_message_groups_ref->value();
+
     if (!empty($groups) && is_array($groups)) {
       foreach ($groups as $group) {
         $uids = og_get_group_members_properties($group,
           array(), 'members', 'node');
         $users = user_load_multiple($uids);
         foreach ($users as $user) {
-          $mail[] = $user->mail;
+          // If the user has the flag to receive notifications, add their email.
+          if ($flag && $flag->is_flagged($user->uid)) {
+            $mail[] = $user->mail;
+          }
         }
       }
     }

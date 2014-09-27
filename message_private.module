@@ -10,15 +10,67 @@ module_load_include('inc', 'message_private', 'message_private.views');
 
 
 /**
- * Hide the message_text field from the node edit form.
+ * Implements hook_form_FORM_ID_alter().
  *
- * The message_text field  is only useful post creation.
- * i.e. - contains user data. Also, set the custom validator.
+ * Hide the message_text field from the node edit form. It is only useful post
+ * creation. i.e. - contains user data.
  */
 function message_private_form_message_ui_instance_message_manage_alter(&$form, &$form_state, $form_id) {
   if ($form['#bundle'] == 'private_message' && isset($form['text']['#type'])) {
     $form['text']['#type'] = 'hidden';
   }
+}
+
+/**
+ * Implements hook_views_pre_render().
+ *
+ * Add a 'Create a new message' link above view.
+ */
+function message_private_views_pre_render(&$view) {
+  $view->attachment_before =
+    '<div class="actions">
+            <ul class="action-links">
+        <li>' .
+    l(t('Create a new message'), 'admin/content/message/create/private-message') .
+    '</li>
+        </ul>
+          </div>';
+}
+
+/**
+ * Implements hook_flag_default_flags().
+ */
+function message_private_flag_default_flags() {
+  $flags = array();
+// Exported flag: "Private Message Notify".
+  $flags['private_message_notify'] = array(
+    'entity_type' => 'user',
+    'title' => 'Private Message Notify',
+    'global' => 0,
+    'types' => array(),
+    'flag_short' => 'Activate Private Message Notifications',
+    'flag_long' => 'Receive email notifications for new Private Messages',
+    'flag_message' => 'Email notifications will be sent for new Private Messages',
+    'unflag_short' => 'De-activate Private Message Notifications',
+    'unflag_long' => 'Stop email notifications for new Private Messages',
+    'unflag_message' => 'No notifications will be sent for new Private Messages ',
+    'unflag_denied_text' => '',
+    'link_type' => 'toggle',
+    'weight' => 0,
+    'show_in_links' => array(
+      'full' => 0,
+      'token' => 0,
+    ),
+    'show_as_field' => 0,
+    'show_on_form' => 1,
+    'access_author' => '',
+    'show_contextual_link' => 0,
+    'show_on_profile' => 0,
+    'access_uid' => '',
+    'api_version' => 3,
+    // 'status' => TRUE, // Not possible at present, flag at account creation.
+  );
+  return $flags;
 }
 
 /**
@@ -39,50 +91,28 @@ function message_private_permission() {
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Set subscribe flag default to TRUE
+ */
+function message_private_form_user_register_form_alter(&$form, &$form_state, $form_id) {
+  // Set default with hook due to issue: https://www.drupal.org/node/701666
+  if(isset($form['flag']['private_message_notify'])) {
+    $form['flag']['private_message_notify']['#default_value'] = TRUE;
+  }
+}
+
+/**
  * Implements hook_menu_alter().
  *
  * Override some of the menu paths set in message ui module.
  */
 function message_private_menu_alter(&$items) {
 
-  $items['message/%message'] = array(
-    'title' => 'Viewing a message',
-    'description' => 'Select a message to create an instance.',
-    'page callback' => 'message_ui_show_message',
-    'page arguments' => array(1),
-    'access callback' => 'message_private_access_control',
-    'access arguments' => array('view', 1),
-  );
-
-  $items['message/%message/view'] = array(
-    'title' => 'View',
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-    'weight' => -10,
-    'access callback' => 'message_private_access_control',
-    'access arguments' => array('view', 1),
-  );
-
-  $items['message/%message/edit'] = array(
-    'title' => 'Edit',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('message_ui_instance_message_manage', 1),
-    'access callback' => 'message_private_access_control',
-    'access arguments' => array('edit', 1),
-    'type' => MENU_LOCAL_TASK,
-    'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
-    'weight' => 0,
-  );
-
-  $items['message/%message/delete'] = array(
-    'title' => 'Delete',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('message_ui_instance_delete', 1),
-    'access callback' => 'message_private_access_control',
-    'access arguments' => array('delete', 1),
-    'type' => MENU_LOCAL_TASK,
-    'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
-    'weight' => 10,
-  );
+  $items['message/%message']['access callback'] = 'message_private_access_control';
+  $items['message/%message/view']['access callback'] = 'message_private_access_control';
+  $items['message/%message/edit']['access callback'] = 'message_private_access_control';
+  $items['message/%message/delete']['access callback'] = 'message_private_access_control';
 
   return $items;
 }
@@ -114,27 +144,32 @@ function message_private_access_control($operation, $message, $user_obj = NULL) 
   // Get the message type from the function argument or from the message object.
   $type = is_object($message) ? $message->type : $message;
 
-  if ($type == 'private_message'
-    && (user_access('bypass private message access control', $account))
-  ) {
-    return TRUE;
-  }
+  // If this is not a private message then use the message callback provided by
+  // message_ui module.
+  if ($type != 'private_message') {
+    return message_ui_access_control($operation, $message);
+  } else {
 
-  // Verify that the user can apply the op.
-  if (user_access($operation . ' any message instance', $account)
-    || user_access($operation . ' a ' . $type . ' message instance', $account)
-  ) {
-    if ($type == 'private_message' && $operation != 'create') {
-      if (isset($message->field_message_user_ref[LANGUAGE_NONE])) {
-        foreach ($message->field_message_user_ref[LANGUAGE_NONE] as $user_ref) {
-          if ($user_ref['target_id'] == $user->uid) {
-            return TRUE;
+    if (user_access('bypass private message access control', $account)) {
+      return TRUE;
+    }
+
+    // Verify that the user can apply the op.
+    if (user_access($operation . ' any message instance', $account)
+      || user_access($operation . ' a ' . $type . ' message instance', $account)
+    ) {
+      if ($type == 'private_message' && $operation != 'create') {
+        if (isset($message->field_message_user_ref[LANGUAGE_NONE])) {
+          foreach ($message->field_message_user_ref[LANGUAGE_NONE] as $user_ref) {
+            if ($user_ref['target_id'] == $user->uid) {
+              return TRUE;
+            }
           }
         }
       }
-    }
-    else {
-      return TRUE;
+      else {
+        return TRUE;
+      }
     }
   }
   return FALSE;
@@ -154,11 +189,17 @@ function message_private_entity_insert($entity, $type) {
     // Use message load as the $entity object has issue with mail function.
     $message = message_load($entity->mid);
     $wrapper = entity_metadata_wrapper('message', $message);
-    $users = $wrapper->field_message_user_ref->value();
+
     $mail = array();
+    $flag = flag_get_flag('private_message_notify');
+    $users = $wrapper->field_message_user_ref->value();
+
     if (is_array($users)) {
       foreach ($users as $user) {
-        $mail[] = $user->mail;
+        // If the user has the flag to receive notifications, add their email.
+        if ($flag && $flag->is_flagged($user->uid)) {
+          $mail[] = $user->mail;
+        }
       }
     }
     if (!empty($mail)) {

@@ -23,17 +23,16 @@ function message_private_default_message_type() {
     "message_text" : { "und" : [
         {
           "value" : "Private Message - ",
-          "format" : "filtered_html",
-          "safe_value" : "\\u003Cp\\u003EPrivate Message -\\u003C\\/p\\u003E\\n"
+          "format" : "plain_text",
+          "safe_value" : "\u003Cp\u003EPrivate Message -\u003C\/p\u003E\n"
         },
         {
-          "value" : "This message was sent by [message:user:mail]. Please login to \\u003Ca href=\\u0022\\/message\\/[message:mid]\\u0022\\u003Eview your message\\u003C\\/a\\u003E.",
-          "format" : "filtered_html",
-          "safe_value" : "\\u003Cp\\u003EThis message was sent by [message:user:mail]. Please login to \\u003Ca href=\\u0022\\/message\\/[message:mid]\\u0022\\u003Eview your message\\u003C\\/a\\u003E.\\u003C\\/p\\u003E\\n"
+          "value" : "This message was sent by [message:user:mail]. Please login to [site:url]message\/[message:mid] to view your message.",
+          "format" : "plain_text",
+          "safe_value" : "\u003Cp\u003EThis message was sent by [message:user:mail]. Please login to [site:url]message\/[message:mid] to view your message.\u003C\/p\u003E\n"
         }
       ]
-    },
-    "rdf_mapping" : []
+    }
   }');
   return $items;
 }
