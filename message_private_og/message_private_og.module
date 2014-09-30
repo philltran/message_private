@@ -157,9 +157,8 @@ function message_private_og_access_control($operation, $message, $user_obj = NUL
  */
 function message_private_og_form_message_ui_instance_message_manage_alter(&$form, &$form_state, $form_id) {
   /*
-   * TODO: Only allow send to own groups.
-   * $permissions['create any message instance']
-   * && $permissions['create a private_message message instance']
+   * TODO: Only allow send to own groups, edit available groups here?
+   * If using autocomplete widget this will not work as it will show all groups.
    */
   if ($form['#bundle'] == 'private_message') {
     $form['#validate'][] = 'message_private_og_form_message_ui_instance_message_manage_validate';
@@ -174,15 +173,18 @@ function message_private_og_form_message_ui_instance_message_manage_alter(&$form
  */
 function message_private_og_form_message_ui_instance_message_manage_validate($form, &$form_state) {
   /*
-   * TODO:
-   * Make sure the user has send to group permissions for any group requested to send
-   * Make sure the user has send to person permissions for any person requested to send
-   * Make sure any person who has been requested to send is in the same group as the user
-   * has permissions to send to.
+   * TODO: Use the below global permissions to provide full access.
+   * $permissions['create any message instance']
+   * && $permissions['create a private_message message instance']
+   * user_access('bypass private message access control')
    *
-   * If bypass private message access then you can send to any group/person.
+   * TODO: Return validation error if trying to send to a group without the
+   * correct og_user_access or to a receiving user that is not part of a group
+   * that the sending user has og_user_access to.
+   *
+   * This should have corresponding form or ajax alters to limit the options
+   * displayed by the UI in future also.
    */
-  //user_access('bypass private message access control')
 }
 
 /**

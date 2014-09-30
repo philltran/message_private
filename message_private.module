@@ -80,7 +80,7 @@ function message_private_permission() {
   $permissions['bypass private message access control'] = array(
     'title' => t('Bypass message access control'),
     'description' => t('Grant to the user the permission to apply CRUD option on
-    any private messages. Grant this permission to trusty users!'),
+    any private messages. Grant this permission to trusted users!'),
   );
 
   return $permissions;
