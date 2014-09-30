@@ -3,17 +3,13 @@
  * Message access permissions based on message fields.
  */
 
-module_load_include('inc', 'message_private', 'message_private.features');
-module_load_include('inc', 'message_private', 'message_private.features.field_base');
-module_load_include('inc', 'message_private', 'message_private.features.field_instance');
-module_load_include('inc', 'message_private', 'message_private.views');
-
+require_once('message_private.features.inc');
 
 /**
  * Implements hook_form_FORM_ID_alter().
  *
- * Hide the message_text field from the node edit form. It is only useful post
- * creation. i.e. - contains user data.
+ * Hide the message_text field from the message edit form. It is only useful
+ * post creation. i.e. - contains user data.
  */
 function message_private_form_message_ui_instance_message_manage_alter(&$form, &$form_state, $form_id) {
   if ($form['#bundle'] == 'private_message' && isset($form['text']['#type'])) {
@@ -122,13 +118,13 @@ function message_private_menu_alter(&$items) {
  *
  * @param string $operation
  *   The operation - create, view, update, delete.
- * @param object $message
+ * @param object|string $message
  *   The message object or message type.
  * @param object|null $user_obj
  *   A user object. Optional.
  *
  * @return bool
- *   TRUE or FALSE.
+ *   TRUE if user is allowed to perform the message operation, FALSE otherwise.
  */
 function message_private_access_control($operation, $message, $user_obj = NULL) {
 
@@ -159,9 +155,14 @@ function message_private_access_control($operation, $message, $user_obj = NULL) 
       || user_access($operation . ' a ' . $type . ' message instance', $account)
     ) {
       if ($type == 'private_message' && $operation != 'create') {
-        if (isset($message->field_message_user_ref[LANGUAGE_NONE])) {
-          foreach ($message->field_message_user_ref[LANGUAGE_NONE] as $user_ref) {
-            if ($user_ref['target_id'] == $user->uid) {
+        // Check if the user is message author.
+        if ($message->uid == $account->uid) {
+          return TRUE;
+        }
+        $users = field_get_items('message', $message, 'field_message_user_ref');
+        if ($users && is_array($users)) {
+          foreach ($users as $user_ref) {
+            if ($user_ref['target_id'] == $account->uid) {
               return TRUE;
             }
           }

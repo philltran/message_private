@@ -3,8 +3,8 @@
  * Private Message OG.
  */
 
-module_load_include('inc', 'message_private_og', 'message_private_og.features.field_base');
-module_load_include('inc', 'message_private_og', 'message_private_og.features.field_instance');
+require_once('message_private_og.features.field_base.inc');
+require_once('message_private_og.features.field_instance.inc');
 
 /**
  * Implement hook_og_permission().
@@ -14,25 +14,29 @@ module_load_include('inc', 'message_private_og', 'message_private_og.features.fi
 function message_private_og_og_permission() {
   $permissions = array();
 
+  // TODO : Evaluate separating out of send to user & send to group permissions.
+
+  $permissions['create a private message instance'] = array(
+    'title' => t('Create a private message instance'),
+    'description' => t('Create private message for users and groups'),
+    'default role' => array(OG_ADMINISTRATOR_ROLE),
+  );
+
   $permissions['view a private message instance'] = array(
     'title' => t('View a private message instance'),
+    'description' => t('View private messages related to user or group'),
+    'default role' => array(OG_ADMINISTRATOR_ROLE),
+  );
+
+  $permissions['edit a private message instance'] = array(
+    'title' => t('Edit a private message instance'),
+    'description' => t('Allow author edit access to sent private messages'),
     'default role' => array(OG_ADMINISTRATOR_ROLE),
   );
 
   $permissions['delete a private message instance'] = array(
     'title' => t('Delete a private message instance'),
-    'default role' => array(OG_ADMINISTRATOR_ROLE),
-  );
-
-  $permissions['send a private message to users'] = array(
-    'title' => t('Send private message to users'),
-    'description' => t('Send a private message to individual users of the group.'),
-    'default role' => array(OG_ADMINISTRATOR_ROLE),
-  );
-
-  $permissions['send a private message to group'] = array(
-    'title' => t('Send a private message to the group'),
-    'description' => t('Send a private message to al users of the group.'),
+    'description' => t('Allow author delete access to sent private messages'),
     'default role' => array(OG_ADMINISTRATOR_ROLE),
   );
 
@@ -65,13 +69,10 @@ function message_private_og_menu_alter(&$items) {
  *   A user object. Optional.
  *
  * @return bool
- *   TRUE or FALSE.
+ *   TRUE if user is allowed to perform the message operation, FALSE otherwise.
  */
 function message_private_og_access_control($operation, $message, $user_obj = NULL) {
 
-  // TODO: Code a smart way to call message_ui_access_control if not
-  // private_message and similarly call message_private_access_control possibly
-  // the user has global messaging permissions or other appropriate check.
   if (empty($user_obj)) {
     global $user;
     $account = user_load($user->uid);
@@ -84,93 +85,65 @@ function message_private_og_access_control($operation, $message, $user_obj = NUL
   // Get the message type from the function argument or from the message object.
   $type = is_object($message) ? $message->type : $message;
 
-  if ($type == 'private_message'
-    && (user_access('bypass private message access control', $account))
-  ) {
-    return TRUE;
+  // If this is not a private message then use the message callback provided by
+  // message_ui module.
+  if ($type != 'private_message') {
+    return message_ui_access_control($operation, $message);
   }
-
-  if($type == 'private_message') {
-    // Verify that the user can apply the op.
-    if ($operation != 'create') {
-      // For users with global message permissions for any message types
-      if (user_access($operation . ' any message instance', $account)
-        || user_access($operation . ' a ' . $type . ' message instance', $account)) {
-        if (isset($message->field_message_user_ref[LANGUAGE_NONE])) {
-          foreach ($message->field_message_user_ref[LANGUAGE_NONE] as $user_ref) {
-            if ($user_ref['target_id'] == $user->uid) {
-              return TRUE;
-            }
-          }
-        } else {
-          // do not allow the deletion of group messages
-          if (isset($message->field_node_groups_ref[LANGUAGE_NONE]) &&
-            $operation != 'delete'
-          ) {
-            foreach ($message->field_node_groups_ref[LANGUAGE_NONE] as $group_ref) {
-              if (og_user_access('message', $group_ref['target_id'],
-                $operation . ' a private message instance', $account)) {
-                return TRUE;
-              }
-            }
-          }
-        }
-      } else {
-        // Get all user groups and cycle through to verify og permissions
-        $groups = og_get_groups_by_user($account);
-        foreach ($groups as $group => $gid) {
-          if (og_user_access('message', $gid,
-            $operation . ' a private message instance', $account)) {
-            if (isset($message->field_message_user_ref[LANGUAGE_NONE])) {
-              foreach ($message->field_message_user_ref[LANGUAGE_NONE] as $user_ref) {
-                if ($user_ref['target_id'] == $user->uid) {
-                  return TRUE;
-                }
-              }
-            }
-            else {
-              // do not allow the deletion of group messages
-              if (isset($message->field_node_groups_ref[LANGUAGE_NONE]) &&
-                $operation != 'delete'
-              ) {
-                foreach ($message->field_node_groups_ref[LANGUAGE_NONE] as $group_ref) {
-                  if (og_user_access('message', $group_ref['target_id'],
-                    $operation . ' a private message instance', $account)) {
-                    return TRUE;
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+  else {
+    // Bypass access control if user has correct permission
+    if (user_access('bypass private message access control', $account)) {
+      return TRUE;
     }
-    else if ($operation == 'create') {
-      // For users with global message permissions
-      if (user_access($operation . ' any message instance', $account)
-        || user_access($operation . ' a ' . $type . ' message instance', $account)) {
+
+    // For create operation user needs global create or OG create.
+    if ($operation == 'create') {
+      // Check global private message permissions.
+      if (message_private_access_control($operation, $message)) {
         return TRUE;
-      } else {
-        // For users with og message permissions check create for each group
+      }
+      else {
+        // Users without global permissions may have OG permissions, check
+        // if they have permission for any groups on the system.
         $groups = og_get_groups_by_user($account);
         foreach ($groups as $group => $gid) {
-          if (og_user_access('message', $gid,
-              'send a private message to users', $account) ||
-            og_user_access('message', $gid,
-              'send a private message to group', $account)
+          if (og_user_access('node', $operation . ' a private message instance', $account) ||
+            og_user_access('node', $operation . ' a private message instance', $account)
           ) {
             return TRUE;
           }
         }
       }
     }
-  }
-  // For users with global message permissions for any message types
-  if (user_access($operation . ' any message instance', $account)
-    || user_access($operation . ' a ' . $type . ' message instance', $account)) {
-    // TODO: The delete message and edit message permissions may need to display
-    // warnings in the permission description.
-    return TRUE;
+    else {
+      if ($operation == 'view') {
+        // Check if the user is message author.
+        if ($message->uid == $account->uid) {
+          return TRUE;
+        }
+        // Check if message was sent to groups and check view access per group.
+        $groups = field_get_items('message', $message, 'field_message_groups_ref');
+        if ($groups && is_array($groups)) {
+          foreach ($groups as $group_ref) {
+            if (og_user_access('node', $group_ref['target_id'],
+              $operation . ' a private message instance', $account)) {
+              return TRUE;
+            }
+          }
+        }
+        // Check global private message permissions if no group access.
+        if (message_private_access_control($operation, $message)) {
+          return TRUE;
+        }
+      }
+      else {
+        // Only allow edit and delete privileges for message author and users
+        // with 'Bypass access control' global permission checked already.
+        if ($message->uid == $account->uid) {
+          return TRUE;
+        }
+      }
+    }
   }
   return FALSE;
 }

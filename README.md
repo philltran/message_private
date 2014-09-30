@@ -98,6 +98,8 @@ DEVELOPMENT AND TEST
 ------------------
  * Create og permissions and permission checking for private messages.
  * Auto set the group in views code for group messages or provide warning.
+ * Add a "To Groups" field in Sent view when private_message_og is enabled.
+ * Remove the "Create a new message" from the "Group" tab or add above filters.
  * Integrate with Help or Advanced Help module to hold all instructions.
  * Combine "Inbox", "Sent" and "Group" as sub-tabs under one called "Messages".
  * Add "Messages" tab to private_message entity view.
