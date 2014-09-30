@@ -149,16 +149,17 @@ function message_private_og_access_control($operation, $message, $user_obj = NUL
 }
 
 /**
- * Hide the message_text field from the node edit form.
+ * Implements hook_form_FORM_ID_alter().
  *
+ * Hide the message_text field from the node edit form.
  * The message_text field  is only useful post creation.
  * i.e. - contains user data. Also, set the custom validator.
  */
 function message_private_og_form_message_ui_instance_message_manage_alter(&$form, &$form_state, $form_id) {
   /*
-   * TODO: hide group or user field depending on the permissions had for any group
-   * i.e. - cycle through groups and set to unhide if any permission found in a group.
-   * If bypass permissions then we just display everything.
+   * TODO: Only allow send to own groups.
+   * $permissions['create any message instance']
+   * && $permissions['create a private_message message instance']
    */
   if ($form['#bundle'] == 'private_message') {
     $form['#validate'][] = 'message_private_og_form_message_ui_instance_message_manage_validate';
