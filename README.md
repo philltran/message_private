@@ -32,9 +32,13 @@ The message_private module requires the following modules:
  * Message (https://drupal.org/project/message)
  * Message UI (https://drupal.org/project/message_ui)
  * Message Notify (https://drupal.org/project/message_notify)
- * Token (https://www.drupal.org/project/token
- * Features (https://www.drupal.org/project/features)
+ * Entity API (https://www.drupal.org/project/entity)
  * Entity Reference (https://www.drupal.org/project/entityreference)
+ * Features (https://www.drupal.org/project/features)
+ * Ctools (https://www.drupal.org/project/ctools)
+ * Views (https://www.drupal.org/project/views)
+ * Token (https://www.drupal.org/project/token
+ * Flag (https://www.drupal.org/project/flag)
 
 The message_private_og module requires the following modules:
  * OG (https://drupal.org/project/og)
