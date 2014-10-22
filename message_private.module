@@ -618,16 +618,6 @@ function message_private_form_user_register_form_alter(&$form, &$form_state, $fo
  */
 function message_private_menu_alter(&$items) {
 
-  $items['user/%user/messages/inbox'] = array(
-    'title' => 'Create a new private message',
-    'description' => 'Select a message to create an instance.',
-    'page callback' => 'drupal_get_form',
-    'access callback' => 'message_private_access_control',
-    'access arguments' => array('create', 'private-message'),
-    'type' => MENU_LOCAL_ACTION,
-    'weight' => -10,
-  );
-
   $items['message/%message']['access callback'] = 'message_private_access_control';
   $items['message/%message/view']['access callback'] = 'message_private_access_control';
   $items['message/%message/edit']['access callback'] = 'message_private_access_control';
