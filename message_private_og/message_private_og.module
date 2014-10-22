@@ -3,8 +3,116 @@
  * Private Message OG.
  */
 
-require_once('message_private_og.features.field_base.inc');
-require_once('message_private_og.features.field_instance.inc');
+/**
+ * Implements hook_field_default_field_bases().
+ */
+function message_private_og_field_default_field_bases() {
+  $field_bases = array();
+
+  // Exported field_base: 'field_message_groups_ref'
+  $field_bases['field_message_groups_ref'] = array(
+    'active' => 1,
+    'cardinality' => -1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_message_groups_ref',
+    'foreign keys' => array(
+      'node' => array(
+        'columns' => array(
+          'target_id' => 'nid',
+        ),
+        'table' => 'node',
+      ),
+    ),
+    'indexes' => array(
+      'target_id' => array(
+        0 => 'target_id',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'entityreference',
+    'settings' => array(
+      'entity_translation_sync' => FALSE,
+      'handler' => 'base',
+      'handler_settings' => array(
+        'behaviors' => array(
+          'views-select-list' => array(
+            'status' => 1,
+          ),
+        ),
+        'sort' => array(
+          'type' => 'none',
+        ),
+        'target_bundles' => array(),
+      ),
+      'profile2_private' => FALSE,
+      'target_type' => 'node',
+    ),
+    'translatable' => 0,
+    'type' => 'entityreference',
+  );
+
+  return $field_bases;
+}
+
+
+/**
+ * Implements hook_field_default_field_instances().
+ */
+function message_private_og_field_default_field_instances() {
+  $field_instances = array();
+
+  // Exported field_instance: 'message-private_message-field_message_groups_ref'
+  $field_instances['message-private_message-field_message_groups_ref'] = array(
+    'bundle' => 'private_message',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'inline',
+        'module' => 'entityreference',
+        'settings' => array(
+          'link' => 1,
+        ),
+        'type' => 'entityreference_label',
+        'weight' => 1,
+      ),
+      'message_notify_email_body' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 2,
+      ),
+      'message_notify_email_subject' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 3,
+      ),
+    ),
+    'entity_type' => 'message',
+    'field_name' => 'field_message_groups_ref',
+    'label' => 'Groups',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(),
+      'type' => 'options_select',
+      'weight' => 0,
+    ),
+  );
+
+  // Translatables
+  // Included for use with string extractors like potx.
+  t('Groups');
+
+  return $field_instances;
+}
 
 /**
  * Implement hook_og_permission().
@@ -286,14 +394,12 @@ function message_private_og_views_default_views_alter(&$views) {
 }
 
 /**
- * Implements hook_entity_insert().
+ * Implements hook_message_insert().
  *
  * Send an email if a private message has been created.
  */
-function message_private_og_entity_insert($entity, $type) {
-  if ($type == 'message' && $entity->type == 'private_message') {
-    // Use message load as the $entity object has issue with mail function here.
-    $message = message_load($entity->mid);
+function message_private_og_message_insert($message) {
+  if ($message->type == 'private_message') {
     $wrapper = entity_metadata_wrapper('message', $message);
 
     $mail = array();

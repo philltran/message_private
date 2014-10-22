@@ -1,9 +1,7 @@
 <?php
 /**
- * Message access permissions based on message fields.
+ * Message Private with access permissions based on message fields.
  */
-
-require_once('message_private.features.inc');
 
 /**
  * Implements hook_form_FORM_ID_alter().
@@ -18,19 +16,534 @@ function message_private_form_message_ui_instance_message_manage_alter(&$form, &
 }
 
 /**
+ * Implements hook_default_message_type().
+ */
+function message_private_default_message_type() {
+  $items = array();
+  $items['private_message'] = entity_import('message_type', '{
+    "name" : "private_message",
+    "description" : "Private Message",
+    "argument_keys" : [],
+    "argument" : [],
+    "category" : "message_type",
+    "data" : {
+      "token options" : { "clear" : 1 },
+      "purge" : { "override" : 0, "enabled" : 0, "quota" : "", "days" : "" }
+    },
+    "language" : "en",
+    "arguments" : null,
+    "message_text" : { "und" : [
+        {
+          "value" : "Private Message - ",
+          "format" : "plain_text",
+          "safe_value" : "\u003Cp\u003EPrivate Message -\u003C\/p\u003E\n"
+        },
+        {
+          "value" : "This message was sent by [message:user:mail]. Please login to [site:url]message\/[message:mid] to view your message.",
+          "format" : "plain_text",
+          "safe_value" : "\u003Cp\u003EThis message was sent by [message:user:mail]. Please login to [site:url]message\/[message:mid] to view your message.\u003C\/p\u003E\n"
+        }
+      ]
+    }
+  }');
+  return $items;
+}
+
+/**
+ * Implements hook_field_default_field_bases().
+ */
+function message_private_field_default_field_bases() {
+  $field_bases = array();
+
+  // Exported field_base: 'field_message_body'
+  $field_bases['field_message_body'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_message_body',
+    'foreign keys' => array(
+      'format' => array(
+        'columns' => array(
+          'format' => 'format',
+        ),
+        'table' => 'filter_format',
+      ),
+    ),
+    'indexes' => array(
+      'format' => array(
+        0 => 'format',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'text',
+    'settings' => array(),
+    'translatable' => 0,
+    'type' => 'text_long',
+  );
+
+  // Exported field_base: 'field_message_subject'
+  $field_bases['field_message_subject'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_message_subject',
+    'foreign keys' => array(
+      'format' => array(
+        'columns' => array(
+          'format' => 'format',
+        ),
+        'table' => 'filter_format',
+      ),
+    ),
+    'indexes' => array(
+      'format' => array(
+        0 => 'format',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'text',
+    'settings' => array(),
+    'translatable' => 0,
+    'type' => 'text_long',
+  );
+
+  // Exported field_base: 'field_message_user_ref'
+  $field_bases['field_message_user_ref'] = array(
+    'active' => 1,
+    'cardinality' => -1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_message_user_ref',
+    'foreign keys' => array(
+      'users' => array(
+        'columns' => array(
+          'target_id' => 'uid',
+        ),
+        'table' => 'users',
+      ),
+    ),
+    'indexes' => array(
+      'target_id' => array(
+        0 => 'target_id',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'entityreference',
+    'settings' => array(
+      'handler' => 'base',
+      'handler_settings' => array(
+        'behaviors' => array(
+          'views-select-list' => array(
+            'status' => 0,
+          ),
+        ),
+        'sort' => array(
+          'type' => 'none',
+        ),
+        'target_bundles' => array(),
+      ),
+      'target_type' => 'user',
+    ),
+    'translatable' => 0,
+    'type' => 'entityreference',
+  );
+
+  return $field_bases;
+}
+
+/**
+ * Implements hook_field_default_field_instances().
+ */
+function message_private_field_default_field_instances() {
+  $field_instances = array();
+
+  // Exported field_instance: 'message-private_message-field_message_body'
+  $field_instances['message-private_message-field_message_body'] = array(
+    'bundle' => 'private_message',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 2,
+      ),
+      'message_notify_email_body' => array(
+        'label' => 'hidden',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 0,
+      ),
+      'message_notify_email_subject' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 4,
+      ),
+    ),
+    'entity_type' => 'message',
+    'field_name' => 'field_message_body',
+    'label' => 'Body',
+    'required' => 0,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'rows' => 5,
+      ),
+      'type' => 'text_textarea',
+      'weight' => 2,
+    ),
+  );
+
+  // Exported field_instance: 'message-private_message-field_message_subject'
+  $field_instances['message-private_message-field_message_subject'] = array(
+    'bundle' => 'private_message',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'inline',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 1,
+      ),
+      'message_notify_email_body' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 3,
+      ),
+      'message_notify_email_subject' => array(
+        'label' => 'hidden',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 1,
+      ),
+    ),
+    'entity_type' => 'message',
+    'field_name' => 'field_message_subject',
+    'label' => 'Subject',
+    'required' => 0,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'rows' => 1,
+      ),
+      'type' => 'text_textarea',
+      'weight' => 1,
+    ),
+  );
+
+  // Exported field_instance: 'message-private_message-field_message_user_ref'
+  $field_instances['message-private_message-field_message_user_ref'] = array(
+    'bundle' => 'private_message',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'inline',
+        'module' => 'entityreference',
+        'settings' => array(
+          'link' => 1,
+        ),
+        'type' => 'entityreference_label',
+        'weight' => 0,
+      ),
+      'message_notify_email_body' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 4,
+      ),
+      'message_notify_email_subject' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 5,
+      ),
+    ),
+    'entity_type' => 'message',
+    'field_name' => 'field_message_user_ref',
+    'label' => 'Users',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'entityreference',
+      'settings' => array(
+        'match_operator' => 'CONTAINS',
+        'path' => '',
+        'size' => 60,
+      ),
+      'type' => 'entityreference_autocomplete',
+      'weight' => -1,
+    ),
+  );
+
+  // Translatables
+  // Included for use with string extractors like potx.
+  t('Body');
+  t('Subject');
+  t('Users');
+
+  return $field_instances;
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function message_private_views_api() {
+  list($module, $api) = func_get_args();
+  if ($module == "views" && $api == "views_default") {
+    return array("version" => "3.0");
+  }
+}
+
+/**
+ * Implements hook_views_default_views().
+ */
+function message_private_views_default_views() {
+
+  $export = array();
+
+  $view = new view();
+  $view->name = 'message_private';
+  $view->description = 'Show private messages for users and groups.';
+  $view->tag = 'Message';
+  $view->base_table = 'message';
+  $view->human_name = 'Message Private';
+  $view->core = 7;
+  $view->api_version = '3.0';
+  $view->disabled = FALSE;
+
+  /* Display: Defaults */
+  $handler = $view->new_display('default', 'Defaults', 'default');
+  $handler->display->display_options['title'] = 'User Messages';
+  $handler->display->display_options['use_more_always'] = FALSE;
+  $handler->display->display_options['access']['type'] = 'perm';
+  $handler->display->display_options['access']['perm'] = 'view a private_message message instance';
+  $handler->display->display_options['cache']['type'] = 'none';
+  $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['query']['options']['query_comment'] = FALSE;
+  $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['options']['items_per_page'] = '30';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['pager']['options']['id'] = '0';
+  $handler->display->display_options['style_plugin'] = 'table';
+  $handler->display->display_options['style_options']['columns'] = array(
+    'name' => 'name',
+    'field_message_subject' => 'field_message_subject',
+    'view' => 'view',
+    'delete' => 'view',
+    'timestamp' => 'timestamp',
+  );
+  $handler->display->display_options['style_options']['default'] = '-1';
+  $handler->display->display_options['style_options']['info'] = array(
+    'name' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'field_message_subject' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'view' => array(
+      'align' => '',
+      'separator' => ' ',
+      'empty_column' => 0,
+    ),
+    'delete' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'timestamp' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+  );
+  $handler->display->display_options['style_options']['sticky'] = TRUE;
+  /* Relationship: Message: User uid */
+  $handler->display->display_options['relationships']['user']['id'] = 'user';
+  $handler->display->display_options['relationships']['user']['table'] = 'message';
+  $handler->display->display_options['relationships']['user']['field'] = 'user';
+  /* Field: User: Name */
+  $handler->display->display_options['fields']['name']['id'] = 'name';
+  $handler->display->display_options['fields']['name']['table'] = 'users';
+  $handler->display->display_options['fields']['name']['field'] = 'name';
+  $handler->display->display_options['fields']['name']['relationship'] = 'user';
+  $handler->display->display_options['fields']['name']['label'] = 'From User';
+  /* Field: Message: Subject */
+  $handler->display->display_options['fields']['field_message_subject']['id'] = 'field_message_subject';
+  $handler->display->display_options['fields']['field_message_subject']['table'] = 'field_data_field_message_subject';
+  $handler->display->display_options['fields']['field_message_subject']['field'] = 'field_message_subject';
+  /* Field: Message: View message */
+  $handler->display->display_options['fields']['view']['id'] = 'view';
+  $handler->display->display_options['fields']['view']['table'] = 'message';
+  $handler->display->display_options['fields']['view']['field'] = 'view';
+  $handler->display->display_options['fields']['view']['label'] = 'Operations';
+  $handler->display->display_options['fields']['view']['element_label_colon'] = FALSE;
+  /* Field: Message: Delete message */
+  $handler->display->display_options['fields']['delete']['id'] = 'delete';
+  $handler->display->display_options['fields']['delete']['table'] = 'message';
+  $handler->display->display_options['fields']['delete']['field'] = 'delete';
+  $handler->display->display_options['fields']['delete']['label'] = '';
+  $handler->display->display_options['fields']['delete']['element_label_colon'] = FALSE;
+  /* Field: Message: Timestamp */
+  $handler->display->display_options['fields']['timestamp']['id'] = 'timestamp';
+  $handler->display->display_options['fields']['timestamp']['table'] = 'message';
+  $handler->display->display_options['fields']['timestamp']['field'] = 'timestamp';
+  $handler->display->display_options['fields']['timestamp']['date_format'] = 'short';
+  $handler->display->display_options['fields']['timestamp']['second_date_format'] = 'long';
+  /* Sort criterion: Message: Timestamp */
+  $handler->display->display_options['sorts']['timestamp']['id'] = 'timestamp';
+  $handler->display->display_options['sorts']['timestamp']['table'] = 'message';
+  $handler->display->display_options['sorts']['timestamp']['field'] = 'timestamp';
+  $handler->display->display_options['sorts']['timestamp']['order'] = 'DESC';
+  /* Contextual filter: User ID */
+  $handler->display->display_options['arguments']['user']['id'] = 'user';
+  $handler->display->display_options['arguments']['user']['table'] = 'message';
+  $handler->display->display_options['arguments']['user']['field'] = 'user';
+  $handler->display->display_options['arguments']['user']['ui_name'] = 'User ID';
+  $handler->display->display_options['arguments']['user']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['user']['default_argument_type'] = 'current_user';
+  $handler->display->display_options['arguments']['user']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['user']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['user']['summary_options']['items_per_page'] = '25';
+  $handler->display->display_options['arguments']['user']['break_phrase'] = TRUE;
+  /* Filter criterion: Message: Type */
+  $handler->display->display_options['filters']['type_1']['id'] = 'type_1';
+  $handler->display->display_options['filters']['type_1']['table'] = 'message';
+  $handler->display->display_options['filters']['type_1']['field'] = 'type';
+  $handler->display->display_options['filters']['type_1']['value'] = array(
+    'private_message' => 'private_message',
+  );
+
+  /* Display: Received Messages */
+  $handler = $view->new_display('page', 'Received Messages', 'page_1');
+  $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['title'] = 'Inbox';
+  $handler->display->display_options['display_description'] = 'Private messages received by the user.';
+  $handler->display->display_options['defaults']['relationships'] = FALSE;
+  /* Relationship: Message: User uid */
+  $handler->display->display_options['relationships']['user']['id'] = 'user';
+  $handler->display->display_options['relationships']['user']['table'] = 'message';
+  $handler->display->display_options['relationships']['user']['field'] = 'user';
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  /* Contextual filter: Message: Users (field_message_user_ref) */
+  $handler->display->display_options['arguments']['field_message_user_ref_target_id']['id'] = 'field_message_user_ref_target_id';
+  $handler->display->display_options['arguments']['field_message_user_ref_target_id']['table'] = 'field_data_field_message_user_ref';
+  $handler->display->display_options['arguments']['field_message_user_ref_target_id']['field'] = 'field_message_user_ref_target_id';
+  $handler->display->display_options['arguments']['field_message_user_ref_target_id']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['field_message_user_ref_target_id']['default_argument_type'] = 'current_user';
+  $handler->display->display_options['arguments']['field_message_user_ref_target_id']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['field_message_user_ref_target_id']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['field_message_user_ref_target_id']['summary_options']['items_per_page'] = '25';
+  $handler->display->display_options['path'] = 'user/%/messages/inbox';
+  $handler->display->display_options['menu']['type'] = 'tab';
+  $handler->display->display_options['menu']['title'] = 'Inbox';
+  $handler->display->display_options['menu']['weight'] = '10';
+  $handler->display->display_options['menu']['context'] = 1;
+  $handler->display->display_options['menu']['context_only_inline'] = 0;
+
+  /* Display: Sent Messages */
+  $handler = $view->new_display('page', 'Sent Messages', 'page_2');
+  $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['title'] = 'Sent';
+  $handler->display->display_options['display_description'] = 'Private messages sent by the user.';
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Message: Users */
+  $handler->display->display_options['fields']['field_message_user_ref']['id'] = 'field_message_user_ref';
+  $handler->display->display_options['fields']['field_message_user_ref']['table'] = 'field_data_field_message_user_ref';
+  $handler->display->display_options['fields']['field_message_user_ref']['field'] = 'field_message_user_ref';
+  $handler->display->display_options['fields']['field_message_user_ref']['label'] = 'To Users';
+  $handler->display->display_options['fields']['field_message_user_ref']['settings'] = array(
+    'link' => 1,
+  );
+  $handler->display->display_options['fields']['field_message_user_ref']['delta_offset'] = '0';
+  /* Field: Message: Subject */
+  $handler->display->display_options['fields']['field_message_subject']['id'] = 'field_message_subject';
+  $handler->display->display_options['fields']['field_message_subject']['table'] = 'field_data_field_message_subject';
+  $handler->display->display_options['fields']['field_message_subject']['field'] = 'field_message_subject';
+  /* Field: Message: View message */
+  $handler->display->display_options['fields']['view']['id'] = 'view';
+  $handler->display->display_options['fields']['view']['table'] = 'message';
+  $handler->display->display_options['fields']['view']['field'] = 'view';
+  $handler->display->display_options['fields']['view']['label'] = 'Operations';
+  $handler->display->display_options['fields']['view']['element_label_colon'] = FALSE;
+  /* Field: Message: Delete message */
+  $handler->display->display_options['fields']['delete']['id'] = 'delete';
+  $handler->display->display_options['fields']['delete']['table'] = 'message';
+  $handler->display->display_options['fields']['delete']['field'] = 'delete';
+  $handler->display->display_options['fields']['delete']['label'] = '';
+  $handler->display->display_options['fields']['delete']['element_label_colon'] = FALSE;
+  /* Field: Message: Timestamp */
+  $handler->display->display_options['fields']['timestamp']['id'] = 'timestamp';
+  $handler->display->display_options['fields']['timestamp']['table'] = 'message';
+  $handler->display->display_options['fields']['timestamp']['field'] = 'timestamp';
+  $handler->display->display_options['fields']['timestamp']['date_format'] = 'short';
+  $handler->display->display_options['fields']['timestamp']['second_date_format'] = 'long';
+  $handler->display->display_options['path'] = 'user/%/messages/sent';
+  $handler->display->display_options['menu']['type'] = 'tab';
+  $handler->display->display_options['menu']['title'] = 'Sent';
+  $handler->display->display_options['menu']['weight'] = '11';
+  $handler->display->display_options['menu']['context'] = 1;
+  $handler->display->display_options['menu']['context_only_inline'] = 0;
+
+  $export['message_private'] = $view;
+
+  return $export;
+}
+
+
+/**
  * Implements hook_views_pre_render().
  *
- * Add a 'Create a new message' link above view.
+ * Add a 'Create a new message' link above message_private view.
  */
 function message_private_views_pre_render(&$view) {
-  $view->attachment_before =
-    '<div class="actions">
+  if($view->name == 'message_private') {
+    $view->attachment_before =
+      '<div class="actions">
             <ul class="action-links">
         <li>' .
-    l(t('Create a new message'), 'admin/content/message/create/private-message') .
-    '</li>
+      l(t('Create a new message'), 'admin/content/message/create/private-message') .
+      '</li>
         </ul>
           </div>';
+  }
 }
 
 /**
@@ -44,12 +557,12 @@ function message_private_flag_default_flags() {
     'title' => 'Private Message Notify',
     'global' => 0,
     'types' => array(),
-    'flag_short' => 'Activate Private Message Notifications',
-    'flag_long' => 'Receive email notifications for new Private Messages',
-    'flag_message' => 'Email notifications will be sent for new Private Messages',
-    'unflag_short' => 'De-activate Private Message Notifications',
-    'unflag_long' => 'Stop email notifications for new Private Messages',
-    'unflag_message' => 'No notifications will be sent for new Private Messages ',
+    'flag_short' => t('Activate Private Message Notifications'),
+    'flag_long' => t('Receive email notifications for new Private Messages'),
+    'flag_message' => t('Email notifications will be sent for new Private Messages'),
+    'unflag_short' => t('De-activate Private Message Notifications'),
+    'unflag_long' => t('Stop email notifications for new Private Messages'),
+    'unflag_message' => t('No notifications will be sent for new Private Messages '),
     'unflag_denied_text' => '',
     'link_type' => 'toggle',
     'weight' => 0,
@@ -79,8 +592,7 @@ function message_private_permission() {
 
   $permissions['bypass private message access control'] = array(
     'title' => t('Bypass message access control'),
-    'description' => t('Grant to the user the permission to apply CRUD option on
-    any private messages. Grant this permission to trusted users!'),
+    'description' => t('Grant to the user the permission to apply CRUD option on any private messages. Grant this permission to trusted users!'),
   );
 
   return $permissions;
@@ -98,12 +610,23 @@ function message_private_form_user_register_form_alter(&$form, &$form_state, $fo
   }
 }
 
+
 /**
  * Implements hook_menu_alter().
  *
  * Override some of the menu paths set in message ui module.
  */
 function message_private_menu_alter(&$items) {
+
+  $items['user/%user/messages/inbox'] = array(
+    'title' => 'Create a new private message',
+    'description' => 'Select a message to create an instance.',
+    'page callback' => 'drupal_get_form',
+    'access callback' => 'message_private_access_control',
+    'access arguments' => array('create', 'private-message'),
+    'type' => MENU_LOCAL_ACTION,
+    'weight' => -10,
+  );
 
   $items['message/%message']['access callback'] = 'message_private_access_control';
   $items['message/%message/view']['access callback'] = 'message_private_access_control';
@@ -177,7 +700,7 @@ function message_private_access_control($operation, $message, $user_obj = NULL) 
 }
 
 /**
- * Implements hook_entity_insert().
+ * Implements hook_message_insert().
  *
  * Send an email if a private message has been created.
  *

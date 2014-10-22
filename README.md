@@ -97,6 +97,7 @@ CAPTCHA method: https://www.drupal.org/project/recaptcha
 DEVELOPMENT AND TEST
 ------------------
  * Create og permissions and permission checking for private messages.
+ * Message should not allowed create without a user or group.
  * Auto set the group in views code for group messages or provide warning.
  * Add a "To Groups" field in Sent view when private_message_og is enabled.
  * Remove the "Create a new message" from the "Group" tab or add above filters.
@@ -112,6 +113,8 @@ DEVELOPMENT AND TEST
    (Reply, Reply All). A tpl.php template will need to be added for
    indentation/presentation.
  * Flag module could be used to show/hide messages from users own display
+ * Integrate with rolereference module or similar to provide sending to users
+   within a certain role.
  * Research the benefits of Rules module integration and what could be provided.
  * Tests should be created in the 'tests' folder.
 

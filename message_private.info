@@ -7,7 +7,6 @@ dependencies[] = message_ui
 dependencies[] = message_notify
 dependencies[] = entity
 dependencies[] = entityreference
-dependencies[] = features
 dependencies[] = ctools
 dependencies[] = views
 dependencies[] = token
@@ -15,16 +14,5 @@ dependencies[] = entity_token
 dependencies[] = options
 dependencies[] = text
 dependencies[] = flag
-
-features[ctools][] = views:views_default:3.0
-features[features_api][] = api:2
-features[field_base][] = field_message_body
-features[field_base][] = field_message_subject
-features[field_base][] = field_message_user_ref
-features[field_instance][] = message-private_message-field_message_body
-features[field_instance][] = message-private_message-field_message_subject
-features[field_instance][] = message-private_message-field_message_user_ref
-features[message_type][] = private_message
-features[views_view][] = message_private
 
 package = Message
