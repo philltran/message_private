@@ -4,117 +4,6 @@
  */
 
 /**
- * Implements hook_field_default_field_bases().
- */
-function message_private_og_field_default_field_bases() {
-  $field_bases = array();
-
-  // Exported field_base: 'field_message_groups_ref'
-  $field_bases['field_message_groups_ref'] = array(
-    'active' => 1,
-    'cardinality' => -1,
-    'deleted' => 0,
-    'entity_types' => array(),
-    'field_name' => 'field_message_groups_ref',
-    'foreign keys' => array(
-      'node' => array(
-        'columns' => array(
-          'target_id' => 'nid',
-        ),
-        'table' => 'node',
-      ),
-    ),
-    'indexes' => array(
-      'target_id' => array(
-        0 => 'target_id',
-      ),
-    ),
-    'locked' => 0,
-    'module' => 'entityreference',
-    'settings' => array(
-      'entity_translation_sync' => FALSE,
-      'handler' => 'base',
-      'handler_settings' => array(
-        'behaviors' => array(
-          'views-select-list' => array(
-            'status' => 1,
-          ),
-        ),
-        'sort' => array(
-          'type' => 'none',
-        ),
-        'target_bundles' => array(),
-      ),
-      'profile2_private' => FALSE,
-      'target_type' => 'node',
-    ),
-    'translatable' => 0,
-    'type' => 'entityreference',
-  );
-
-  return $field_bases;
-}
-
-
-/**
- * Implements hook_field_default_field_instances().
- */
-function message_private_og_field_default_field_instances() {
-  $field_instances = array();
-
-  // Exported field_instance: 'message-private_message-field_message_groups_ref'
-  $field_instances['message-private_message-field_message_groups_ref'] = array(
-    'bundle' => 'private_message',
-    'default_value' => NULL,
-    'deleted' => 0,
-    'description' => '',
-    'display' => array(
-      'default' => array(
-        'label' => 'inline',
-        'module' => 'entityreference',
-        'settings' => array(
-          'link' => 1,
-        ),
-        'type' => 'entityreference_label',
-        'weight' => 1,
-      ),
-      'message_notify_email_body' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 2,
-      ),
-      'message_notify_email_subject' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 3,
-      ),
-    ),
-    'entity_type' => 'message',
-    'field_name' => 'field_message_groups_ref',
-    'label' => 'Groups',
-    'required' => 0,
-    'settings' => array(
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'active' => 1,
-      'module' => 'options',
-      'settings' => array(),
-      'type' => 'options_select',
-      'weight' => 0,
-    ),
-  );
-
-  // Translatables
-  // Included for use with string extractors like potx.
-  t('Groups');
-
-  return $field_instances;
-}
-
-/**
  * Implement hook_og_permission().
  *
  * Provides OG permissions for sending private messages to group users and group
@@ -352,6 +241,14 @@ function message_private_og_views_default_views_alter(&$views) {
     $handler->display->display_options['fields']['timestamp']['date_format'] = 'short';
     $handler->display->display_options['fields']['timestamp']['second_date_format'] = 'long';
     $handler->display->display_options['defaults']['arguments'] = FALSE;
+    /* Contextual filter: Global: Null */
+    $handler->display->display_options['arguments']['null']['id'] = 'null';
+    $handler->display->display_options['arguments']['null']['table'] = 'views';
+    $handler->display->display_options['arguments']['null']['field'] = 'null';
+    $handler->display->display_options['arguments']['null']['default_argument_type'] = 'fixed';
+    $handler->display->display_options['arguments']['null']['summary']['number_of_records'] = '0';
+    $handler->display->display_options['arguments']['null']['summary']['format'] = 'default_summary';
+    $handler->display->display_options['arguments']['null']['summary_options']['items_per_page'] = '25';
     /* Contextual filter: Message: Groups (field_message_groups_ref) */
     $handler->display->display_options['arguments']['field_message_groups_ref_target_id']['id'] = 'field_message_groups_ref_target_id';
     $handler->display->display_options['arguments']['field_message_groups_ref_target_id']['table'] = 'field_data_field_message_groups_ref';

@@ -1,0 +1,304 @@
+<?php
+/**
+ * Message Private installer.
+ */
+
+/**
+ * Implements hook_install.
+ *
+ * Creates a new bundle type private_message, creates field bases and field
+ * instances and associates them to the bundle.
+ */
+function message_private_install() {
+  $bundle = entity_import('message_type', '{
+    "name" : "private_message",
+    "description" : "Private Message",
+    "argument_keys" : [],
+    "argument" : [],
+    "category" : "message_type",
+    "data" : {
+      "token options" : { "clear" : 1 },
+      "purge" : { "override" : 0, "enabled" : 0, "quota" : "", "days" : "" }
+    },
+    "language" : "en",
+    "arguments" : null,
+    "message_text" : { "und" : [
+        {
+          "value" : "Private Message - ",
+          "format" : "plain_text",
+          "safe_value" : "\u003Cp\u003EPrivate Message -\u003C\/p\u003E\n"
+        },
+        {
+          "value" : "This message was sent by [message:user:mail]. Please login to [site:url]message\/[message:mid] to view your message.",
+          "format" : "plain_text",
+          "safe_value" : "\u003Cp\u003EThis message was sent by [message:user:mail]. Please login to [site:url]message\/[message:mid] to view your message.\u003C\/p\u003E\n"
+        }
+      ]
+    }
+  }');
+  if(!entity_load_single('message_type', 'private_message')) {
+    entity_save('message_type', $bundle);
+  }
+  else {
+    drupal_set_message('"private_message" bundle was previously defined on the system', 'warning');
+  }
+
+  $field_bases = array();
+
+  $field_bases['field_message_body'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_message_body',
+    'foreign keys' => array(
+      'format' => array(
+        'columns' => array(
+          'format' => 'format',
+        ),
+        'table' => 'filter_format',
+      ),
+    ),
+    'indexes' => array(
+      'format' => array(
+        0 => 'format',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'text',
+    'settings' => array(),
+    'translatable' => 0,
+    'type' => 'text_long',
+  );
+
+  $field_bases['field_message_subject'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_message_subject',
+    'foreign keys' => array(
+      'format' => array(
+        'columns' => array(
+          'format' => 'format',
+        ),
+        'table' => 'filter_format',
+      ),
+    ),
+    'indexes' => array(
+      'format' => array(
+        0 => 'format',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'text',
+    'settings' => array(),
+    'translatable' => 0,
+    'type' => 'text_long',
+  );
+
+  $field_bases['field_message_user_ref'] = array(
+    'active' => 1,
+    'cardinality' => -1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_message_user_ref',
+    'foreign keys' => array(
+      'users' => array(
+        'columns' => array(
+          'target_id' => 'uid',
+        ),
+        'table' => 'users',
+      ),
+    ),
+    'indexes' => array(
+      'target_id' => array(
+        0 => 'target_id',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'entityreference',
+    'settings' => array(
+      'handler' => 'base',
+      'handler_settings' => array(
+        'behaviors' => array(
+          'views-select-list' => array(
+            'status' => 0,
+          ),
+        ),
+        'sort' => array(
+          'type' => 'none',
+        ),
+        'target_bundles' => array(),
+      ),
+      'target_type' => 'user',
+    ),
+    'translatable' => 0,
+    'type' => 'entityreference',
+  );
+
+  foreach($field_bases as $field_base) {
+    field_create_field($field_base);
+  }
+
+  $field_instances = array();
+
+  $field_instances['message-private_message-field_message_body'] = array(
+    'bundle' => 'private_message',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 2,
+      ),
+      'message_notify_email_body' => array(
+        'label' => 'hidden',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 0,
+      ),
+      'message_notify_email_subject' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 4,
+      ),
+    ),
+    'entity_type' => 'message',
+    'field_name' => 'field_message_body',
+    'label' => t('Body'),
+    'required' => 0,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'rows' => 5,
+      ),
+      'type' => 'text_textarea',
+      'weight' => 2,
+    ),
+  );
+
+  $field_instances['message-private_message-field_message_subject'] = array(
+    'bundle' => 'private_message',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'inline',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 1,
+      ),
+      'message_notify_email_body' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 3,
+      ),
+      'message_notify_email_subject' => array(
+        'label' => 'hidden',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 1,
+      ),
+    ),
+    'entity_type' => 'message',
+    'field_name' => 'field_message_subject',
+    'label' => t('Subject'),
+    'required' => 0,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'rows' => 1,
+      ),
+      'type' => 'text_textarea',
+      'weight' => 1,
+    ),
+  );
+
+  $field_instances['message-private_message-field_message_user_ref'] = array(
+    'bundle' => 'private_message',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'inline',
+        'module' => 'entityreference',
+        'settings' => array(
+          'link' => 1,
+        ),
+        'type' => 'entityreference_label',
+        'weight' => 0,
+      ),
+      'message_notify_email_body' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 4,
+      ),
+      'message_notify_email_subject' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 5,
+      ),
+    ),
+    'entity_type' => 'message',
+    'field_name' => 'field_message_user_ref',
+    'label' => t('Users'),
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'entityreference',
+      'settings' => array(
+        'match_operator' => 'CONTAINS',
+        'path' => '',
+        'size' => 60,
+      ),
+      'type' => 'entityreference_autocomplete',
+      'weight' => -1,
+    ),
+  );
+
+  foreach($field_instances as $field_instance) {
+    field_create_instance($field_instance);
+  }
+}
+
+/**
+ * Implements hook_uninstall.
+ *
+ * Deletes the fields associated to the bundle, then deletes the bundle.
+ */
+function message_private_uninstall() {
+  field_attach_delete_bundle('message_type', 'private_message');
+  if($entity = entity_load_single('message_type', 'private_message')) {
+    entity_delete('message_type', $entity->id);
+  }
+  else {
+    drupal_set_message('"private_message" bundle was previously removed from the system', 'warning');
+  }
+}

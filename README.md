@@ -55,9 +55,13 @@ INSTALLATION
 
 CONFIGURATION
 -------------
-Enable the permission "View a new message instance for Private Message" and
+Enable the permissions: 
+"View a new message instance for Private Message" &
 "Create a new message instance for Private Message" for users needing to create
 and view private messages.
+"Flag User entities as Private Message Notify" &
+"Unflag User entities as Private Message Notify" to allow to un-subscribe from
+email notifications for private messages.
 
 The module has no menu or modifiable settings.  There is not much
 configuration.  When enabled, the module will provide a new message type
@@ -100,6 +104,7 @@ CAPTCHA method: https://www.drupal.org/project/recaptcha
 
 DEVELOPMENT AND TEST
 ------------------
+ * Pass Global Null value to Group view as 1st contextual filter and re-export.
  * Create og permissions and permission checking for private messages.
  * Message should not allowed create without a user or group.
  * Auto set the group in views code for group messages or provide warning.

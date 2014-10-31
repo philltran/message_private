@@ -1,0 +1,119 @@
+<?php
+/**
+ * Message Private installer.
+ */
+
+/**
+ * Implements hook_install.
+ *
+ * Creates a new bundle type private_message, creates field bases and field
+ * instances and associates them to the bundle.
+ */
+function message_private_og_install() {
+
+  $field_bases = array();
+
+  $field_bases['field_message_groups_ref'] = array(
+    'active' => 1,
+    'cardinality' => -1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_message_groups_ref',
+    'foreign keys' => array(
+      'node' => array(
+        'columns' => array(
+          'target_id' => 'nid',
+        ),
+        'table' => 'node',
+      ),
+    ),
+    'indexes' => array(
+      'target_id' => array(
+        0 => 'target_id',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'entityreference',
+    'settings' => array(
+      'entity_translation_sync' => FALSE,
+      'handler' => 'base',
+      'handler_settings' => array(
+        'behaviors' => array(
+          'views-select-list' => array(
+            'status' => 1,
+          ),
+        ),
+        'sort' => array(
+          'type' => 'none',
+        ),
+        'target_bundles' => array(),
+      ),
+      'target_type' => 'node',
+    ),
+    'translatable' => 0,
+    'type' => 'entityreference',
+  );
+
+  foreach($field_bases as $field_base) {
+    field_create_field($field_base);
+  }
+
+  $field_instances = array();
+
+  $field_instances['message-private_message-field_message_groups_ref'] = array(
+    'bundle' => 'private_message',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'inline',
+        'module' => 'entityreference',
+        'settings' => array(
+          'link' => 1,
+        ),
+        'type' => 'entityreference_label',
+        'weight' => 1,
+      ),
+      'message_notify_email_body' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 2,
+      ),
+      'message_notify_email_subject' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 3,
+      ),
+    ),
+    'entity_type' => 'message',
+    'field_name' => 'field_message_groups_ref',
+    'label' => t('Groups'),
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(),
+      'type' => 'options_select',
+      'weight' => 0,
+    ),
+  );
+
+  foreach($field_instances as $field_instance) {
+    field_create_instance($field_instance);
+  }
+}
+
+/**
+ * Implements hook_uninstall.
+ *
+ * Deletes the fields defined by this module.
+ */
+function message_private_og_uninstall() {
+  field_delete_field('field_message_groups_ref');
+}
