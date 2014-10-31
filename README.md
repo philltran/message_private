@@ -104,10 +104,9 @@ CAPTCHA method: https://www.drupal.org/project/recaptcha
 
 DEVELOPMENT AND TEST
 ------------------
- * Pass Global Null value to Group view as 1st contextual filter and re-export.
+ * Subscribe all group users to message for og message email notifications.
  * Create og permissions and permission checking for private messages.
- * Message should not allowed create without a user or group.
- * Auto set the group in views code for group messages or provide warning.
+ * Message should not be created without a user or group.
  * Add a "To Groups" field in Sent view when private_message_og is enabled.
  * Remove the "Create a new message" from the "Group" tab or add above filters.
  * Integrate with Help or Advanced Help module to hold all instructions.

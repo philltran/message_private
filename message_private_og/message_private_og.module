@@ -4,9 +4,33 @@
  */
 
 /**
+ * Implements hook_requirements.
+ *
+ * Check if there are Group nodes on the system that can be used in the view.
+ */
+function message_private_og_requirements($phase) {
+  $requirements = array();
+
+  if ($phase == 'install' || $phase == 'runtime') {
+    $bundles = og_get_all_group_bundle();
+    if(!isset($bundles['node'])) {
+      $requirements['message_private_og_bundle'] = array(
+        'title' => t('Message Private OG'),
+        'description' => t('You need a bundle that is a group type to send group messages'),
+        'severity' => REQUIREMENT_WARNING,
+        'value' => t('No group bundle'),
+      );
+    }
+  }
+
+  return $requirements;
+}
+
+/**
  * Implement hook_og_permission().
  *
- * Provides OG permissions for sending private messages to group users and group
+ * Provides OG permissions for sending private messages to group users and
+ * groups.
  */
 function message_private_og_og_permission() {
   $permissions = array();
@@ -287,8 +311,8 @@ function message_private_og_views_default_views_alter(&$views) {
     $handler->display->display_options['menu']['weight'] = '12';
     $handler->display->display_options['menu']['context'] = 0;
     $handler->display->display_options['menu']['context_only_inline'] = 0;
+    }
   }
-}
 
 /**
  * Implements hook_message_insert().
