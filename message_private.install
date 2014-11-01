@@ -40,7 +40,7 @@ function message_private_install() {
     entity_save('message_type', $bundle);
   }
   else {
-    drupal_set_message('"private_message" bundle was previously defined on the system', 'warning');
+    drupal_set_message(t('"private_message" bundle was previously defined on the system'), 'warning');
   }
 
   $field_bases = array();
@@ -299,6 +299,6 @@ function message_private_uninstall() {
     entity_delete('message_type', $entity->id);
   }
   else {
-    drupal_set_message('"private_message" bundle was previously removed from the system', 'warning');
+    drupal_set_message(t('"private_message" bundle was previously removed from the system'), 'warning');
   }
 }

@@ -36,7 +36,6 @@ function message_private_og_og_permission() {
   $permissions = array();
 
   // TODO : Evaluate separating out of send to user & send to group permissions.
-
   $permissions['create a private message instance'] = array(
     'title' => t('Create a private message instance'),
     'description' => t('Create private message for users and groups'),
@@ -127,10 +126,8 @@ function message_private_og_access_control($operation, $message, $user_obj = NUL
         // Users without global permissions may have OG permissions, check
         // if they have permission for any groups on the system.
         $groups = og_get_groups_by_user($account);
-        foreach ($groups as $group => $gid) {
-          if (og_user_access('node', $operation . ' a private message instance', $account) ||
-            og_user_access('node', $operation . ' a private message instance', $account)
-          ) {
+        foreach ($groups as $gid) {
+          if (og_user_access('node', $gid, $operation . ' a private message instance', $account)) {
             return TRUE;
           }
         }
