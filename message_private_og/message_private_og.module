@@ -4,29 +4,6 @@
  */
 
 /**
- * Implements hook_requirements.
- *
- * Check if there are Group nodes on the system that can be used in the view.
- */
-function message_private_og_requirements($phase) {
-  $requirements = array();
-
-  if ($phase == 'install' || $phase == 'runtime') {
-    $bundles = og_get_all_group_bundle();
-    if(!isset($bundles['node'])) {
-      $requirements['message_private_og_bundle'] = array(
-        'title' => t('Message Private OG'),
-        'description' => t('You need a bundle that is a group type to send group messages'),
-        'severity' => REQUIREMENT_WARNING,
-        'value' => t('No group bundle'),
-      );
-    }
-  }
-
-  return $requirements;
-}
-
-/**
  * Implement hook_og_permission().
  *
  * Provides OG permissions for sending private messages to group users and
@@ -111,7 +88,7 @@ function message_private_og_access_control($operation, $message, $user_obj = NUL
     return message_ui_access_control($operation, $message);
   }
   else {
-    // Bypass access control if user has correct permission
+    // Bypass access control if user has correct permission.
     if (user_access('bypass private message access control', $account)) {
       return TRUE;
     }
@@ -186,8 +163,10 @@ function message_private_og_form_message_ui_instance_message_manage_alter(&$form
 /**
  * Validation for Private Message form.
  *
- * @param $form
- * @param $form_state
+ * @param array $form
+ *   The message form provided by message_ui.
+ * @param array $form_state
+ *   The form state including values submitted.
  */
 function message_private_og_form_message_ui_instance_message_manage_validate($form, &$form_state) {
   /*
@@ -308,8 +287,8 @@ function message_private_og_views_default_views_alter(&$views) {
     $handler->display->display_options['menu']['weight'] = '12';
     $handler->display->display_options['menu']['context'] = 0;
     $handler->display->display_options['menu']['context_only_inline'] = 0;
-    }
   }
+}
 
 /**
  * Implements hook_message_insert().

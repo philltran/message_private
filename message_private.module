@@ -239,14 +239,14 @@ function message_private_views_default_views() {
  */
 function message_private_views_pre_render(&$view) {
   if($view->name == 'message_private') {
-    $view->attachment_before =
-      '<div class="actions">
-            <ul class="action-links">
-        <li>' .
-      l(t('Create a new message'), 'admin/content/message/create/private-message') .
-      '</li>
-        </ul>
-          </div>';
+    $view->attachment_before
+      = '<div class="actions">
+        <ul class="action-links">
+            <li>' .
+              l(t('Create a new message'), 'admin/content/message/create/private-message') .
+            '</li>
+            </ul>
+        </div>';
   }
 }
 
@@ -255,7 +255,7 @@ function message_private_views_pre_render(&$view) {
  */
 function message_private_flag_default_flags() {
   $flags = array();
-// Exported flag: "Private Message Notify".
+  // Exported flag: "Private Message Notify".
   $flags['private_message_notify'] = array(
     'entity_type' => 'user',
     'title' => 'Private Message Notify',
@@ -266,7 +266,7 @@ function message_private_flag_default_flags() {
     'flag_message' => t('Email notifications will be sent for new Private Messages'),
     'unflag_short' => t('De-activate Private Message Notifications'),
     'unflag_long' => t('Stop email notifications for new Private Messages'),
-    'unflag_message' => t('No notifications will be sent for new Private Messages '),
+    'unflag_message' => t('No notifications will be sent for new Private Messages'),
     'unflag_denied_text' => '',
     'link_type' => 'toggle',
     'weight' => 0,
@@ -361,7 +361,8 @@ function message_private_access_control($operation, $message, $user_obj = NULL) 
   // message_ui module.
   if ($type != 'private_message') {
     return message_ui_access_control($operation, $message);
-  } else {
+  }
+  else {
 
     if (user_access('bypass private message access control', $account)) {
       return TRUE;
