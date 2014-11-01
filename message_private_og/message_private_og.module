@@ -302,7 +302,6 @@ function message_private_og_message_insert($message) {
     $wrapper = entity_metadata_wrapper('message', $message);
 
     $mail = array();
-    $flag = flag_get_flag('private_message_notify');
     $groups = $wrapper->field_message_groups_ref->value();
 
     if (!empty($groups) && is_array($groups)) {
@@ -312,7 +311,7 @@ function message_private_og_message_insert($message) {
         $users = user_load_multiple($uids);
         foreach ($users as $user) {
           $notify = field_get_items('user', $user, 'field_private_message_notify');
-          if(!empty($notify) && is_array($notify)) {
+          if (!empty($notify) && is_array($notify)) {
             // Get the 1st value of the array as there is only 1 possible item.
             $notify = array_shift($notify);
           }

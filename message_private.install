@@ -386,7 +386,7 @@ function message_private_update_7100() {
   // Uninstall Flag data and delete flag.
   $flag = flag_get_flag('private_message_notify');
   // If the flag does not exist then NULL is returned.
-  if($flag) {
+  if ($flag) {
     // If the flag exist then reset and delete the flag.
     flag_reset_flag($flag);
     $flag->delete();
@@ -421,7 +421,7 @@ function message_private_update_7100() {
     'type' => 'list_boolean',
   );
 
-  if(!field_create_field($field_base)) {
+  if (!field_create_field($field_base)) {
     throw new DrupalUpdateException('Could not create "field_private_message_notify" field base.');
   }
 
@@ -461,7 +461,7 @@ function message_private_update_7100() {
     ),
   );
 
-  if(!field_create_instance($field_instance)) {
+  if (!field_create_instance($field_instance)) {
     throw new DrupalUpdateException('Could not create "field_private_message_notify" field instance.');
   }
 

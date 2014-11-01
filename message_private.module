@@ -381,7 +381,7 @@ function message_private_entity_insert($entity, $type) {
     if (is_array($users)) {
       foreach ($users as $user) {
         $notify = field_get_items('user', $user, 'field_private_message_notify');
-        if(!empty($notify) && is_array($notify)) {
+        if (!empty($notify) && is_array($notify)) {
           // Get the 1st value of the array as there is only 1 possible item.
           $notify = array_shift($notify);
         }
