@@ -238,13 +238,13 @@ function message_private_views_default_views() {
  * Add a 'Create a new message' link above message_private view.
  */
 function message_private_views_pre_render(&$view) {
-  if($view->name == 'message_private') {
+  if ($view->name == 'message_private') {
     $view->attachment_before
       = '<div class="actions">
         <ul class="action-links">
             <li>' .
-              l(t('Create a new message'), 'admin/content/message/create/private-message') .
-            '</li>
+      l(t('Create a new message'), 'admin/content/message/create/private-message') .
+      '</li>
             </ul>
         </div>';
   }
@@ -309,7 +309,7 @@ function message_private_permission() {
  */
 function message_private_form_user_register_form_alter(&$form, &$form_state, $form_id) {
   // Set default with hook due to issue: https://www.drupal.org/node/701666
-  if(isset($form['flag']['private_message_notify'])) {
+  if (isset($form['flag']['private_message_notify'])) {
     $form['flag']['private_message_notify']['#default_value'] = TRUE;
   }
 }

@@ -40,11 +40,11 @@ function message_private_install() {
       ]
     }
   }');
-  if(!entity_load_single('message_type', 'private_message')) {
+  if (!entity_load_single('message_type', 'private_message')) {
     entity_save('message_type', $bundle);
   }
   else {
-    drupal_set_message(t('"private_message" bundle was previously defined on the system'), 'warning');
+    drupal_set_message($t('"private_message" bundle was previously defined on the system'), 'warning');
   }
 
   $field_bases = array();
@@ -141,7 +141,7 @@ function message_private_install() {
     'type' => 'entityreference',
   );
 
-  foreach($field_bases as $field_base) {
+  foreach ($field_bases as $field_base) {
     field_create_field($field_base);
   }
 
@@ -287,7 +287,7 @@ function message_private_install() {
     ),
   );
 
-  foreach($field_instances as $field_instance) {
+  foreach ($field_instances as $field_instance) {
     field_create_instance($field_instance);
   }
 }
@@ -303,7 +303,7 @@ function message_private_uninstall() {
   $t = get_t();
 
   field_attach_delete_bundle('message_type', 'private_message');
-  if($entity = entity_load_single('message_type', 'private_message')) {
+  if ($entity = entity_load_single('message_type', 'private_message')) {
     entity_delete('message_type', $entity->id);
   }
   else {

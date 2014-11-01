@@ -15,7 +15,7 @@ function message_private_og_requirements($phase) {
 
   if ($phase == 'install' || $phase == 'runtime') {
     $bundles = og_get_all_group_bundle();
-    if(!isset($bundles['node'])) {
+    if (!isset($bundles['node'])) {
       $requirements['message_private_og_bundle'] = array(
         'title' => $t('Message Private OG'),
         'description' => $t('You need a bundle that is a group type to send group messages'),
@@ -82,7 +82,7 @@ function message_private_og_install() {
     'type' => 'entityreference',
   );
 
-  foreach($field_bases as $field_base) {
+  foreach ($field_bases as $field_base) {
     field_create_field($field_base);
   }
 
@@ -132,7 +132,7 @@ function message_private_og_install() {
     ),
   );
 
-  foreach($field_instances as $field_instance) {
+  foreach ($field_instances as $field_instance) {
     field_create_instance($field_instance);
   }
 }
