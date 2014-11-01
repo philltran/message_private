@@ -12,6 +12,7 @@ dependencies[] = views
 dependencies[] = token
 dependencies[] = entity_token
 dependencies[] = options
+dependencies[] = list
 dependencies[] = text
 dependencies[] = flag
 

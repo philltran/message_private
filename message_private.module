@@ -253,42 +253,6 @@ function message_private_views_pre_render(&$view) {
 }
 
 /**
- * Implements hook_flag_default_flags().
- */
-function message_private_flag_default_flags() {
-  $flags = array();
-  // Exported flag: "Private Message Notify".
-  $flags['private_message_notify'] = array(
-    'entity_type' => 'user',
-    'title' => 'Private Message Notify',
-    'global' => 0,
-    'types' => array(),
-    'flag_short' => t('Activate Private Message Notifications'),
-    'flag_long' => t('Receive email notifications for new Private Messages'),
-    'flag_message' => t('Email notifications will be sent for new Private Messages'),
-    'unflag_short' => t('De-activate Private Message Notifications'),
-    'unflag_long' => t('Stop email notifications for new Private Messages'),
-    'unflag_message' => t('No notifications will be sent for new Private Messages'),
-    'unflag_denied_text' => '',
-    'link_type' => 'toggle',
-    'weight' => 0,
-    'show_in_links' => array(
-      'full' => 0,
-      'token' => 0,
-    ),
-    'show_as_field' => 0,
-    'show_on_form' => 1,
-    'access_author' => '',
-    'show_contextual_link' => 0,
-    'show_on_profile' => 0,
-    'access_uid' => '',
-    'api_version' => 3,
-    // 'status' => TRUE, // Not possible at present, flag at account creation.
-  );
-  return $flags;
-}
-
-/**
  * Implements hook_permission().
  */
 function message_private_permission() {
@@ -412,13 +376,17 @@ function message_private_entity_insert($entity, $type) {
     $wrapper = entity_metadata_wrapper('message', $message);
 
     $mail = array();
-    $flag = flag_get_flag('private_message_notify');
     $users = $wrapper->field_message_user_ref->value();
 
     if (is_array($users)) {
       foreach ($users as $user) {
-        // If the user has the flag to receive notifications, add their email.
-        if ($flag && $flag->is_flagged($user->uid)) {
+        $notify = field_get_items('user', $user, 'field_private_message_notify');
+        if(!empty($notify) && is_array($notify)) {
+          // Get the 1st value of the array as there is only 1 possible item.
+          $notify = array_shift($notify);
+        }
+        // If the user has set field for notifications, add their email.
+        if (isset($notify['value']) && $notify['value']) {
           $mail[] = $user->mail;
         }
       }

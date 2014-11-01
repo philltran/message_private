@@ -103,9 +103,11 @@ function message_private_og_access_control($operation, $message, $user_obj = NUL
         // Users without global permissions may have OG permissions, check
         // if they have permission for any groups on the system.
         $groups = og_get_groups_by_user($account);
-        foreach ($groups as $gid) {
-          if (og_user_access('node', $gid, $operation . ' a private message instance', $account)) {
-            return TRUE;
+        if (!empty($groups['node']) && is_array($groups['node'])) {
+          foreach ($groups['node'] as $gid) {
+            if (og_user_access('node', $gid, $operation . ' a private message instance', $account)) {
+              return TRUE;
+            }
           }
         }
       }
@@ -309,8 +311,13 @@ function message_private_og_message_insert($message) {
           array(), 'members', 'node');
         $users = user_load_multiple($uids);
         foreach ($users as $user) {
-          // If the user has the flag to receive notifications, add their email.
-          if ($flag && $flag->is_flagged($user->uid)) {
+          $notify = field_get_items('user', $user, 'field_private_message_notify');
+          if(!empty($notify) && is_array($notify)) {
+            // Get the 1st value of the array as there is only 1 possible item.
+            $notify = array_shift($notify);
+          }
+          // If the user has set field for notifications, add their email.
+          if (isset($notify['value']) && $notify['value']) {
             $mail[] = $user->mail;
           }
         }

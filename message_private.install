@@ -141,6 +141,31 @@ function message_private_install() {
     'type' => 'entityreference',
   );
 
+  $field_bases['field_private_message_notify'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_private_message_notify',
+    'foreign keys' => array(),
+    'indexes' => array(
+      'value' => array(
+        0 => 'value',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'list',
+    'settings' => array(
+      'allowed_values' => array(
+        0 => 0,
+        1 => 1,
+      ),
+      'allowed_values_function' => '',
+    ),
+    'translatable' => 0,
+    'type' => 'list_boolean',
+  );
+
   foreach ($field_bases as $field_base) {
     field_create_field($field_base);
   }
@@ -287,6 +312,42 @@ function message_private_install() {
     ),
   );
 
+  $field_instances['user-user-field_private_message_notify'] = array(
+    'bundle' => 'user',
+    'default_value' => array(
+      0 => array(
+        'value' => 1,
+      ),
+    ),
+    'deleted' => 0,
+    'description' => $t('Receive email notifications for new Private Messages'),
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'list',
+        'settings' => array(),
+        'type' => 'list_default',
+        'weight' => 1,
+      ),
+    ),
+    'entity_type' => 'user',
+    'field_name' => 'field_private_message_notify',
+    'label' => $t('Private Message Notifications'),
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => 1,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(
+        'display_label' => 1,
+      ),
+      'type' => 'options_onoff',
+      'weight' => 12,
+    ),
+  );
+
   foreach ($field_instances as $field_instance) {
     field_create_instance($field_instance);
   }
@@ -309,4 +370,100 @@ function message_private_uninstall() {
   else {
     drupal_set_message($t('"private_message" bundle was previously removed from the system'), 'warning');
   }
+}
+
+/**
+ * Implements hook_update_N().
+ *
+ * Removes flag: 'private_message_notify' and adds boolean field to user entity:
+ * 'field_private_message_notify'.
+ */
+function message_private_update_7100() {
+
+  // Ensure translations don't break during installation.
+  $t = get_t();
+
+  // Uninstall Flag data and delete flag.
+  $flag = flag_get_flag('private_message_notify');
+  // If the flag does not exist then NULL is returned.
+  if($flag) {
+    // If the flag exist then reset and delete the flag.
+    flag_reset_flag($flag);
+    $flag->delete();
+  }
+  else {
+    throw new DrupalUpdateException('The flag "private_message_notify" was not found.');
+  }
+
+  // Add new field to the user.
+  $field_base = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_private_message_notify',
+    'foreign keys' => array(),
+    'indexes' => array(
+      'value' => array(
+        0 => 'value',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'list',
+    'settings' => array(
+      'allowed_values' => array(
+        0 => 0,
+        1 => 1,
+      ),
+      'allowed_values_function' => '',
+    ),
+    'translatable' => 0,
+    'type' => 'list_boolean',
+  );
+
+  if(!field_create_field($field_base)) {
+    throw new DrupalUpdateException('Could not create "field_private_message_notify" field base.');
+  }
+
+  $field_instance = array(
+    'bundle' => 'user',
+    'default_value' => array(
+      0 => array(
+        'value' => 1,
+      ),
+    ),
+    'deleted' => 0,
+    'description' => $t('Receive email notifications for new Private Messages'),
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'list',
+        'settings' => array(),
+        'type' => 'list_default',
+        'weight' => 1,
+      ),
+    ),
+    'entity_type' => 'user',
+    'field_name' => 'field_private_message_notify',
+    'label' => $t('Private Message Notifications'),
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => 1,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(
+        'display_label' => 1,
+      ),
+      'type' => 'options_onoff',
+      'weight' => 12,
+    ),
+  );
+
+  if(!field_create_instance($field_instance)) {
+    throw new DrupalUpdateException('Could not create "field_private_message_notify" field instance.');
+  }
+
+  return t('Updates were successful.');
 }
