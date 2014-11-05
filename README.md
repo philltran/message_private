@@ -104,6 +104,10 @@ CAPTCHA method: https://www.drupal.org/project/recaptcha
 
 DEVELOPMENT AND TEST
 ------------------
+ * Automatically make "field_message_groups_re" select "Group" as bundle if
+   available, otherwise create warning for user to configure it & provide link.
+   Does this require Strongarm or can you set entity reference bundle on the
+   field: $field_instances['message-private_message-field_message_groups_ref']?
  * Create og permissions and permission checking for private messages.
  * Create global message_private_og permission - sending message to all groups.
  * Message should not be created without a user or group.
@@ -122,7 +126,7 @@ DEVELOPMENT AND TEST
  * Integrate with rolereference module or similar to provide sending to users
    within a certain role.
  * Research the benefits of Rules module integration and what could be provided.
- * Tests should be created in the 'tests' folder.
+ * Tests should be created in a "tests" folder.
 
 MAINTAINERS
 -----------

@@ -293,12 +293,14 @@ function message_private_og_views_default_views_alter(&$views) {
 }
 
 /**
- * Implements hook_message_insert().
+ * Implements hook_entity_insert().
  *
  * Send an email if a private message has been created.
  */
-function message_private_og_message_insert($message) {
-  if ($message->type == 'private_message') {
+function message_private_og_entity_insert($entity, $type) {
+  if ($type == 'message' && $entity->type == 'private_message') {
+    // Use message load as the $entity object has issue with mail function.
+    $message = message_load($entity->mid);
     $wrapper = entity_metadata_wrapper('message', $message);
 
     $mail = array();

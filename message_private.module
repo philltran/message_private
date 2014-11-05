@@ -23,6 +23,7 @@ function message_private_views_api() {
   if ($module == "views" && $api == "views_default") {
     return array("version" => "3.0");
   }
+  return array();
 }
 
 /**
@@ -269,19 +270,6 @@ function message_private_permission() {
 }
 
 /**
- * Implements hook_form_FORM_ID_alter().
- *
- * Set subscribe flag default to TRUE
- */
-function message_private_form_user_register_form_alter(&$form, &$form_state, $form_id) {
-  // Set default with hook due to issue: https://www.drupal.org/node/701666
-  if (isset($form['flag']['private_message_notify'])) {
-    $form['flag']['private_message_notify']['#default_value'] = TRUE;
-  }
-}
-
-
-/**
  * Implements hook_menu_alter().
  *
  * Override some of the menu paths set in message ui module.
@@ -361,7 +349,7 @@ function message_private_access_control($operation, $message, $user_obj = NULL) 
 }
 
 /**
- * Implements hook_message_insert().
+ * Implements hook_entity_insert().
  *
  * Send an email if a private message has been created.
  *
