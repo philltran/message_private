@@ -104,22 +104,20 @@ CAPTCHA method: https://www.drupal.org/project/recaptcha
 
 DEVELOPMENT AND TEST
 ------------------
- * Subscribe all group users to message for og message email notifications.
  * Create og permissions and permission checking for private messages.
+ * Create global message_private_og permission - sending message to all groups.
  * Message should not be created without a user or group.
  * Add a "To Groups" field in Sent view when private_message_og is enabled.
  * Remove the "Create a new message" from the "Group" tab or add above filters.
  * Integrate with Help or Advanced Help module to hold all instructions.
  * Combine "Inbox", "Sent" and "Group" as sub-tabs under one called "Messages".
  * Add "Messages" tab to private_message entity view.
- * Add to admin screen the option to turn on or off email notifications. Also
-   per user basis using a flag on user account.
- * Threads can be created using a hidden message reference field that gets
-   populated using a reply link on each message. A new permission to reply to
-   messages can be created if necessary. An admin screen can be used to enable
-   or disable threads to turn on/off replies on all private messages
-   (Reply, Reply All). A tpl.php template will need to be added for
-   indentation/presentation.
+ * Add to admin screen the option to turn on or off email notifications.
+ * Threads can be created using comments on a private message, which will be a 
+   thread. A new permission to reply to messages can be created if necessary. 
+   An admin screen can be used to enable or disable threads to turn on/off 
+   replies on all private messages (Reply, Reply All). A tpl.php template will 
+   need to be added for indentation/presentation.
  * Flag module could be used to show/hide messages from users own display
  * Integrate with rolereference module or similar to provide sending to users
    within a certain role.
