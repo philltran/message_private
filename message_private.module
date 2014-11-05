@@ -357,10 +357,12 @@ function message_private_access_control($operation, $message, $user_obj = NULL) 
  * this may be an issue with the message module itself as I don't
  * think escaping strings for email should be done in this module.
  */
-function message_private_entity_insert($entity, $type) {
-  if ($type == 'message' && $entity->type == 'private_message') {
-    // Use message load as the $entity object has issue with mail function.
-    $message = message_load($entity->mid);
+function message_private_message_insert($message) {
+  if ($message->type == 'private_message') {
+    // Use message load as the $message object has issue with mail function.
+    // It causes duplicate entry, possibly as mid is missing and the mail
+    // function message_notify_send_message tries to re-save as a new message.
+    $message = message_load($message->mid);
     $wrapper = entity_metadata_wrapper('message', $message);
 
     $mail = array();
