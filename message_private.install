@@ -363,13 +363,31 @@ function message_private_uninstall() {
   // Ensure translations don't break during installation.
   $t = get_t();
 
-  field_attach_delete_bundle('message_type', 'private_message');
-  if ($entity = entity_load_single('message_type', 'private_message')) {
-    entity_delete('message_type', $entity->id);
+  // Set indicator that the message type is not yet removed.
+  $removed = FALSE;
+
+  // Check if there are message types on the system. Get the message types and
+  // get the id of the private_message type and remove it and set the indicator
+  // to state removed.
+  if ($entity_type = entity_get_info('message_type')) {
+    $message_types = entity_load('message_type');
+    foreach ($message_types as $id => $message_type) {
+      if ($message_type->name == 'private_message') {
+        entity_delete('message_type', $message_type->id);
+        $removed = TRUE;
+      }
+    }
   }
-  else {
+
+  // Indicates the private_message was not removed, if so, it was not on system.
+  if (!$removed) {
     drupal_set_message($t('"private_message" bundle was previously removed from the system'), 'warning');
   }
+
+  field_delete_field('field_message_subject');
+  field_delete_field('field_message_body');
+  field_delete_field('field_message_user_ref');
+  field_delete_field('field_private_message_notify');
 }
 
 /**

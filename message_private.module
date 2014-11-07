@@ -349,7 +349,7 @@ function message_private_access_control($operation, $message, $user_obj = NULL) 
 }
 
 /**
- * Implements hook_entity_insert().
+ * Implements hook_message_insert().
  *
  * Send an email if a private message has been created.
  *

@@ -122,7 +122,8 @@ DEVELOPMENT AND TEST
    An admin screen can be used to enable or disable threads to turn on/off 
    replies on all private messages (Reply, Reply All). A tpl.php template will 
    need to be added for indentation/presentation.
- * Flag module could be used to show/hide messages from users own display
+ * Flag module on user entity to block/unblock users from messaging them
+ * Flag module on message entity to show/hide messages from users own display
  * Integrate with rolereference module or similar to provide sending to users
    within a certain role.
  * Research the benefits of Rules module integration and what could be provided.
