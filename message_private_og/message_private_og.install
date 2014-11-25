@@ -74,7 +74,7 @@ function message_private_og_install() {
         'sort' => array(
           'type' => 'none',
         ),
-        'target_bundles' => array(),
+        'target_bundles' => array('group'),
       ),
       'target_type' => 'node',
     ),

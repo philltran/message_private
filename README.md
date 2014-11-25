@@ -34,11 +34,9 @@ The message_private module requires the following modules:
  * Message Notify (https://drupal.org/project/message_notify)
  * Entity API (https://www.drupal.org/project/entity)
  * Entity Reference (https://www.drupal.org/project/entityreference)
- * Features (https://www.drupal.org/project/features)
  * Ctools (https://www.drupal.org/project/ctools)
  * Views (https://www.drupal.org/project/views)
  * Token (https://www.drupal.org/project/token
- * Flag (https://www.drupal.org/project/flag)
 
 The message_private_og module requires the following modules:
  * OG (https://drupal.org/project/og)
@@ -104,18 +102,14 @@ CAPTCHA method: https://www.drupal.org/project/recaptcha
 
 DEVELOPMENT AND TEST
 ------------------
- * Automatically make "field_message_groups_re" select "Group" as bundle if
-   available, otherwise create warning for user to configure it & provide link.
-   Does this require Strongarm or can you set entity reference bundle on the
-   field: $field_instances['message-private_message-field_message_groups_ref']?
+ * Combine "Inbox", "Sent" and "Group" as sub-tabs under one called "Messages".
+ * Add "Messages" tab to private_message entity view.
  * Create og permissions and permission checking for private messages.
  * Create global message_private_og permission - sending message to all groups.
  * Message should not be created without a user or group.
  * Add a "To Groups" field in Sent view when private_message_og is enabled.
  * Remove the "Create a new message" from the "Group" tab or add above filters.
  * Integrate with Help or Advanced Help module to hold all instructions.
- * Combine "Inbox", "Sent" and "Group" as sub-tabs under one called "Messages".
- * Add "Messages" tab to private_message entity view.
  * Add to admin screen the option to turn on or off email notifications.
  * Threads can be created using comments on a private message, which will be a 
    thread. A new permission to reply to messages can be created if necessary. 

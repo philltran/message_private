@@ -363,6 +363,9 @@ function message_private_uninstall() {
   // Ensure translations don't break during installation.
   $t = get_t();
 
+  // Delete field instances as well as the field instances themselves.
+  field_attach_delete_bundle('message_type', 'private_message');
+
   // Set indicator that the message type is not yet removed.
   $removed = FALSE;
 
@@ -384,10 +387,11 @@ function message_private_uninstall() {
     drupal_set_message($t('"private_message" bundle was previously removed from the system'), 'warning');
   }
 
+  // Ensure that all fields defined by this module are deleted.
   field_delete_field('field_message_subject');
   field_delete_field('field_message_body');
   field_delete_field('field_message_user_ref');
-  field_delete_field('field_private_message_notify');
+  field_delete_field('field_private_message_notify'); // Field on user entity.
 }
 
 /**
