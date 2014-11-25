@@ -103,7 +103,7 @@ CAPTCHA method: https://www.drupal.org/project/recaptcha
 DEVELOPMENT AND TEST
 ------------------
  * Combine "Inbox", "Sent" and "Group" as sub-tabs under one called "Messages".
- * Add "Messages" tab to private_message entity view.
+ * Remove message_private_views_pre_render and add as a MENU_LOCAL_ACTION.
  * Create og permissions and permission checking for private messages.
  * Create global message_private_og permission - sending message to all groups.
  * Message should not be created without a user or group.

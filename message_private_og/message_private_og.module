@@ -43,9 +43,12 @@ function message_private_og_og_permission() {
 /**
  * Implements hook_menu_alter().
  *
- * Override some of the menu paths set in message ui module.
+ * Override some of the menu paths set in message ui module and the access
+ * callback for menu item defined in message_private_menu.
  */
 function message_private_og_menu_alter(&$items) {
+
+  $items['message/%message/inbox']['access callback'] = 'message_private_og_access_callback';
 
   $items['message/%message']['access callback'] = 'message_private_og_access_control';
   $items['message/%message/view']['access callback'] = 'message_private_og_access_control';
@@ -53,6 +56,32 @@ function message_private_og_menu_alter(&$items) {
   $items['admin/content/message/create/private-message']['access callback'] = 'message_private_og_access_control';
 
   return $items;
+}
+
+/**
+ * Override message_private_access_callback access callback.
+ *
+ * If the user has not got global permissions, check OG permissions.
+ *
+ * @param $message
+ * @return bool
+ */
+function message_private_og_access_callback($message) {
+  if(message_private_access_callback($message)) {
+    return TRUE; // If the user has correct global permissions return TRUE.
+  } else if ($message->type == 'private_message') {
+    // Users without global permissions may have OG permissions, check
+    // if they have permission for any groups on the system.
+    $groups = og_get_groups_by_user();
+    if (!empty($groups['node']) && is_array($groups['node'])) {
+      foreach ($groups['node'] as $gid) {
+        if (og_user_access('node', $gid, 'view a private message instance')) {
+          return TRUE;
+        }
+      }
+    }
+  }
+  return FALSE;
 }
 
 /**

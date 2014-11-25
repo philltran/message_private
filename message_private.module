@@ -61,6 +61,60 @@ function message_private_permission() {
 }
 
 /**
+ * Implements hook_menu().
+ *
+ * Adds a tab with a dummy path which is overridden in
+ * message_private_menu_local_tasks_alter providing easy access to the Messages
+ * Inbox on every private_message Message entity view.
+ */
+function message_private_menu() {
+  $items = array();
+
+  $items['message/%message/inbox'] = array(
+    'title' => 'Messages',
+    'access callback' => 'message_private_access_callback',
+    'access arguments' => array(1),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 100,
+  );
+
+  return $items;
+}
+
+/**
+ * Access callback for Messages tab.
+ *
+ * Checks for the private_message bundle and user permissions.
+ *
+ * @param $message
+ * @return bool
+ */
+function message_private_access_callback($message) {
+  if ($message->type == 'private_message') {
+    return user_access('bypass private message access control') || user_access('view a private_message message instance');
+  }
+  return FALSE;
+}
+
+/**
+ * Implements hook_menu_local_tasks_alter().
+ *
+ * Override the dummy path defined in message_private_menu with the correct
+ * Message Inbox for the current user.
+ */
+function message_private_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+  global $user;
+
+  if (!empty($data['tabs'][0]['output']) && is_array($data['tabs'][0]['output'])) {
+    foreach ($data['tabs'][0]['output'] as &$tab) {
+      if (isset($tab['#link']['path']) && $tab['#link']['path'] == 'message/%/inbox') {
+        $tab['#link']['href'] = 'user/' . $user->uid . '/messages/inbox';
+      }
+    }
+  }
+}
+
+/**
  * Implements hook_menu_alter().
  *
  * Override some of the menu paths set in message ui module.
