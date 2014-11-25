@@ -57,9 +57,8 @@ Enable the permissions:
 "View a new message instance for Private Message" &
 "Create a new message instance for Private Message" for users needing to create
 and view private messages.
-"Flag User entities as Private Message Notify" &
-"Unflag User entities as Private Message Notify" to allow to un-subscribe from
-email notifications for private messages.
+"View user profiles" for users needing to send messages to other users. This is
+due to issue: 'Restricted access results with user entityreference' - #2153463.
 
 The module has no menu or modifiable settings.  There is not much
 configuration.  When enabled, the module will provide a new message type
