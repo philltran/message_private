@@ -48,7 +48,8 @@ INSTALLATION
    https://drupal.org/documentation/install/modules-themes/modules-7
    for further information.
  * If using message_private_og, make sure you have created an OG group content
-   type named "Group".
+   type named "Group". Otherwise, you will need to manually configure the entity 
+   reference field to use your custom group content type.
 
 
 CONFIGURATION
@@ -101,15 +102,15 @@ CAPTCHA method: https://www.drupal.org/project/recaptcha
 
 DEVELOPMENT AND TEST
 ------------------
- * Combine "Inbox", "Sent" and "Group" as sub-tabs under one called "Messages".
- * Remove message_private_views_pre_render and add as a MENU_LOCAL_ACTION.
+ * Integrate with Help or Advanced Help module to hold all instructions.
+ * Add a "To Groups" field in Sent view when private_message_og is enabled.
+ * Message should not be created without a user or group.
+ * Add to admin screen the option to turn on or off email notifications.
  * Create og permissions and permission checking for private messages.
  * Create global message_private_og permission - sending message to all groups.
- * Message should not be created without a user or group.
- * Add a "To Groups" field in Sent view when private_message_og is enabled.
- * Remove the "Create a new message" from the "Group" tab or add above filters.
- * Integrate with Help or Advanced Help module to hold all instructions.
- * Add to admin screen the option to turn on or off email notifications.
+ -------------------------------------------------------------------------------
+ Work above required before releasing 1st beta release.
+ -------------------------------------------------------------------------------
  * Threads can be created using comments on a private message, which will be a 
    thread. A new permission to reply to messages can be created if necessary. 
    An admin screen can be used to enable or disable threads to turn on/off 

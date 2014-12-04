@@ -27,24 +27,6 @@ function message_private_views_api() {
 }
 
 /**
- * Implements hook_views_pre_render().
- *
- * Add a 'Create a new message' link above message_private view.
- */
-function message_private_views_pre_render(&$view) {
-  if ($view->name == 'message_private') {
-    $view->attachment_before
-      = '<div class="actions">
-        <ul class="action-links">
-            <li>' .
-      l(t('Create a new message'), 'admin/content/message/create/private-message') .
-      '</li>
-            </ul>
-        </div>';
-  }
-}
-
-/**
  * Implements hook_permission().
  */
 function message_private_permission() {
@@ -62,14 +44,18 @@ function message_private_permission() {
 
 /**
  * Implements hook_menu().
- *
- * Adds a tab with a dummy path which is overridden in
- * message_private_menu_local_tasks_alter providing easy access to the Messages
- * Inbox on every private_message Message entity view.
  */
 function message_private_menu() {
   $items = array();
 
+  // Add default local task so the Messages view display shows Inbox.
+  $items['user/%/messages/inbox'] = array(
+    'title' => 'Inbox',
+    'description' => 'Message Private Inbox',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+
+  // Dummy path, overridden in message_private_menu_local_tasks_alter.
   $items['message/%message/inbox'] = array(
     'title' => 'Messages',
     'access callback' => 'message_private_access_callback',
@@ -98,19 +84,30 @@ function message_private_access_callback($message) {
 
 /**
  * Implements hook_menu_local_tasks_alter().
- *
- * Override the dummy path defined in message_private_menu with the correct
- * Message Inbox for the current user.
  */
 function message_private_menu_local_tasks_alter(&$data, $router_item, $root_path) {
   global $user;
 
-  if (!empty($data['tabs'][0]['output']) && is_array($data['tabs'][0]['output'])) {
-    foreach ($data['tabs'][0]['output'] as &$tab) {
-      if (isset($tab['#link']['path']) && $tab['#link']['path'] == 'message/%/inbox') {
-        $tab['#link']['href'] = 'user/' . $user->uid . '/messages/inbox';
+  switch ($root_path) {
+    case 'user/%/messages':
+      // Add a 'Create a new message' action link above message_private view.
+      $item = menu_get_item('admin/content/message/create/private-message');
+      $item['title'] = t('Create a new message');
+      $data['actions']['output'][] = array(
+        '#theme' => 'menu_local_action',
+        '#link' => $item,
+      );
+      break;
+    case 'message/%':
+      // Override dummy path defined in message_private_menu for Messages tab.
+      if (!empty($data['tabs'][0]['output']) && is_array($data['tabs'][0]['output'])) {
+        foreach ($data['tabs'][0]['output'] as &$tab) {
+          if (isset($tab['#link']['path']) && $tab['#link']['path'] == 'message/%/inbox') {
+            $tab['#link']['href'] = 'user/' . $user->uid . '/messages';
+          }
+        }
       }
-    }
+      break;
   }
 }
 

@@ -133,9 +133,9 @@ function message_private_views_default_views() {
   );
 
   /* Display: Received Messages */
-  $handler = $view->new_display('page', 'Received Messages', 'page_1');
+  $handler = $view->new_display('page', 'Messages', 'page_1');
   $handler->display->display_options['defaults']['title'] = FALSE;
-  $handler->display->display_options['title'] = 'Inbox';
+  $handler->display->display_options['title'] = 'Messages';
   $handler->display->display_options['display_description'] = 'Private messages received by the user.';
   $handler->display->display_options['defaults']['relationships'] = FALSE;
   /* Relationship: Message: User uid */
@@ -152,10 +152,10 @@ function message_private_views_default_views() {
   $handler->display->display_options['arguments']['field_message_user_ref_target_id']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['field_message_user_ref_target_id']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['field_message_user_ref_target_id']['summary_options']['items_per_page'] = '25';
-  $handler->display->display_options['path'] = 'user/%/messages/inbox';
+  $handler->display->display_options['path'] = 'user/%/messages';
   $handler->display->display_options['menu']['type'] = 'tab';
-  $handler->display->display_options['menu']['title'] = 'Inbox';
-  $handler->display->display_options['menu']['weight'] = '10';
+  $handler->display->display_options['menu']['title'] = 'Messages';
+  $handler->display->display_options['menu']['weight'] = '100';
   $handler->display->display_options['menu']['context'] = 1;
   $handler->display->display_options['menu']['context_only_inline'] = 0;
 
