@@ -48,20 +48,11 @@ function message_private_permission() {
 function message_private_menu() {
   $items = array();
 
-  // Add default local task so the Messages view display shows Inbox.
+  // Add default local task so the Messages view display shows Inbox tab.
   $items['user/%/messages/inbox'] = array(
     'title' => 'Inbox',
     'description' => 'Message Private Inbox',
     'type' => MENU_DEFAULT_LOCAL_TASK,
-  );
-
-  // Dummy path, overridden in message_private_menu_local_tasks_alter.
-  $items['message/%message/inbox'] = array(
-    'title' => 'Messages',
-    'access callback' => 'message_private_access_callback',
-    'access arguments' => array(1),
-    'type' => MENU_LOCAL_TASK,
-    'weight' => 100,
   );
 
   return $items;
@@ -99,13 +90,15 @@ function message_private_menu_local_tasks_alter(&$data, $router_item, $root_path
       );
       break;
     case 'message/%':
-      // Override dummy path defined in message_private_menu for Messages tab.
-      if (!empty($data['tabs'][0]['output']) && is_array($data['tabs'][0]['output'])) {
-        foreach ($data['tabs'][0]['output'] as &$tab) {
-          if (isset($tab['#link']['path']) && $tab['#link']['path'] == 'message/%/inbox') {
-            $tab['#link']['href'] = 'user/' . $user->uid . '/messages';
-          }
-        }
+      // Add a Messages tab to the private_message Message entities.
+      $message = menu_get_object($type = 'message', $position = 1, $router_item['href']);
+      if(isset($message->type) && $message->type == 'private_message') {
+        $item = menu_get_item('user/' . $user->uid . '/messages');
+        $item['title'] = t('Messages');
+        $data['tabs'][0]['output'][] = array(
+          '#theme' => 'menu_local_task',
+          '#link' => $item,
+        );
       }
       break;
   }
