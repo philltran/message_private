@@ -372,9 +372,9 @@ function message_private_uninstall() {
   // Check if there are message types on the system. Get the message types and
   // get the id of the private_message type and remove it and set the indicator
   // to state removed.
-  if ($entity_type = entity_get_info('message_type')) {
+  if (entity_get_info('message_type')) {
     $message_types = entity_load('message_type');
-    foreach ($message_types as $id => $message_type) {
+    foreach ($message_types as $message_type) {
       if ($message_type->name == 'private_message') {
         entity_delete('message_type', $message_type->id);
         $removed = TRUE;

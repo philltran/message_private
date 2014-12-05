@@ -14,14 +14,16 @@ function message_private_og_requirements($phase) {
   $t = get_t();
 
   if ($phase == 'install' || $phase == 'runtime') {
-    $bundles = og_get_all_group_bundle();
-    if (!isset($bundles['node'])) {
-      $requirements['message_private_og_bundle'] = array(
-        'title' => $t('Message Private OG'),
-        'description' => $t('You need a bundle that is a group type to send group messages'),
-        'severity' => REQUIREMENT_WARNING,
-        'value' => $t('No group bundle'),
-      );
+    if(function_exists('og_get_all_group_bundle')) {
+      $bundles = og_get_all_group_bundle();
+      if (!isset($bundles['node'])) {
+        $requirements['message_private_og_bundle'] = array(
+          'title' => $t('Message Private OG'),
+          'description' => $t('You need a bundle that is a group type to send group messages'),
+          'severity' => REQUIREMENT_WARNING,
+          'value' => $t('No group bundle'),
+        );
+      }
     }
   }
 
