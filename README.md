@@ -11,11 +11,10 @@ CONTENTS OF THIS FILE
 
 INTRODUCTION
 ------------
-A message type and entity reference fields to enable Message Stack to
-send and receive private messages. Messages of type "Private Message" are
-created and associated to user entities. The CRUD permissions associated to this
-message type are based on these entity reference fields, with the exception of
-CREATE, it uses the standard permission defined in the message_ui module.
+A message type and entity reference fields, enabling sending and receiving 
+private messages using The Message Stack. Messages of type "Private Message" can 
+be sent by creating the private_message message instance with fields referencing 
+user entities or OG group entities using the submodule message_private_og.
 
 The message_private module includes the following.
 + A message type "Private Message" with entity reference field referencing users
@@ -65,6 +64,12 @@ The module has no menu or modifiable settings.  There is not much
 configuration.  When enabled, the module will provide a new message type
 "Private Message" and a Message Private View.
 
+Email notifications are sent using message_notify module to users referenced by 
+the field_message_user_ref field and for all group members of the groups 
+referenced by field_message_groups_ref if using message_private_og. Users can
+disable email notifications using the checkbox field 
+field_private_message_notify attached to the user entity, on their profile.
+
 When using the Message Private OG sub-module, the Group Messages display has
 a contextual filter which filters by group ID of the logged in user. This is
 developed taking into account that a content type called "Group" exists for all
@@ -102,7 +107,6 @@ CAPTCHA method: https://www.drupal.org/project/recaptcha
 
 DEVELOPMENT AND TEST
 ------------------
- * Integrate with Help or Advanced Help module to hold all instructions.
  * Add a "To Groups" field in Sent view when private_message_og is enabled.
  * Message should not be created without a user or group.
  * Add to admin screen the option to turn on or off email notifications.

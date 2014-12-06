@@ -4,14 +4,13 @@
  */
 
 /**
- * Implements hook_form_FORM_ID_alter().
- *
- * Hide the message_text field from the message edit form. It is only useful
- * post creation. i.e. - contains user data.
+ * Implements hook_help().
  */
-function message_private_form_message_ui_instance_message_manage_alter(&$form, &$form_state, $form_id) {
-  if ($form['#bundle'] == 'private_message' && isset($form['text']['#type'])) {
-    $form['text']['#type'] = 'hidden';
+function message_private_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#message_private':
+      $output = file_get_contents(drupal_get_path('module', 'message_private') .'/README.md');
+      return module_exists('markdown') ? filter_xss_admin(module_invoke('markdown', 'filter', 'process', 0, -1, $output)) : '<h3>Message Private README</h3><pre>'. check_plain($output) .'</pre>';
   }
 }
 
@@ -219,5 +218,17 @@ function message_private_message_insert($message) {
     if (!empty($mail)) {
       message_notify_send_message($message, array('mail' => implode(',', $mail)));
     }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Hide the message_text field from the message edit form. It is only useful
+ * post creation. i.e. - contains user data.
+ */
+function message_private_form_message_ui_instance_message_manage_alter(&$form, &$form_state, $form_id) {
+  if ($form['#bundle'] == 'private_message' && isset($form['text']['#type'])) {
+    $form['text']['#type'] = 'hidden';
   }
 }
