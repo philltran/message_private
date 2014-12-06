@@ -107,7 +107,6 @@ CAPTCHA method: https://www.drupal.org/project/recaptcha
 
 DEVELOPMENT AND TEST
 ------------------
- * Add a "To Groups" field in Sent view when private_message_og is enabled.
  * Message should not be created without a user or group.
  * Add to admin screen the option to turn on or off email notifications.
  * Create og permissions and permission checking for private messages.
