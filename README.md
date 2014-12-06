@@ -114,11 +114,12 @@ DEVELOPMENT AND TEST
  -------------------------------------------------------------------------------
  Work above required before releasing 1st beta release.
  -------------------------------------------------------------------------------
- * Threads can be created using comments on a private message, which will be a 
-   thread. A new permission to reply to messages can be created if necessary. 
-   An admin screen can be used to enable or disable threads to turn on/off 
-   replies on all private messages (Reply, Reply All). A tpl.php template will 
-   need to be added for indentation/presentation.
+ * Threads can be created using entity reference field on a private message, 
+   which reference the message being replied to. A new permission to reply to 
+   messages can be created if necessary. An admin screen can be used to enable 
+   or disable threads to turn on/off replies on all private messages (Reply, 
+   Reply All). A tpl.php template and perhaps a css file will need to be added 
+   for indentation / presentation.
  * Flag module on user entity to block/unblock users from messaging them
  * Flag module on message entity to show/hide messages from users own display
  * Integrate with rolereference module or similar to provide sending to users
