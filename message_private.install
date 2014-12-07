@@ -295,7 +295,7 @@ function message_private_install() {
     'entity_type' => 'message',
     'field_name' => 'field_message_user_ref',
     'label' => $t('Users'),
-    'required' => 0,
+    'required' => 1,
     'settings' => array(
       'user_register_form' => FALSE,
     ),

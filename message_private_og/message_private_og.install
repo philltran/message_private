@@ -140,6 +140,34 @@ function message_private_og_install() {
 }
 
 /**
+ * Implements hook_enable().
+ *
+ * Changes the User Reference field required value.
+ */
+function message_private_og_enable() {
+  // Fetch an instance info array for User reference field.
+  $instance_info = field_info_instance('message', 'field_message_user_ref', 'private_message');
+  // Change the required property in the instance definition to not required.
+  $instance_info['required'] = FALSE;
+  // Write the changed definition back.
+  field_update_instance($instance_info);
+}
+
+/**
+ * Implements hook_disable().
+ *
+ * Restores the User Reference field back to required.
+ */
+function message_private_og_disable() {
+  // Fetch an instance info array for User reference field.
+  $instance_info = field_info_instance('message', 'field_message_user_ref', 'private_message');
+  // Change the required property in the instance definition to not required.
+  $instance_info['required'] = TRUE;
+  // Write the changed definition back.
+  field_update_instance($instance_info);
+}
+
+/**
  * Implements hook_uninstall().
  *
  * Deletes the fields defined by this module.
