@@ -15,4 +15,6 @@ dependencies[] = options
 dependencies[] = list
 dependencies[] = text
 
+configure = admin/config/system/message-private
+
 package = Message

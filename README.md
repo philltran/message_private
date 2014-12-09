@@ -107,7 +107,6 @@ CAPTCHA method: https://www.drupal.org/project/recaptcha
 
 DEVELOPMENT AND TEST
 ------------------
- * Add to admin screen the option to turn on or off email notifications.
  * Create og permissions and permission checking for private messages.
  * Create global message_private_og permission - sending message to all groups.
  -------------------------------------------------------------------------------

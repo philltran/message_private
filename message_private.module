@@ -19,8 +19,8 @@ function message_private_help($path, $arg) {
  */
 function message_private_views_api() {
   list($module, $api) = func_get_args();
-  if ($module == "views" && $api == "views_default") {
-    return array("version" => "3.0");
+  if ($module == 'views' && $api == 'views_default') {
+    return array('version' => '3.0');
   }
   return array();
 }
@@ -35,7 +35,14 @@ function message_private_permission() {
 
   $permissions['bypass private message access control'] = array(
     'title' => t('Bypass message access control'),
-    'description' => t('Grant to the user the permission to apply CRUD option on any private messages. Grant this permission to trusted users!'),
+    'description' => t('Grant to the user the permission to apply CRUD option on any private messages.'),
+    'restrict access' => TRUE,
+  );
+
+  $permissions['administer message private'] = array(
+    'title' => t('Administer message private'),
+    'description' => t('Access the message private administration pages.'),
+    // 'restrict access' => TRUE, // May need to be added in future.
   );
 
   return $permissions;
@@ -46,6 +53,15 @@ function message_private_permission() {
  */
 function message_private_menu() {
   $items = array();
+
+  $items['admin/config/system/message-private'] = array(
+    'title' => 'Message private settings',
+    'description' => 'Configuration settings for message private module.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('message_private_admin_settings'),
+    'file' => 'message_private.admin.inc',
+    'access arguments' => array('administer message private'),
+  );
 
   // Add default local task so the Messages view display shows Inbox tab.
   $items['user/%/messages/inbox'] = array(
@@ -192,7 +208,9 @@ function message_private_access_control($operation, $message, $user_obj = NULL) 
  * think escaping strings for email should be done in this module.
  */
 function message_private_message_insert($message) {
-  if ($message->type == 'private_message') {
+  // Prepare message notifications for private messages if notifications are on.
+  if ($message->type == 'private_message'
+    && variable_get('message_private_email_notifications', TRUE)) {
     // Use message load as the $message object has issue with mail function.
     // It causes duplicate entry, possibly as mid is missing and the mail
     // function message_notify_send_message tries to re-save as a new message.
@@ -218,6 +236,19 @@ function message_private_message_insert($message) {
     if (!empty($mail)) {
       message_notify_send_message($message, array('mail' => implode(',', $mail)));
     }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * If email notifications are disabled, hide the per user setting on user
+ * profiles, unless the user is in role with bypass access control permission.
+ */
+function message_private_form_user_profile_form_alter(&$form, &$form_state, $form_id) {
+  if (user_access('bypass private message access control')
+    || !variable_get('message_private_email_notifications', TRUE)) {
+    $form['field_private_message_notify']['#access'] = FALSE;
   }
 }
 

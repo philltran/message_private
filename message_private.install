@@ -22,7 +22,7 @@ function message_private_install() {
     "category" : "message_type",
     "data" : {
       "token options" : { "clear" : 1 },
-      "purge" : { "override" : 0, "enabled" : 0, "quota" : "", "days" : "" }
+      "purge" : { "override" : 1, "enabled" : 0, "quota" : "", "days" : "" }
     },
     "language" : "en",
     "arguments" : null,
