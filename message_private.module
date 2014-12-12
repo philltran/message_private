@@ -4,6 +4,31 @@
  */
 
 /**
+ * The default index for settings such as role.
+ */
+define('MESSAGE_PRIVATE_DEFAULT_INDEX', 0);
+
+/**
+ * The maximum message limit.
+ */
+define('MESSAGE_PRIVATE_MESSAGE_LIMIT_MAX', 1000);
+
+/**
+ * The minimum message limit.
+ */
+define('MESSAGE_PRIVATE_MESSAGE_LIMIT_MIN', 1);
+
+/**
+ * The maximum message interval in minutes.
+ */
+define('MESSAGE_PRIVATE_MESSAGE_INTERVAL_MAX', 1440);
+
+/**
+ * The minimum message interval in minutes.
+ */
+define('MESSAGE_PRIVATE_MESSAGE_INTERVAL_MIN', 1);
+
+/**
  * Implements hook_help().
  */
 function message_private_help($path, $arg) {
@@ -199,6 +224,56 @@ function message_private_access_control($operation, $message, $user_obj = NULL) 
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Hide the message_text field from the message edit form. It is only useful
+ * post creation. i.e. - contains user data. Also add custom validate function.
+ */
+function message_private_form_message_ui_instance_message_manage_alter(&$form, &$form_state, $form_id) {
+  if ($form['#bundle'] == 'private_message') {
+    if (isset($form['text']['#type'])) {
+      $form['text']['#type'] = 'hidden';
+    }
+    $form['#validate'][] = 'message_private_form_message_ui_instance_message_manage_validate';
+  }
+}
+
+/**
+ * Validation for Private Message form.
+ *
+ * @param mixed $form
+ *   The message form provided by message_ui.
+ * @param mixed $form_state
+ *   The form state including values submitted.
+ */
+function message_private_form_message_ui_instance_message_manage_validate($form, &$form_state) {
+  // If there is an imposed message limit, set in the admin settings interface.
+  if (variable_get('message_private_message_limit', FALSE)) {
+    global $user;
+    $rid = _message_private_max_message_limit_role($user->roles);
+    $role = user_role_load($rid);
+    $limit_name = 'message_private_' . $role->name . '_limit';
+    $interval_name = 'message_private_' . $role->name . '_interval';
+    $interval = variable_get($interval_name);
+    $limit = variable_get($limit_name);
+    // Get total amount of messages since last interval.
+    $current_timestamp = time();
+    $interval_timestamp = strtotime('-' . $interval . ' minutes', $current_timestamp);
+    $query = new EntityFieldQuery();
+    $total = $query->entityCondition('entity_type', 'message')
+      ->entityCondition('bundle', 'private_message')
+      ->propertyCondition('created', $interval_timestamp, '>')
+      ->propertyCondition('uid', $user->uid)
+      ->count()
+      ->execute();
+    // if total < limit, send message, if not display error.
+    if($total >= $limit) {
+      form_error($form, t('Message create limit reached. Please try again later.'));
+    }
+  }
+}
+
+/**
  * Implements hook_message_insert().
  *
  * Send an email if a private message has been created.
@@ -253,13 +328,33 @@ function message_private_form_user_profile_form_alter(&$form, &$form_state, $for
 }
 
 /**
- * Implements hook_form_FORM_ID_alter().
+ * Get the role id with the maximum allowed message create limit.
  *
- * Hide the message_text field from the message edit form. It is only useful
- * post creation. i.e. - contains user data.
+ * Using the values set for each role, calculate the the lowest time interval
+ * required per message: INTERVAL / LIMIT and return the role with this value.
+ *
+ * @param $roles
+ * @return mixed
  */
-function message_private_form_message_ui_instance_message_manage_alter(&$form, &$form_state, $form_id) {
-  if ($form['#bundle'] == 'private_message' && isset($form['text']['#type'])) {
-    $form['text']['#type'] = 'hidden';
+function _message_private_max_message_limit_role($roles) {
+  $limits = array();
+  // Get the default limit and interval.
+  $limit_name = 'message_private_default_limit';
+  $interval_name = 'message_private_default_interval';
+  $limits[MESSAGE_PRIVATE_DEFAULT_INDEX] = variable_get($interval_name) / variable_get($limit_name);
+
+  // Cycle through the roles and get each limit and interval.
+  foreach ($roles as $rid => $role) {
+    $role_name = str_replace(' ', '_', $role);
+    $limit_name = 'message_private_' . $role_name . '_limit';
+    $interval_name = 'message_private_' . $role_name . '_interval';
+    $interval = variable_get($interval_name);
+    $limit = variable_get($limit_name);
+
+    // Ensure values are greater than 0 & get interval required for one message.
+    if ($interval >= MESSAGE_PRIVATE_MESSAGE_INTERVAL_MIN && $limit >= MESSAGE_PRIVATE_MESSAGE_LIMIT_MIN) {
+      $limits[$rid] = $interval_name / $limit;
+    }
   }
+  return array_search(min($limits), $limits);
 }

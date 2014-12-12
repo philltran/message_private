@@ -14,7 +14,7 @@ function message_private_og_requirements($phase) {
   $t = get_t();
 
   if ($phase == 'install' || $phase == 'runtime') {
-    if(function_exists('og_get_all_group_bundle')) {
+    if (function_exists('og_get_all_group_bundle')) {
       $bundles = og_get_all_group_bundle();
       if (!isset($bundles['node'])) {
         $requirements['message_private_og_bundle'] = array(
