@@ -1,4 +1,7 @@
 <?php
+/**
+ * Message Private views modifications for OG.
+ */
 
 /**
  * Implements hook_views_default_views_alter().

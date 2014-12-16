@@ -9,7 +9,7 @@
 function message_private_og_views_api() {
   return array(
     'api' => 3,
-    'path' => drupal_get_path('module', 'message_private_og') . '/views'
+    'path' => drupal_get_path('module', 'message_private_og') . '/views',
   );
 }
 
@@ -73,13 +73,17 @@ function message_private_og_menu_alter(&$items) {
  *
  * If the user has not got global permissions, check OG permissions.
  *
- * @param $message
- * @return bool
+ * @param object $message
+ *   The message object.
+ * @return
+ *   TRUE if the user is allowed perform the operation, FALSE otherwise.
  */
 function message_private_og_access_callback($message) {
-  if(message_private_access_callback($message)) {
-    return TRUE; // If the user has correct global permissions return TRUE.
-  } else if ($message->type == 'private_message') {
+  if (message_private_access_callback($message)) {
+    // If the user has correct global permissions return TRUE.
+    return TRUE;
+  }
+  elseif ($message->type == 'private_message') {
     // Users without global permissions may have OG permissions, check
     // if they have permission for any groups on the system.
     $groups = og_get_groups_by_user();

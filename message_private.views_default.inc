@@ -1,4 +1,7 @@
 <?php
+/**
+ * Message Private default views include.
+ */
 
 /**
  * Implements hook_views_default_views().

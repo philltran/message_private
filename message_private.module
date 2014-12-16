@@ -4,29 +4,24 @@
  */
 
 /**
- * The variable name for email notifications.
+ * The string name for email notifications variable.
  */
 define('MESSAGE_PRIVATE_EMAIL_NOTIFICATIONS', 'message_private_email_notifications');
 
 /**
- * The string name for message limit.
+ * The string name for message limit variable.
  */
 define('MESSAGE_PRIVATE_MESSAGE_LIMIT', 'message_private_message_limit');
 
 /**
- * The string name for message interval limit.
+ * The assoc index to be used when fetching default limit variable.
  */
-define('MESSAGE_PRIVATE_MESSAGE_INTERVAL_LIMIT', 'message_private_message_interval_limit');
+define('MESSAGE_PRIVATE_DEFAULT_LIMIT', 'message_private_default_limit');
 
 /**
- * The variable name to be used when fetching default limit.
+ * The assoc index to be used when fetching default interval variable.
  */
-define('MESSAGE_PRIVATE_DEFAULT_LIMIT_NAME', 'message_private_default_limit');
-
-/**
- * The variable name to be used when fetching default interval.
- */
-define('MESSAGE_PRIVATE_DEFAULT_INTERVAL_NAME', 'message_private_default_interval');
+define('MESSAGE_PRIVATE_DEFAULT_INTERVAL', 'message_private_default_interval');
 
 /**
  * The default index for settings such as role.
@@ -60,8 +55,8 @@ define('MESSAGE_PRIVATE_MESSAGE_INTERVAL_MIN', 1);
 function message_private_help($path, $arg) {
   switch ($path) {
     case 'admin/help#message_private':
-      $output = file_get_contents(drupal_get_path('module', 'message_private') .'/README.md');
-      return module_exists('markdown') ? filter_xss_admin(module_invoke('markdown', 'filter', 'process', 0, -1, $output)) : '<h3>Message Private README</h3><pre>'. check_plain($output) .'</pre>';
+      $output = file_get_contents(drupal_get_path('module', 'message_private') . '/README.md');
+      return module_exists('markdown') ? filter_xss_admin(module_invoke('markdown', 'filter', 'process', 0, -1, $output)) : '<h3>Message Private README</h3><pre>' . check_plain($output) . '</pre>';
   }
 }
 
@@ -129,8 +124,10 @@ function message_private_menu() {
  *
  * Checks for the private_message bundle and user permissions.
  *
- * @param $message
- * @return bool
+ * @param object $message
+ *   The message object.
+ * @return
+ *   TRUE if the user is allowed perform the operation, FALSE otherwise.
  */
 function message_private_access_callback($message) {
   if ($message->type == 'private_message') {
@@ -154,17 +151,19 @@ function message_private_menu_local_tasks_alter(&$data, $router_item, $root_path
         '#theme' => 'menu_local_action',
         '#link' => $item,
       );
+
       break;
     case 'message/%':
       // Add a Messages tab to the private_message Message entities.
       $message = menu_get_object('message', 1, $router_item['href']);
-      if(isset($message->type) && $message->type == 'private_message') {
+      if (isset($message->type) && $message->type == 'private_message') {
         $item = menu_get_item('user/' . $user->uid . '/messages');
         $item['title'] = t('Messages');
         $data['tabs'][0]['output'][] = array(
           '#theme' => 'menu_local_task',
           '#link' => $item,
         );
+
       }
       break;
   }
@@ -274,7 +273,7 @@ function message_private_form_message_ui_instance_message_manage_alter(&$form, &
  */
 function message_private_form_message_ui_instance_message_manage_validate($form, &$form_state) {
   // If there is an imposed message limit set in the admin settings interface.
-  if (variable_get('message_private_message_limit', FALSE)
+  if (variable_get(MESSAGE_PRIVATE_MESSAGE_LIMIT, FALSE)
     && !user_access('bypass private message access control')) {
     global $user;
 
@@ -303,7 +302,7 @@ function message_private_form_message_ui_instance_message_manage_validate($form,
       ->execute();
 
     // Display error preventing message create when total messages over limit.
-    if($total >= $limit) {
+    if ($total >= $limit) {
       form_error($form, t('Message create limit reached. Please try again later.'));
     }
   }
@@ -321,7 +320,7 @@ function message_private_form_message_ui_instance_message_manage_validate($form,
 function message_private_message_insert($message) {
   // Prepare message notifications for private messages if notifications are on.
   if ($message->type == 'private_message'
-    && variable_get('message_private_email_notifications', TRUE)) {
+    && variable_get(MESSAGE_PRIVATE_EMAIL_NOTIFICATIONS, TRUE)) {
     // Use message load as the $message object has issue with mail function.
     // It causes duplicate entry, possibly as mid is missing and the mail
     // function message_notify_send_message tries to re-save as a new message.
@@ -369,13 +368,15 @@ function message_private_form_user_profile_form_alter(&$form, &$form_state, $for
  * Using the values set for each role, calculate the the lowest time interval
  * required per message: INTERVAL / LIMIT and return the role with this value.
  *
- * @param $roles
- * @return mixed
+ * @param null|array $roles
+ *   An assoc array of role names and ids.
+ * @return
+ *   mixed, either a role id or null.
  */
 function _message_private_max_message_limit_role($roles) {
   $limits = array();
-  $limit = variable_get(MESSAGE_PRIVATE_DEFAULT_LIMIT_NAME);
-  $interval = variable_get(MESSAGE_PRIVATE_DEFAULT_INTERVAL_NAME);
+  $limit = variable_get(MESSAGE_PRIVATE_DEFAULT_LIMIT);
+  $interval = variable_get(MESSAGE_PRIVATE_DEFAULT_INTERVAL);
   // Ensure we have existing valid numerical values for both variables.
   if (!empty($limit) && ctype_digit($limit) && !empty($interval) && ctype_digit($interval)) {
     $limits[MESSAGE_PRIVATE_DEFAULT_INDEX] = $interval / $limit;

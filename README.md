@@ -53,23 +53,32 @@ INSTALLATION
 
 CONFIGURATION
 -------------
-Enable the permissions: 
+Enabling Permissions: 
 "View a new message instance for Private Message" &
 "Create a new message instance for Private Message" for users needing to create
 and view private messages.
 "View user profiles" for users needing to send messages to other users. This is
 due to issue: 'Restricted access results with user entityreference' - #2153463.
 
-The module has no menu or modifiable settings.  There is not much
-configuration.  When enabled, the module will provide a new message type
-"Private Message" and a Message Private View.
+When enabled, the module will provide a new message type "Private Message" and a 
+Message Private View.
 
+Email Notifications:
 Email notifications are sent using message_notify module to users referenced by 
 the field_message_user_ref field and for all group members of the groups 
 referenced by field_message_groups_ref if using message_private_og. Users can
 disable email notifications using the checkbox field 
-field_private_message_notify attached to the user entity, on their profile.
+field_private_message_notify attached to the user entity, on their profile. The
+message notifications can be turned off globally on the module settings form.
 
+Message Create Limits:
+Message creation limits can be managed per role on the module settings form. A
+message create limit can be set per interval per role. Users with more than one
+role get the maximum limit by calculating the lowest time per message over each 
+role. Users with the 'bypass private message access control' permission bypass
+these limitations.
+
+Message Private OG:
 When using the Message Private OG sub-module, the Group Messages display has
 a contextual filter which filters by group ID of the logged in user. This is
 developed taking into account that a content type called "Group" exists for all
@@ -79,20 +88,19 @@ bundle to enable group filter on views.
 
 HOW TO USE
 ----------
-To create messages:
+To Create messages:
 Visit /admin/content/message/create/private-message and Save the message to send
+or
+Visit the "Messages" tab detailed below and find the "Create a new message" 
+local action.
 
-For received messages:
-Visit your user page at /user and find the "Inbox" tab which displays received
-messages /user/USER_ID/messages/inbox
-
-For sent messages:
-Visit your user page at /user and find the "Sent" tab which displays sent
-messages /user/USER_ID/messages/sent
-
-For group messages:
-Visit your user page at /user and find the "Group" tab which displays group
-messages /user/USER_ID/messages/group
+To View inbox, sent and group messages:
+Visit your user page at /user and find the "Messages" tab which displays 
+received messages (Inbox local task), the "Sent" local task under that tab which
+displays sent messages and the "Group" local task which displays group messages.
+  /user/USER_ID/messages/inbox
+  /user/USER_ID/messages/sent
+  /user/USER_ID/messages/group
 
 SECURITY
 --------
@@ -107,6 +115,7 @@ CAPTCHA method: https://www.drupal.org/project/recaptcha
 
 DEVELOPMENT AND TEST
 ------------------
+ * Work on last 2 issues in: https://www.drupal.org/node/2393915
  * Create og permissions and permission checking for private messages.
  * Create global message_private_og permission - sending message to all groups.
  -------------------------------------------------------------------------------

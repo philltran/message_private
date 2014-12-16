@@ -394,13 +394,12 @@ function message_private_uninstall() {
   // Field on user entity.
   field_delete_field('field_private_message_notify');
 
-
   // Delete default variables for message limit.
   variable_del('message_private_default_limit');
   variable_del('message_private_default_interval');
 
   // Cycle through the roles and delete associated message limit variables.
-  foreach (user_roles() as $rid => $role) {
+  foreach (user_roles() as $role) {
     $role_name = str_replace(' ', '_', $role);
     variable_del('message_private_' . $role_name . '_limit');
     variable_del('message_private_' . $role_name . '_interval');
