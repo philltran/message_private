@@ -259,6 +259,7 @@ function message_private_form_message_ui_instance_message_manage_alter(&$form, &
     if (isset($form['text']['#type'])) {
       $form['text']['#type'] = 'hidden';
     }
+    $form['owner']['#access'] = user_access('bypass private message access control');
     $form['#validate'][] = 'message_private_form_message_ui_instance_message_manage_validate';
   }
 }
@@ -357,8 +358,54 @@ function message_private_message_insert($message) {
  */
 function message_private_form_user_profile_form_alter(&$form, &$form_state, $form_id) {
   if (user_access('bypass private message access control')
-    || !variable_get('message_private_email_notifications', TRUE)) {
+    || !variable_get(MESSAGE_PRIVATE_EMAIL_NOTIFICATIONS, TRUE)) {
     $form['field_private_message_notify']['#access'] = FALSE;
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function message_private_theme() {
+  $info['message_private'] = array(
+    'render element' => 'elements',
+    'template' => 'message--private_message',
+    'base hook' => 'message_private',
+  );
+
+  return $info;
+}
+
+/**
+ * Implements hook_message_view_alter().
+ */
+function message_private_message_view_alter(&$build) {
+  // Use template_preprocess_message_private for private_message messages only.
+  if(!empty($build['#bundle']) && $build['#bundle'] == 'private_message') {
+    $build['#theme'] = 'message_private';
+  }
+}
+
+/**
+ * Process variables for message--private_message.tpl.php.
+ */
+function template_preprocess_message_private(&$variables) {
+  // Call the parent message template function defined in message module.
+  if (function_exists('template_preprocess_message')) {
+    template_preprocess_message($variables);
+  }
+  // Save the message entity for ease of access.
+  if (is_object($variables['elements']['#entity'])) {
+    $message = $variables['elements']['#entity'];
+  }
+  // Create submitted variable containing user who created the message and date.
+  if(!empty($message) && $uid = $message->uid) {
+    $variables['date'] = format_date($message->timestamp);
+    $variables['name'] = theme('username', array('account' => user_load($uid)));
+    $variables['submitted'] = t('Submitted by !username on !datetime', array(
+        '!username' => $variables['name'],
+        '!datetime' => $variables['date']
+    ));
   }
 }
 

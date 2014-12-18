@@ -59,6 +59,7 @@ Enabling Permissions:
 and view private messages.
 "View user profiles" for users needing to send messages to other users. This is
 due to issue: 'Restricted access results with user entityreference' - #2153463.
+This patch may also help if committed in future: #2247937
 
 When enabled, the module will provide a new message type "Private Message" and a 
 Message Private View.
@@ -115,7 +116,8 @@ CAPTCHA method: https://www.drupal.org/project/recaptcha
 
 DEVELOPMENT AND TEST
 ------------------
- * Work on last 2 issues in: https://www.drupal.org/node/2393915
+ * Add dependency to entityreference_prepopulate and add local action to create
+   message to user on profile and message : https://www.drupal.org/node/2393915
  * Create og permissions and permission checking for private messages.
  * Create global message_private_og permission - sending message to all groups.
  -------------------------------------------------------------------------------
