@@ -7,6 +7,7 @@ dependencies[] = message_ui
 dependencies[] = message_notify
 dependencies[] = entity
 dependencies[] = entityreference
+dependencies[] = entityreference_prepopulate
 dependencies[] = ctools
 dependencies[] = views
 dependencies[] = token

@@ -14,7 +14,7 @@ function message_private_og_views_default_views_alter(&$views) {
     $handler->display->display_options['style_plugin'] = 'table';
     $handler->display->display_options['style_options']['columns'] = array(
       'field_message_user_ref' => 'field_message_user_ref',
-      'field_message_groups_ref' => 'field_message_user_ref',
+      'field_message_group_ref' => 'field_message_user_ref',
       'field_message_subject' => 'field_message_subject',
       'view' => 'view',
       'delete' => 'view',
@@ -27,7 +27,7 @@ function message_private_og_views_default_views_alter(&$views) {
         'separator' => ', ',
         'empty_column' => 0,
       ),
-      'field_message_groups_ref' => array(
+      'field_message_group_ref' => array(
         'align' => '',
         'separator' => '',
         'empty_column' => 0,
@@ -63,13 +63,13 @@ function message_private_og_views_default_views_alter(&$views) {
     $handler->display->display_options['defaults']['row_options'] = FALSE;
     $handler->display->display_options['fields']['field_message_user_ref']['label'] = 'To Users / Groups';
     /* Field: Message: Groups */
-    $handler->display->display_options['fields']['field_message_groups_ref']['id'] = 'field_message_groups_ref';
-    $handler->display->display_options['fields']['field_message_groups_ref']['table'] = 'field_data_field_message_groups_ref';
-    $handler->display->display_options['fields']['field_message_groups_ref']['field'] = 'field_message_groups_ref';
-    $handler->display->display_options['fields']['field_message_groups_ref']['settings'] = array(
+    $handler->display->display_options['fields']['field_message_group_ref']['id'] = 'field_message_group_ref';
+    $handler->display->display_options['fields']['field_message_group_ref']['table'] = 'field_data_field_message_group_ref';
+    $handler->display->display_options['fields']['field_message_group_ref']['field'] = 'field_message_group_ref';
+    $handler->display->display_options['fields']['field_message_group_ref']['settings'] = array(
       'link' => 1,
     );
-    $handler->display->display_options['fields']['field_message_groups_ref']['delta_offset'] = '0';
+    $handler->display->display_options['fields']['field_message_group_ref']['delta_offset'] = '0';
 
     // Get handler for a new display "OG Messages".
     $handler =& $views['message_private']->new_display('page', 'OG Messages', 'page_3');
@@ -83,14 +83,14 @@ function message_private_og_views_default_views_alter(&$views) {
     $handler->display->display_options['fields']['name']['relationship'] = 'user';
     $handler->display->display_options['fields']['name']['label'] = 'From User';
     /* Field: Message: Groups */
-    $handler->display->display_options['fields']['field_message_groups_ref']['id'] = 'field_message_groups_ref';
-    $handler->display->display_options['fields']['field_message_groups_ref']['table'] = 'field_data_field_message_groups_ref';
-    $handler->display->display_options['fields']['field_message_groups_ref']['field'] = 'field_message_groups_ref';
-    $handler->display->display_options['fields']['field_message_groups_ref']['label'] = 'To Groups';
-    $handler->display->display_options['fields']['field_message_groups_ref']['settings'] = array(
+    $handler->display->display_options['fields']['field_message_group_ref']['id'] = 'field_message_group_ref';
+    $handler->display->display_options['fields']['field_message_group_ref']['table'] = 'field_data_field_message_group_ref';
+    $handler->display->display_options['fields']['field_message_group_ref']['field'] = 'field_message_group_ref';
+    $handler->display->display_options['fields']['field_message_group_ref']['label'] = 'To Groups';
+    $handler->display->display_options['fields']['field_message_group_ref']['settings'] = array(
       'link' => 0,
     );
-    $handler->display->display_options['fields']['field_message_groups_ref']['delta_offset'] = '0';
+    $handler->display->display_options['fields']['field_message_group_ref']['delta_offset'] = '0';
     /* Field: Message: Subject */
     $handler->display->display_options['fields']['field_message_subject']['id'] = 'field_message_subject';
     $handler->display->display_options['fields']['field_message_subject']['table'] = 'field_data_field_message_subject';
@@ -122,15 +122,15 @@ function message_private_og_views_default_views_alter(&$views) {
     $handler->display->display_options['arguments']['null']['summary']['number_of_records'] = '0';
     $handler->display->display_options['arguments']['null']['summary']['format'] = 'default_summary';
     $handler->display->display_options['arguments']['null']['summary_options']['items_per_page'] = '25';
-    /* Contextual filter: Message: Groups (field_message_groups_ref) */
-    $handler->display->display_options['arguments']['field_message_groups_ref_target_id']['id'] = 'field_message_groups_ref_target_id';
-    $handler->display->display_options['arguments']['field_message_groups_ref_target_id']['table'] = 'field_data_field_message_groups_ref';
-    $handler->display->display_options['arguments']['field_message_groups_ref_target_id']['field'] = 'field_message_groups_ref_target_id';
-    $handler->display->display_options['arguments']['field_message_groups_ref_target_id']['default_action'] = 'default';
-    $handler->display->display_options['arguments']['field_message_groups_ref_target_id']['default_argument_type'] = 'og_user_groups';
-    $handler->display->display_options['arguments']['field_message_groups_ref_target_id']['summary']['number_of_records'] = '0';
-    $handler->display->display_options['arguments']['field_message_groups_ref_target_id']['summary']['format'] = 'default_summary';
-    $handler->display->display_options['arguments']['field_message_groups_ref_target_id']['summary_options']['items_per_page'] = '25';
+    /* Contextual filter: Message: Groups (field_message_group_ref) */
+    $handler->display->display_options['arguments']['field_message_group_ref_target_id']['id'] = 'field_message_group_ref_target_id';
+    $handler->display->display_options['arguments']['field_message_group_ref_target_id']['table'] = 'field_data_field_message_group_ref';
+    $handler->display->display_options['arguments']['field_message_group_ref_target_id']['field'] = 'field_message_group_ref_target_id';
+    $handler->display->display_options['arguments']['field_message_group_ref_target_id']['default_action'] = 'default';
+    $handler->display->display_options['arguments']['field_message_group_ref_target_id']['default_argument_type'] = 'og_user_groups';
+    $handler->display->display_options['arguments']['field_message_group_ref_target_id']['summary']['number_of_records'] = '0';
+    $handler->display->display_options['arguments']['field_message_group_ref_target_id']['summary']['format'] = 'default_summary';
+    $handler->display->display_options['arguments']['field_message_group_ref_target_id']['summary_options']['items_per_page'] = '25';
     $handler->display->display_options['defaults']['filter_groups'] = FALSE;
     $handler->display->display_options['defaults']['filters'] = FALSE;
     /* Filter criterion: Message: Type */
@@ -140,16 +140,16 @@ function message_private_og_views_default_views_alter(&$views) {
     $handler->display->display_options['filters']['type_1']['value'] = array(
       'private_message' => 'private_message',
     );
-    /* Filter criterion: Message: Groups (field_message_groups_ref) */
-    $handler->display->display_options['filters']['field_message_groups_ref_target_id']['id'] = 'field_message_groups_ref_target_id';
-    $handler->display->display_options['filters']['field_message_groups_ref_target_id']['table'] = 'field_data_field_message_groups_ref';
-    $handler->display->display_options['filters']['field_message_groups_ref_target_id']['field'] = 'field_message_groups_ref_target_id';
-    $handler->display->display_options['filters']['field_message_groups_ref_target_id']['exposed'] = TRUE;
-    $handler->display->display_options['filters']['field_message_groups_ref_target_id']['expose']['operator_id'] = 'field_message_groups_ref_target_id_op';
-    $handler->display->display_options['filters']['field_message_groups_ref_target_id']['expose']['label'] = 'Groups';
-    $handler->display->display_options['filters']['field_message_groups_ref_target_id']['expose']['operator'] = 'field_message_groups_ref_target_id_op';
-    $handler->display->display_options['filters']['field_message_groups_ref_target_id']['expose']['identifier'] = 'field_message_groups_ref_target_id';
-    $handler->display->display_options['filters']['field_message_groups_ref_target_id']['expose']['remember_roles'] = array(
+    /* Filter criterion: Message: Groups (field_message_group_ref) */
+    $handler->display->display_options['filters']['field_message_group_ref_target_id']['id'] = 'field_message_group_ref_target_id';
+    $handler->display->display_options['filters']['field_message_group_ref_target_id']['table'] = 'field_data_field_message_group_ref';
+    $handler->display->display_options['filters']['field_message_group_ref_target_id']['field'] = 'field_message_group_ref_target_id';
+    $handler->display->display_options['filters']['field_message_group_ref_target_id']['exposed'] = TRUE;
+    $handler->display->display_options['filters']['field_message_group_ref_target_id']['expose']['operator_id'] = 'field_message_group_ref_target_id_op';
+    $handler->display->display_options['filters']['field_message_group_ref_target_id']['expose']['label'] = 'Groups';
+    $handler->display->display_options['filters']['field_message_group_ref_target_id']['expose']['operator'] = 'field_message_group_ref_target_id_op';
+    $handler->display->display_options['filters']['field_message_group_ref_target_id']['expose']['identifier'] = 'field_message_group_ref_target_id';
+    $handler->display->display_options['filters']['field_message_group_ref_target_id']['expose']['remember_roles'] = array(
       2 => '2',
       1 => 0,
       3 => 0,

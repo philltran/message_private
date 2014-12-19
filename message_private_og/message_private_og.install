@@ -43,12 +43,12 @@ function message_private_og_install() {
 
   $field_bases = array();
 
-  $field_bases['field_message_groups_ref'] = array(
+  $field_bases['field_message_group_ref'] = array(
     'active' => 1,
     'cardinality' => -1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'field_message_groups_ref',
+    'field_name' => 'field_message_group_ref',
     'foreign keys' => array(
       'node' => array(
         'columns' => array(
@@ -90,7 +90,7 @@ function message_private_og_install() {
 
   $field_instances = array();
 
-  $field_instances['message-private_message-field_message_groups_ref'] = array(
+  $field_instances['message-private_message-field_message_group_ref'] = array(
     'bundle' => 'private_message',
     'default_value' => NULL,
     'deleted' => 0,
@@ -119,7 +119,7 @@ function message_private_og_install() {
       ),
     ),
     'entity_type' => 'message',
-    'field_name' => 'field_message_groups_ref',
+    'field_name' => 'field_message_group_ref',
     'label' => $t('Groups'),
     'required' => 0,
     'settings' => array(
@@ -173,5 +173,5 @@ function message_private_og_disable() {
  * Deletes the fields defined by this module.
  */
 function message_private_og_uninstall() {
-  field_delete_field('field_message_groups_ref');
+  field_delete_field('field_message_group_ref');
 }

@@ -143,6 +143,24 @@ function message_private_menu_local_tasks_alter(&$data, $router_item, $root_path
   global $user;
 
   switch ($root_path) {
+    case 'user/%':
+      // Add a 'Create a new message for %user' action link.
+      if (is_array($router_item['page_arguments'])) {
+        $to_user = array_shift($router_item['page_arguments']);
+      }
+      // Only display the local task on other users profile, not current user's.
+      if (!empty($to_user) && $user->uid != $to_user->uid) {
+        $item = menu_get_item('admin/content/message/create/private-message');
+        $item['title'] = t('Create a new message for') . ' ' . $to_user->name;
+        $item['localized_options']['query'] = array('field_message_user_ref' => $to_user->uid);
+        $data['actions']['output'][] = array(
+          '#theme' => 'menu_local_action',
+          '#link' => $item,
+        );
+
+      }
+
+      break;
     case 'user/%/messages':
       // Add a 'Create a new message' action link above message_private view.
       $item = menu_get_item('admin/content/message/create/private-message');
@@ -154,9 +172,9 @@ function message_private_menu_local_tasks_alter(&$data, $router_item, $root_path
 
       break;
     case 'message/%':
-      // Add a Messages tab to the private_message Message entities.
       $message = menu_get_object('message', 1, $router_item['href']);
       if (isset($message->type) && $message->type == 'private_message') {
+        // Add a Messages tab to the private_message Message entities.
         $item = menu_get_item('user/' . $user->uid . '/messages');
         $item['title'] = t('Messages');
         $data['tabs'][0]['output'][] = array(
@@ -164,6 +182,19 @@ function message_private_menu_local_tasks_alter(&$data, $router_item, $root_path
           '#link' => $item,
         );
 
+        // Get from user to Add a 'Create a new message for %user' action link.
+        $to_user = user_load($message->uid);
+        // Display the local task on other users profile, not current user's.
+        if (!empty($to_user) && $user->uid != $to_user->uid) {
+          $item = menu_get_item('admin/content/message/create/private-message');
+          $item['title'] = t('Create a new message for') . ' ' . $to_user->name;
+          $item['localized_options']['query'] = array('field_message_user_ref' => $to_user->uid);
+          $data['actions']['output'][] = array(
+            '#theme' => 'menu_local_action',
+            '#link' => $item,
+          );
+
+        }
       }
       break;
   }

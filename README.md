@@ -33,6 +33,7 @@ The message_private module requires the following modules:
  * Message Notify (https://drupal.org/project/message_notify)
  * Entity API (https://www.drupal.org/project/entity)
  * Entity Reference (https://www.drupal.org/project/entityreference)
+ * Entityreference Prepopulate (https://www.drupal.org/project/entityreference_prepopulate)
  * Ctools (https://www.drupal.org/project/ctools)
  * Views (https://www.drupal.org/project/views)
  * Token (https://www.drupal.org/project/token
@@ -67,7 +68,7 @@ Message Private View.
 Email Notifications:
 Email notifications are sent using message_notify module to users referenced by 
 the field_message_user_ref field and for all group members of the groups 
-referenced by field_message_groups_ref if using message_private_og. Users can
+referenced by field_message_group_ref if using message_private_og. Users can
 disable email notifications using the checkbox field 
 field_private_message_notify attached to the user entity, on their profile. The
 message notifications can be turned off globally on the module settings form.
@@ -84,7 +85,7 @@ When using the Message Private OG sub-module, the Group Messages display has
 a contextual filter which filters by group ID of the logged in user. This is
 developed taking into account that a content type called "Group" exists for all
 Group instances. Anything other than this setup requires user customisation. You
-must manually set the field_message_groups_ref contextual filter to use group
+must manually set the field_message_group_ref contextual filter to use group
 bundle to enable group filter on views.
 
 HOW TO USE
@@ -115,20 +116,17 @@ CAPTCHA method: https://www.drupal.org/project/recaptcha
 
 
 DEVELOPMENT AND TEST
-------------------
- * Add dependency to entityreference_prepopulate and add local action to create
-   message to user on profile and message : https://www.drupal.org/node/2393915
+--------------------
  * Create og permissions and permission checking for private messages.
  * Create global message_private_og permission - sending message to all groups.
  -------------------------------------------------------------------------------
  Work above required before releasing 1st beta release.
  -------------------------------------------------------------------------------
  * Threads can be created using entity reference field on a private message, 
-   which reference the message being replied to. A new permission to reply to 
-   messages can be created if necessary. An admin screen can be used to enable 
-   or disable threads to turn on/off replies on all private messages (Reply, 
-   Reply All). A tpl.php template and perhaps a css file will need to be added 
-   for indentation / presentation.
+   which reference the message being replied to. An admin setting can be used to 
+   enable or disable threads to turn on/off replies on all private messages 
+   (Reply, Reply All). A tpl.php template and perhaps a css file will need to be 
+   added for indentation / presentation.
  * Flag module on user entity to block/unblock users from messaging them
  * Flag module on message entity to show/hide messages from users own display
  * Integrate with rolereference module or similar to provide sending to users
