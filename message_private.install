@@ -294,7 +294,7 @@ function message_private_install() {
     ),
     'entity_type' => 'message',
     'field_name' => 'field_message_user_ref',
-    'label' => $t('Users'),
+    'label' => $t('To Users'),
     'required' => 1,
     'settings' => array(
       'behaviors' => array(

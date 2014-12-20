@@ -126,7 +126,7 @@ function message_private_menu() {
  *
  * @param object $message
  *   The message object.
- * @return
+ * @return bool
  *   TRUE if the user is allowed perform the operation, FALSE otherwise.
  */
 function message_private_access_callback($message) {
@@ -159,8 +159,8 @@ function message_private_menu_local_tasks_alter(&$data, $router_item, $root_path
         );
 
       }
-
       break;
+
     case 'user/%/messages':
       // Add a 'Create a new message' action link above message_private view.
       $item = menu_get_item('admin/content/message/create/private-message');
@@ -171,6 +171,7 @@ function message_private_menu_local_tasks_alter(&$data, $router_item, $root_path
       );
 
       break;
+
     case 'message/%':
       $message = menu_get_object('message', 1, $router_item['href']);
       if (isset($message->type) && $message->type == 'private_message') {
@@ -197,6 +198,7 @@ function message_private_menu_local_tasks_alter(&$data, $router_item, $root_path
         }
       }
       break;
+
   }
 }
 
@@ -412,7 +414,7 @@ function message_private_theme() {
  */
 function message_private_message_view_alter(&$build) {
   // Use template_preprocess_message_private for private_message messages only.
-  if(!empty($build['#bundle']) && $build['#bundle'] == 'private_message') {
+  if (!empty($build['#bundle']) && $build['#bundle'] == 'private_message') {
     $build['#theme'] = 'message_private';
   }
 }
@@ -430,12 +432,12 @@ function template_preprocess_message_private(&$variables) {
     $message = $variables['elements']['#entity'];
   }
   // Create submitted variable containing user who created the message and date.
-  if(!empty($message) && $uid = $message->uid) {
+  if (!empty($message) && $uid = $message->uid) {
     $variables['date'] = format_date($message->timestamp);
     $variables['name'] = theme('username', array('account' => user_load($uid)));
     $variables['submitted'] = t('Submitted by !username on !datetime', array(
         '!username' => $variables['name'],
-        '!datetime' => $variables['date']
+        '!datetime' => $variables['date'],
     ));
   }
 }
@@ -448,8 +450,8 @@ function template_preprocess_message_private(&$variables) {
  *
  * @param null|array $roles
  *   An assoc array of role names and ids.
- * @return
- *   mixed, either a role id or null.
+ * @return mixed
+ *   Either a role id or null.
  */
 function _message_private_max_message_limit_role($roles) {
   $limits = array();

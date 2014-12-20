@@ -120,7 +120,7 @@ function message_private_og_install() {
     ),
     'entity_type' => 'message',
     'field_name' => 'field_message_group_ref',
-    'label' => $t('Groups'),
+    'label' => $t('To Groups'),
     'required' => 0,
     'settings' => array(
       'user_register_form' => FALSE,

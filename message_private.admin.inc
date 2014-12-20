@@ -29,22 +29,22 @@ function message_private_admin_settings() {
 
   // Conditional fieldset for all message limitation settings.
   $form['interval_limit'] = array(
-      '#title' => t('Message interval limits'),
-      '#type' => 'fieldset',
-      '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
-      '#states' => array(
-        'invisible' => array(
-          ':input[name="' . MESSAGE_PRIVATE_MESSAGE_LIMIT . '"]' => array('checked' => FALSE),
-        ),
+    '#title' => t('Message interval limits'),
+    '#type' => 'fieldset',
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+    '#states' => array(
+      'invisible' => array(
+        ':input[name="' . MESSAGE_PRIVATE_MESSAGE_LIMIT . '"]' => array('checked' => FALSE),
       ),
+    ),
   );
 
   // Add a default fieldset.
   $form['interval_limit'][MESSAGE_PRIVATE_DEFAULT_INDEX] = array(
     '#type' => 'fieldset',
     '#title' => 'Default limit',
-    '#description' => t('Applies to all roles with blank entries below')
+    '#description' => t('Applies to all roles with blank entries below'),
   );
 
   $form['interval_limit'][MESSAGE_PRIVATE_DEFAULT_INDEX][MESSAGE_PRIVATE_DEFAULT_LIMIT] = array(
@@ -91,10 +91,10 @@ function message_private_admin_settings() {
 /**
  * Validate the admin settings form.
  *
- * @param array $form
+ * @param mixed $form
  *   The admin form array from message_private_admin_settings.
- * @param array $form_state
- *   The current state of the admin form.
+ * @param mixed $form_state
+ *   The current state of the admin form array.
  */
 function message_private_admin_settings_validate($form, &$form_state) {
 
@@ -124,9 +124,9 @@ function message_private_admin_settings_validate($form, &$form_state) {
 /**
  * Validate limit and interval values and show any errors on the form elements.
  *
- * @param array $limit_element
+ * @param mixed $limit_element
  *   Limit form element reference.
- * @param array $interval_element
+ * @param mixed $interval_element
  *   Interval form element reference.
  * @param string|int $limit
  *   Limit value to validate.

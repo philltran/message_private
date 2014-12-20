@@ -75,7 +75,7 @@ function message_private_og_menu_alter(&$items) {
  *
  * @param object $message
  *   The message object.
- * @return
+ * @return bool
  *   TRUE if the user is allowed perform the operation, FALSE otherwise.
  */
 function message_private_og_access_callback($message) {

@@ -33,7 +33,8 @@ The message_private module requires the following modules:
  * Message Notify (https://drupal.org/project/message_notify)
  * Entity API (https://www.drupal.org/project/entity)
  * Entity Reference (https://www.drupal.org/project/entityreference)
- * Entityreference Prepopulate (https://www.drupal.org/project/entityreference_prepopulate)
+ * Entityreference Prepopulate 
+   (https://www.drupal.org/project/entityreference_prepopulate)
  * Ctools (https://www.drupal.org/project/ctools)
  * Views (https://www.drupal.org/project/views)
  * Token (https://www.drupal.org/project/token
