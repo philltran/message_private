@@ -89,10 +89,17 @@ function message_private_views_default_views() {
   $handler->display->display_options['fields']['name']['field'] = 'name';
   $handler->display->display_options['fields']['name']['relationship'] = 'user';
   $handler->display->display_options['fields']['name']['label'] = 'From User';
+  /* Field: Message: Message ID */
+  $handler->display->display_options['fields']['mid']['id'] = 'mid';
+  $handler->display->display_options['fields']['mid']['table'] = 'message';
+  $handler->display->display_options['fields']['mid']['field'] = 'mid';
+  $handler->display->display_options['fields']['mid']['exclude'] = TRUE;
   /* Field: Message: Subject */
   $handler->display->display_options['fields']['field_message_subject']['id'] = 'field_message_subject';
   $handler->display->display_options['fields']['field_message_subject']['table'] = 'field_data_field_message_subject';
   $handler->display->display_options['fields']['field_message_subject']['field'] = 'field_message_subject';
+  $handler->display->display_options['fields']['field_message_subject']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['field_message_subject']['alter']['path'] = 'message/[mid]';
   /* Field: Message: View message */
   $handler->display->display_options['fields']['view']['id'] = 'view';
   $handler->display->display_options['fields']['view']['table'] = 'message';
@@ -135,7 +142,7 @@ function message_private_views_default_views() {
     'private_message' => 'private_message',
   );
 
-  /* Display: Received Messages */
+  /* Display: Messages */
   $handler = $view->new_display('page', 'Messages', 'page_1');
   $handler->display->display_options['defaults']['title'] = FALSE;
   $handler->display->display_options['title'] = 'Messages';
@@ -146,7 +153,7 @@ function message_private_views_default_views() {
   $handler->display->display_options['relationships']['user']['table'] = 'message';
   $handler->display->display_options['relationships']['user']['field'] = 'user';
   $handler->display->display_options['defaults']['arguments'] = FALSE;
-  /* Contextual filter: Message: Users (field_message_user_ref) */
+  /* Contextual filter: Message: To Users (field_message_user_ref) */
   $handler->display->display_options['arguments']['field_message_user_ref_target_id']['id'] = 'field_message_user_ref_target_id';
   $handler->display->display_options['arguments']['field_message_user_ref_target_id']['table'] = 'field_data_field_message_user_ref';
   $handler->display->display_options['arguments']['field_message_user_ref_target_id']['field'] = 'field_message_user_ref_target_id';
@@ -167,20 +174,78 @@ function message_private_views_default_views() {
   $handler->display->display_options['defaults']['title'] = FALSE;
   $handler->display->display_options['title'] = 'Sent';
   $handler->display->display_options['display_description'] = 'Private messages sent by the user.';
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'table';
+  $handler->display->display_options['style_options']['columns'] = array(
+    'field_message_user_ref' => 'field_message_user_ref',
+    'field_message_group_ref' => 'field_message_user_ref',
+    'field_message_subject' => 'field_message_subject',
+    'view' => 'view',
+    'delete' => 'view',
+    'timestamp' => 'timestamp',
+  );
+  $handler->display->display_options['style_options']['default'] = '-1';
+  $handler->display->display_options['style_options']['info'] = array(
+    'field_message_user_ref' => array(
+      'align' => '',
+      'separator' => ', ',
+      'empty_column' => 0,
+    ),
+    'field_message_group_ref' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'field_message_subject' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'view' => array(
+      'align' => '',
+      'separator' => ' ',
+      'empty_column' => 0,
+    ),
+    'delete' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'timestamp' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+  );
+  $handler->display->display_options['style_options']['sticky'] = TRUE;
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
   $handler->display->display_options['defaults']['fields'] = FALSE;
-  /* Field: Message: Users */
+  /* Field: Message: To Users */
   $handler->display->display_options['fields']['field_message_user_ref']['id'] = 'field_message_user_ref';
   $handler->display->display_options['fields']['field_message_user_ref']['table'] = 'field_data_field_message_user_ref';
   $handler->display->display_options['fields']['field_message_user_ref']['field'] = 'field_message_user_ref';
-  $handler->display->display_options['fields']['field_message_user_ref']['label'] = 'To Users';
+  $handler->display->display_options['fields']['field_message_user_ref']['label'] = 'To Users / Groups';
   $handler->display->display_options['fields']['field_message_user_ref']['settings'] = array(
     'link' => 1,
   );
   $handler->display->display_options['fields']['field_message_user_ref']['delta_offset'] = '0';
+  /* Field: Message: Message ID */
+  $handler->display->display_options['fields']['mid']['id'] = 'mid';
+  $handler->display->display_options['fields']['mid']['table'] = 'message';
+  $handler->display->display_options['fields']['mid']['field'] = 'mid';
+  $handler->display->display_options['fields']['mid']['exclude'] = TRUE;
   /* Field: Message: Subject */
   $handler->display->display_options['fields']['field_message_subject']['id'] = 'field_message_subject';
   $handler->display->display_options['fields']['field_message_subject']['table'] = 'field_data_field_message_subject';
   $handler->display->display_options['fields']['field_message_subject']['field'] = 'field_message_subject';
+  $handler->display->display_options['fields']['field_message_subject']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['field_message_subject']['alter']['path'] = 'message/[mid]';
   /* Field: Message: View message */
   $handler->display->display_options['fields']['view']['id'] = 'view';
   $handler->display->display_options['fields']['view']['table'] = 'message';
@@ -199,6 +264,14 @@ function message_private_views_default_views() {
   $handler->display->display_options['fields']['timestamp']['field'] = 'timestamp';
   $handler->display->display_options['fields']['timestamp']['date_format'] = 'short';
   $handler->display->display_options['fields']['timestamp']['second_date_format'] = 'long';
+  /* Field: Message: To Groups */
+  $handler->display->display_options['fields']['field_message_group_ref']['id'] = 'field_message_group_ref';
+  $handler->display->display_options['fields']['field_message_group_ref']['table'] = 'field_data_field_message_group_ref';
+  $handler->display->display_options['fields']['field_message_group_ref']['field'] = 'field_message_group_ref';
+  $handler->display->display_options['fields']['field_message_group_ref']['settings'] = array(
+    'link' => 1,
+  );
+  $handler->display->display_options['fields']['field_message_group_ref']['delta_offset'] = '0';
   $handler->display->display_options['path'] = 'user/%/messages/sent';
   $handler->display->display_options['menu']['type'] = 'tab';
   $handler->display->display_options['menu']['title'] = 'Sent';

@@ -126,6 +126,7 @@ function message_private_menu() {
  *
  * @param object $message
  *   The message object.
+ *
  * @return bool
  *   TRUE if the user is allowed perform the operation, FALSE otherwise.
  */
@@ -450,6 +451,7 @@ function template_preprocess_message_private(&$variables) {
  *
  * @param null|array $roles
  *   An assoc array of role names and ids.
+ *
  * @return mixed
  *   Either a role id or null.
  */

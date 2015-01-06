@@ -118,8 +118,8 @@ CAPTCHA method: https://www.drupal.org/project/recaptcha
 
 DEVELOPMENT AND TEST
 --------------------
- * Create og permissions and permission checking for private messages.
- * Create global message_private_og permission - sending message to all groups.
+ * Alter the autocomplete query to limit groups in groups ref field. i.e. - show 
+   groups with create permission only https://www.drupal.org/node/310077.
  -------------------------------------------------------------------------------
  Work above required before releasing 1st beta release.
  -------------------------------------------------------------------------------
