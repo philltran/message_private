@@ -118,18 +118,14 @@ CAPTCHA method: https://www.drupal.org/project/recaptcha
 
 DEVELOPMENT AND TEST
 --------------------
- * Alter the autocomplete query to limit groups in groups ref field. i.e. - show 
-   groups with create permission only https://www.drupal.org/node/310077.
- -------------------------------------------------------------------------------
- Work above required before releasing 1st beta release.
- -------------------------------------------------------------------------------
- * Threads can be created using entity reference field on a private message, 
-   which reference the message being replied to. An admin setting can be used to 
-   enable or disable threads to turn on/off replies on all private messages 
-   (Reply, Reply All). A tpl.php template and perhaps a css file will need to be 
-   added for indentation / presentation.
+ * Threads will be created: https://www.drupal.org/node/2367729#comment-9480579. 
+   An admin setting can be used to enable or disable threads to turn on/off 
+   replies on all private messages (Reply, Reply All). Perhaps a css file will 
+   need to be added for indentation / presentation.
  * Flag module on user entity to block/unblock users from messaging them
  * Flag module on message entity to show/hide messages from users own display
+ * Allow Operations links to display correctly on views, i.e. - show 'View' for
+   users with view permissions. Not showing currently due to custom permissions.
  * Integrate with rolereference module or similar to provide sending to users
    within a certain role.
  * Research the benefits of Rules module integration and what could be provided.
