@@ -210,10 +210,15 @@ function message_private_menu_local_tasks_alter(&$data, $router_item, $root_path
  */
 function message_private_menu_alter(&$items) {
 
+  // Override access callbacks.
   $items['message/%message']['access callback'] = 'message_private_access_control';
   $items['message/%message/view']['access callback'] = 'message_private_access_control';
   $items['message/%message/edit']['access callback'] = 'message_private_access_control';
   $items['message/%message/delete']['access callback'] = 'message_private_access_control';
+
+  // Override page arguments for message create & edit forms.
+  $items['admin/content/message/create/private-message']['page arguments'] = array('message_private_instance_message_manage', 'private_message');
+  $items['message/%message/edit']['page arguments'] = array('message_private_instance_message_manage', 1);
 
   return $items;
 }
@@ -280,6 +285,30 @@ function message_private_access_control($operation, $message, $user_obj = NULL) 
     }
   }
   return FALSE;
+}
+
+/**
+ * The UI for creating/editing the message.
+ *
+ * This function is defined to override that provided by Message UI module. This
+ * allows override specific values of the form such as the cancel link.
+ */
+function message_private_instance_message_manage($form, &$form_state, $message) {
+  // Call message_ui to create the UI.
+  $form = message_ui_instance_message_manage($form, $form_state, $message);
+
+  // When the message is a private message override the cancel link.
+  if ((!empty($message->type) && $message->type == 'private_message')
+    || $message == 'private_message') {
+    global $user;
+
+    $referer = $_SERVER['HTTP_REFERER']; // Get the referer uri from globals.
+    // Redirect back to referer uri is exists, otherwise to user message inbox.
+    $form['actions']['cancel']['#markup'] =
+      l(t('Cancel'), (!empty($referer) ? $referer : 'user/'. $user->uid . '/messages'));
+  }
+
+  return $form;
 }
 
 /**
