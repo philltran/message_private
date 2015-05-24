@@ -88,7 +88,6 @@ function message_private_permission() {
   $permissions['administer message private'] = array(
     'title' => t('Administer message private'),
     'description' => t('Access the message private administration pages.'),
-    // 'restrict access' => TRUE, // May need to be added in future.
   );
 
   return $permissions;
@@ -114,6 +113,16 @@ function message_private_menu() {
     'title' => 'Inbox',
     'description' => 'Message Private Inbox',
     'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+
+  // Create new non admin path to create messages.
+  $items['message/create/private-message'] = array(
+    'title' => 'Private Message',
+    'description' => 'Create a new message Private Message instance',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('message_private_instance_message_manage', 'private_message'),
+    'access arguments' => array('create', 'private_message'),
+    'access callback' => 'message_private_access_control',
   );
 
   return $items;
@@ -151,7 +160,7 @@ function message_private_menu_local_tasks_alter(&$data, $router_item, $root_path
       }
       // Only display the local task on other users profile, not current user's.
       if (!empty($to_user) && $user->uid != $to_user->uid) {
-        $item = menu_get_item('admin/content/message/create/private-message');
+        $item = menu_get_item('message/create/private-message');
         $item['title'] = t('Create a new message for') . ' ' . $to_user->name;
         $item['localized_options']['query'] = array('field_message_user_ref' => $to_user->uid);
         $data['actions']['output'][] = array(
@@ -164,7 +173,7 @@ function message_private_menu_local_tasks_alter(&$data, $router_item, $root_path
 
     case 'user/%/messages':
       // Add a 'Create a new message' action link above message_private view.
-      $item = menu_get_item('admin/content/message/create/private-message');
+      $item = menu_get_item('message/create/private-message');
       $item['title'] = t('Create a new message');
       $data['actions']['output'][] = array(
         '#theme' => 'menu_local_action',
@@ -188,7 +197,7 @@ function message_private_menu_local_tasks_alter(&$data, $router_item, $root_path
         $to_user = user_load($message->uid);
         // Display the local task on other users profile, not current user's.
         if (!empty($to_user) && $user->uid != $to_user->uid) {
-          $item = menu_get_item('admin/content/message/create/private-message');
+          $item = menu_get_item('message/create/private-message');
           $item['title'] = t('Create a new message for') . ' ' . $to_user->name;
           $item['localized_options']['query'] = array('field_message_user_ref' => $to_user->uid);
           $data['actions']['output'][] = array(
@@ -216,9 +225,14 @@ function message_private_menu_alter(&$items) {
   $items['message/%message/edit']['access callback'] = 'message_private_access_control';
   $items['message/%message/delete']['access callback'] = 'message_private_access_control';
 
-  // Override page arguments for message create & edit forms.
-  $items['admin/content/message/create/private-message']['page arguments'] = array('message_private_instance_message_manage', 'private_message');
+  // Override page arguments for message edit forms.
   $items['message/%message/edit']['page arguments'] = array('message_private_instance_message_manage', 1);
+
+  // Override page created by message_ui to allow custom "Private Message" URI.
+  $items['admin/content/message/create']['page callback'] = 'message_private_create_new_message_instance_list';
+
+  // Unset menu item created by message_ui for private_message type.
+  unset($items['admin/content/message/create/private-message']);
 
   return $items;
 }
@@ -285,6 +299,40 @@ function message_private_access_control($operation, $message, $user_obj = NULL) 
     }
   }
   return FALSE;
+}
+
+/**
+ * Override instance list provided by Message UI.
+ *
+ * Create links to all message create forms by type, allowing for creation of
+ * link to custom Private Message create form URI.
+ *
+ * @return null|string
+ * @throws Exception
+ */
+function message_private_create_new_message_instance_list() {
+  $items = array();
+  $allowed_types = message_ui_user_can_create_message();
+
+  if ($types = message_ui_get_types()) {
+    foreach ($types as $type => $title) {
+      if ($allowed_types || (is_array($allowed_types) && $allowed_types[$type])) {
+        // Create links to message create forms.
+        if ($type != 'private_message') {
+          $items[] = l($title, 'admin/content/message/create/' . str_replace('_', '-', $type));
+        }
+        else {
+          // Create link to customised menu item for private_message create.
+          $items[] = l($title, 'message/create/' . str_replace('_', '-', $type));
+        }
+      }
+    }
+  }
+  else {
+    return t("There are no messages types. You can create a new message type <a href='@url'>here</a>.", array('@url' => url('admin/structure/messages/add')));
+  }
+
+  return theme('item_list', array('items' => $items));
 }
 
 /**

@@ -108,7 +108,7 @@ displays sent messages and the "Group" local task which displays group messages.
 SECURITY
 --------
 This module does not come with any security features out-of-the-box, but you can
-easily configure your own using methods and modules of you choice.
+easily configure your own, using methods and modules of you choice.
 
 Examples:
 
@@ -118,6 +118,7 @@ CAPTCHA method: https://www.drupal.org/project/recaptcha
 
 DEVELOPMENT AND TEST
 --------------------
+ * Update Subject field to use a texfield instead of textarea.
  * Threads will be created: https://www.drupal.org/node/2367729#comment-9480579. 
    An admin setting can be used to enable or disable threads to turn on/off 
    replies on all private messages (Reply, Reply All). Perhaps a css file will 

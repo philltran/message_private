@@ -45,6 +45,8 @@ function message_private_admin_settings() {
     '#type' => 'fieldset',
     '#title' => 'Default limit',
     '#description' => t('Applies to all roles with blank entries below'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
   );
 
   $form['interval_limit'][MESSAGE_PRIVATE_DEFAULT_INDEX][MESSAGE_PRIVATE_DEFAULT_LIMIT] = array(
@@ -70,6 +72,8 @@ function message_private_admin_settings() {
     $form['interval_limit'][$id] = array(
       '#type' => 'fieldset',
       '#title' => $role,
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
     );
     $form['interval_limit'][$id][$limit_name] = array(
       '#type' => 'textfield',
