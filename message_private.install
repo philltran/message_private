@@ -513,3 +513,214 @@ function message_private_update_7100() {
 
   return t('Updates were successful.');
 }
+
+/**
+ * Converts field_message_subject from textarea to textfield.
+ */
+function message_private_update_7101() {
+  $t = get_t(); // Ensure translations don't break during installation.
+  $length = 255; // Length of new subject field.
+  $field_name = 'field_message_subject';
+  $field_name_temp = 'field_message_subject_temp';
+
+  // Get base definition of temporary new subject text field.
+  $field_base = _message_private_get_subject_field_base($field_name_temp);
+
+  if (!field_create_field($field_base)) {
+    throw new DrupalUpdateException('Could not create "' . $field_name_temp . '" field base.');
+  }
+
+  // Get instance of temporary new subject text field.
+  $field_instance = _message_private_get_subject_field_instance($field_name_temp);
+
+  if (!field_create_instance($field_instance)) {
+    throw new DrupalUpdateException('Could not create "' . $field_name_temp . '" field instance.');
+  }
+
+  // Get all private message instances on the system.
+  $query = new EntityFieldQuery();
+  $result = $query->entityCondition('entity_type', 'message')
+    ->entityCondition('bundle', 'private_message')
+    ->execute();
+
+  // If we have messages, load them.
+  if (isset($result['message'])) {
+    $message_ids = array_keys($result['message']);
+    $messages = entity_load('node', $message_ids);
+  }
+
+  // For each private message, load the current subject.
+  if (!empty($messages)) {
+    foreach ($messages as $message) {
+      $subject = field_get_items('message', $message, 'field_message_subject');
+      // If current subject length is greater than 255.
+      if (!empty($subject[0]['value'])) {
+        $subject_value = $subject[0]['value'];
+        // Prepend subject in front of body field (Subject: $subject).
+        $wrapper = entity_metadata_wrapper('message', $message);
+        if (strlen($subject_value) > $length) {
+          $body = field_get_items('message', $message, 'field_message_body');
+          // If we have a body value in the message.
+          if (!empty($body[0]['value'])) {
+            $body_value = $t('Subject:') . ' (' . $subject_value . ') ' . $body[0]['value'];
+          }
+          else {
+            $body_value = $t('Subject:') . ' (' . $subject_value . ') ';
+          }
+          $wrapper->field_message_body->set($body_value);
+          // Truncate subject at 252, add 3 dots.
+          $subject_new_value = substr($subject_value, 0, 252) . '...';
+          // Save using wrapper into the temporary subject field.
+          $wrapper->field_message_subject_temp->set($subject_new_value);
+        }
+        else {
+          // Save using wrapper into the temporary subject field.
+          $wrapper->field_message_subject_temp->set($subject_value);
+        }
+      }
+    }
+  }
+
+  // Remove field_message_subject instance.
+  $instance = field_info_instance('message', $field_name, 'private_message');
+  field_delete_instance($instance);
+
+  // Remove field_message_subject field.
+  field_delete_field($field_name);
+
+  // Get base definition of new subject text field.
+  $field_base = _message_private_get_subject_field_base($field_name);
+
+  // Recreate field_message_subject as text field.
+  if (!field_create_field($field_base)) {
+    throw new DrupalUpdateException('Could not create "' . $field_name . '" field base.');
+  }
+
+  // Get instance of new subject text field.
+  $field_instance = _message_private_get_subject_field_instance($field_name);
+
+  if (!field_create_instance($field_instance)) {
+    throw new DrupalUpdateException('Could not create "' . $field_name . '" field instance.');
+  }
+
+  // Cycle through each private message, load the current subject.
+  if (!empty($messages)) {
+    foreach ($messages as $message) {
+      // Copy field_message_subject_temp to field_message_subject.
+      $subject_temp = field_get_items('message', $message, 'field_message_subject_temp');
+
+      if (!empty($subject_temp[0]['value'])) {
+        $wrapper = entity_metadata_wrapper('message', $message);
+        $wrapper->field_message_subject->set($subject_temp[0]['value']);
+      }
+    }
+  }
+  // Remove field_message_subject_temp instance.
+  $instance = field_info_instance('message', $field_name_temp, 'private_message');
+  field_delete_instance($instance);
+
+  // Remove field_message_subject_temp field.
+  field_delete_field($field_name_temp);
+
+  // TODO: Add new base and instance definition (fn calls) to hook_install.
+
+  return t('Updates were successful.');
+}
+
+/**
+ * Get base text field definition.
+ *
+ * @param $field_name
+ * @return mixed
+ */
+function _message_private_get_subject_field_base($field_name) {
+  // Field base: 'field_message_subject_temp'.
+  $field_base[$field_name] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => $field_name,
+    'foreign keys' => array(
+      'format' => array(
+        'columns' => array(
+          'format' => 'format',
+        ),
+        'table' => 'filter_format',
+      ),
+    ),
+    'indexes' => array(
+      'format' => array(
+        0 => 'format',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'text',
+    'settings' => array(
+      'max_length' => 255,
+    ),
+    'translatable' => 0,
+    'type' => 'text',
+  );
+
+  return $field_base;
+}
+
+/**
+ * Get instance text field definition.
+ *
+ * @param $field_name
+ * @return mixed
+ */
+function _message_private_get_subject_field_instance($field_name) {
+  // Ensure translations don't break during installation.
+  $t = get_t();
+
+  // Field instance: 'message-private_message-field_message_subject_temp'.
+  $field_instance['message-private_message-' . $field_name] = array(
+    'bundle' => 'private_message',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 3,
+      ),
+      'message_notify_email_body' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'message_notify_email_subject' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'message',
+    'field_name' => $field_name,
+    'label' => $t('Subject Temp'),
+    'required' => 0,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'size' => 150,
+      ),
+      'type' => 'text_textfield',
+      'weight' => 1,
+    ),
+  );
+
+  return $field_instance;
+}
