@@ -75,31 +75,8 @@ function message_private_install() {
     'type' => 'text_long',
   );
 
-  $field_bases['field_message_subject'] = array(
-    'active' => 1,
-    'cardinality' => 1,
-    'deleted' => 0,
-    'entity_types' => array(),
-    'field_name' => 'field_message_subject',
-    'foreign keys' => array(
-      'format' => array(
-        'columns' => array(
-          'format' => 'format',
-        ),
-        'table' => 'filter_format',
-      ),
-    ),
-    'indexes' => array(
-      'format' => array(
-        0 => 'format',
-      ),
-    ),
-    'locked' => 0,
-    'module' => 'text',
-    'settings' => array(),
-    'translatable' => 0,
-    'type' => 'text_long',
-  );
+  // Get base definition of subject text field.
+  $field_bases['field_message_subject'] = _message_private_get_subject_field_base('field_message_subject');
 
   $field_bases['field_message_user_ref'] = array(
     'active' => 1,
@@ -218,51 +195,8 @@ function message_private_install() {
     ),
   );
 
-  $field_instances['message-private_message-field_message_subject'] = array(
-    'bundle' => 'private_message',
-    'default_value' => NULL,
-    'deleted' => 0,
-    'description' => '',
-    'display' => array(
-      'default' => array(
-        'label' => 'inline',
-        'module' => 'text',
-        'settings' => array(),
-        'type' => 'text_default',
-        'weight' => 1,
-      ),
-      'message_notify_email_body' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 3,
-      ),
-      'message_notify_email_subject' => array(
-        'label' => 'hidden',
-        'module' => 'text',
-        'settings' => array(),
-        'type' => 'text_default',
-        'weight' => 1,
-      ),
-    ),
-    'entity_type' => 'message',
-    'field_name' => 'field_message_subject',
-    'label' => $t('Subject'),
-    'required' => 0,
-    'settings' => array(
-      'text_processing' => 0,
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'active' => 1,
-      'module' => 'text',
-      'settings' => array(
-        'rows' => 1,
-      ),
-      'type' => 'text_textarea',
-      'weight' => 1,
-    ),
-  );
+  // Get instance of subject text field.
+  $field_instances['message-private_message-field_message_subject'] = _message_private_get_subject_field_instance('field_message_subject');
 
   $field_instances['message-private_message-field_message_user_ref'] = array(
     'bundle' => 'private_message',
@@ -546,7 +480,7 @@ function message_private_update_7101() {
   // If we have messages, load them.
   if (isset($result['message'])) {
     $message_ids = array_keys($result['message']);
-    $messages = entity_load('node', $message_ids);
+    $messages = entity_load('message', $message_ids);
   }
 
   // For each private message, load the current subject.
@@ -577,13 +511,11 @@ function message_private_update_7101() {
           // Save using wrapper into the temporary subject field.
           $wrapper->field_message_subject_temp->set($subject_value);
         }
+        // Save the message entity.
+        $wrapper->save();
       }
     }
   }
-
-  // Remove field_message_subject instance.
-  $instance = field_info_instance('message', $field_name, 'private_message');
-  field_delete_instance($instance);
 
   // Remove field_message_subject field.
   field_delete_field($field_name);
@@ -612,20 +544,17 @@ function message_private_update_7101() {
       if (!empty($subject_temp[0]['value'])) {
         $wrapper = entity_metadata_wrapper('message', $message);
         $wrapper->field_message_subject->set($subject_temp[0]['value']);
+        $wrapper->save(); // Save the message entity.
       }
     }
   }
-  // Remove field_message_subject_temp instance.
-  $instance = field_info_instance('message', $field_name_temp, 'private_message');
-  field_delete_instance($instance);
 
   // Remove field_message_subject_temp field.
   field_delete_field($field_name_temp);
 
-  // TODO: Add new base and instance definition (fn calls) to hook_install.
-
-  return t('Updates were successful.');
+  return $t('Success - changed Subject to textfield. Temp Subject field removed.');
 }
+
 
 /**
  * Get base text field definition.
@@ -635,7 +564,7 @@ function message_private_update_7101() {
  */
 function _message_private_get_subject_field_base($field_name) {
   // Field base: 'field_message_subject_temp'.
-  $field_base[$field_name] = array(
+  $field_base = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
@@ -677,35 +606,36 @@ function _message_private_get_subject_field_instance($field_name) {
   $t = get_t();
 
   // Field instance: 'message-private_message-field_message_subject_temp'.
-  $field_instance['message-private_message-' . $field_name] = array(
+  $field_instance = array(
     'bundle' => 'private_message',
     'default_value' => NULL,
     'deleted' => 0,
     'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'above',
+        'label' => 'inline',
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
-        'weight' => 3,
+        'weight' => 1,
       ),
       'message_notify_email_body' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 0,
+        'weight' => 3,
       ),
       'message_notify_email_subject' => array(
-        'label' => 'above',
+        'label' => 'hidden',
+        'module' => 'text',
         'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
+        'type' => 'text_default',
+        'weight' => 1,
       ),
     ),
     'entity_type' => 'message',
     'field_name' => $field_name,
-    'label' => $t('Subject Temp'),
+    'label' => $t('Subject'),
     'required' => 0,
     'settings' => array(
       'text_processing' => 0,
@@ -718,7 +648,7 @@ function _message_private_get_subject_field_instance($field_name) {
         'size' => 150,
       ),
       'type' => 'text_textfield',
-      'weight' => 1,
+      'weight' => 0,
     ),
   );
 

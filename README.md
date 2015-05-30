@@ -119,6 +119,8 @@ CAPTCHA method: https://www.drupal.org/project/recaptcha
 DEVELOPMENT AND TEST
 --------------------
  * Update Subject field to use a texfield instead of textarea.
+ * Hiding private messages from admin/content/message using settings page flag.
+ * Hiding "To Groups" field when message_private_og field is disabled.
  * Threads will be created: https://www.drupal.org/node/2367729#comment-9480579. 
    An admin setting can be used to enable or disable threads to turn on/off 
    replies on all private messages (Reply, Reply All). Perhaps a css file will 
