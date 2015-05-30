@@ -78,7 +78,7 @@ function message_private_og_menu_alter(&$items) {
   $items['message/%message']['access callback'] = 'message_private_og_access_control';
   $items['message/%message/view']['access callback'] = 'message_private_og_access_control';
   $items['message/%message/delete']['access callback'] = 'message_private_og_access_control';
-  $items['admin/content/message/create/private-message']['access callback'] = 'message_private_og_access_control';
+  $items['message/create/private-message']['access callback'] = 'message_private_og_access_control';
 
   return $items;
 }
