@@ -353,6 +353,105 @@ function message_private_uninstall() {
 }
 
 /**
+ * Get base text field definition.
+ *
+ * @param $field_name
+ * @return mixed
+ */
+function _message_private_get_subject_field_base($field_name) {
+  // Field base: 'field_message_subject_temp'.
+  $field_base = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => $field_name,
+    'foreign keys' => array(
+      'format' => array(
+        'columns' => array(
+          'format' => 'format',
+        ),
+        'table' => 'filter_format',
+      ),
+    ),
+    'indexes' => array(
+      'format' => array(
+        0 => 'format',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'text',
+    'settings' => array(
+      'max_length' => 255,
+    ),
+    'translatable' => 0,
+    'type' => 'text',
+  );
+
+  return $field_base;
+}
+
+/**
+ * Get instance text field definition.
+ *
+ * @param $field_name
+ * @return mixed
+ */
+function _message_private_get_subject_field_instance($field_name) {
+  // Ensure translations don't break during installation.
+  $t = get_t();
+
+  // Field instance: 'message-private_message-field_message_subject_temp'.
+  $field_instance = array(
+    'bundle' => 'private_message',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'inline',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 1,
+      ),
+      'message_notify_email_body' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 3,
+      ),
+      'message_notify_email_subject' => array(
+        'label' => 'hidden',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 1,
+      ),
+    ),
+    'entity_type' => 'message',
+    'field_name' => $field_name,
+    'label' => $t('Subject'),
+    'required' => 0,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'size' => 150,
+      ),
+      'type' => 'text_textfield',
+      'weight' => 0,
+    ),
+  );
+
+  return $field_instance;
+}
+
+/**
  * Implements hook_update_N().
  *
  * Removes flag: 'private_message_notify' and adds boolean field to user entity:
@@ -553,104 +652,4 @@ function message_private_update_7101() {
   field_delete_field($field_name_temp);
 
   return $t('Success - changed Subject to textfield. Temp Subject field removed.');
-}
-
-
-/**
- * Get base text field definition.
- *
- * @param $field_name
- * @return mixed
- */
-function _message_private_get_subject_field_base($field_name) {
-  // Field base: 'field_message_subject_temp'.
-  $field_base = array(
-    'active' => 1,
-    'cardinality' => 1,
-    'deleted' => 0,
-    'entity_types' => array(),
-    'field_name' => $field_name,
-    'foreign keys' => array(
-      'format' => array(
-        'columns' => array(
-          'format' => 'format',
-        ),
-        'table' => 'filter_format',
-      ),
-    ),
-    'indexes' => array(
-      'format' => array(
-        0 => 'format',
-      ),
-    ),
-    'locked' => 0,
-    'module' => 'text',
-    'settings' => array(
-      'max_length' => 255,
-    ),
-    'translatable' => 0,
-    'type' => 'text',
-  );
-
-  return $field_base;
-}
-
-/**
- * Get instance text field definition.
- *
- * @param $field_name
- * @return mixed
- */
-function _message_private_get_subject_field_instance($field_name) {
-  // Ensure translations don't break during installation.
-  $t = get_t();
-
-  // Field instance: 'message-private_message-field_message_subject_temp'.
-  $field_instance = array(
-    'bundle' => 'private_message',
-    'default_value' => NULL,
-    'deleted' => 0,
-    'description' => '',
-    'display' => array(
-      'default' => array(
-        'label' => 'inline',
-        'module' => 'text',
-        'settings' => array(),
-        'type' => 'text_default',
-        'weight' => 1,
-      ),
-      'message_notify_email_body' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 3,
-      ),
-      'message_notify_email_subject' => array(
-        'label' => 'hidden',
-        'module' => 'text',
-        'settings' => array(),
-        'type' => 'text_default',
-        'weight' => 1,
-      ),
-    ),
-    'entity_type' => 'message',
-    'field_name' => $field_name,
-    'label' => $t('Subject'),
-    'required' => 0,
-    'settings' => array(
-      'text_processing' => 0,
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'active' => 1,
-      'module' => 'text',
-      'settings' => array(
-        'size' => 150,
-      ),
-      'type' => 'text_textfield',
-      'weight' => 0,
-    ),
-  );
-
-  return $field_instance;
 }

@@ -62,6 +62,10 @@ and view private messages.
 "View user profiles" for users needing to send messages to other users. This is
 due to issue: 'Restricted access results with user entityreference' - #2153463.
 This patch may also help if committed in future: #2247937
+"Administer message types" permission shows the user all private messages on the 
+admin/content/message view by default. To hide private messages from this view, 
+you must override view provided by Message module:
+admin/structure/views/view/message/edit
 
 When enabled, the module will provide a new message type "Private Message" and a 
 Message Private View.
@@ -118,13 +122,11 @@ CAPTCHA method: https://www.drupal.org/project/recaptcha
 
 DEVELOPMENT AND TEST
 --------------------
- * Update Subject field to use a texfield instead of textarea.
- * Hiding private messages from admin/content/message using settings page flag.
- * Hiding "To Groups" field when message_private_og field is disabled.
  * Threads will be created: https://www.drupal.org/node/2367729#comment-9480579. 
    An admin setting can be used to enable or disable threads to turn on/off 
    replies on all private messages (Reply, Reply All). Perhaps a css file will 
-   need to be added for indentation / presentation.
+   need to be added for indentation / presentation. Integrate with MessageJS,
+   nodeJS or socket.io.
  * Flag module on user entity to block/unblock users from messaging them
  * Flag module on message entity to show/hide messages from users own display
  * Allow Operations links to display correctly on views, i.e. - show 'View' for
