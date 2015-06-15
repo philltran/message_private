@@ -120,7 +120,7 @@ function message_private_menu() {
     'title' => 'Private Message',
     'description' => 'Create a new message Private Message instance',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('message_private_instance_message_manage', 'private_message'),
+    'page arguments' => array('message_ui_instance_message_manage', 'private_message'),
     'access arguments' => array('create', 'private_message'),
     'access callback' => 'message_private_access_control',
   );
@@ -266,12 +266,12 @@ function message_private_create_new_message_instance_list() {
   return theme('item_list', array('items' => $items));
 }
 
-
 /**
  * Implements hook_form_FORM_ID_alter().
  *
  * This function is defined to override that provided by Message UI module. This
- * allows override specific values of the form such as the cancel link.
+ * allows override specific values of the form such as the cancel link. It hides
+ * the message_text on the edit and create form, and adds custom validation.
  */
 function message_private_form_message_ui_instance_message_manage_alter(&$form, &$form_state, $form_id) {
   if (!empty($form_state['#entity']) && $form_state['#entity']->type == 'private_message') {
@@ -281,6 +281,12 @@ function message_private_form_message_ui_instance_message_manage_alter(&$form, &
     // Redirect back to referer uri is exists, otherwise to user message inbox.
     $form['actions']['cancel']['#markup'] =
       l(t('Cancel'), (!empty($referer) ? $referer : 'user/'. $user->uid . '/messages'));
+
+    if (isset($form['text']['#type'])) {
+      $form['text']['#type'] = 'hidden';
+    }
+    $form['owner']['#access'] = user_access('bypass private message access control');
+    $form['#validate'][] = 'message_private_form_message_private_instance_message_manage_validate';
   }
 }
 
@@ -332,7 +338,7 @@ function message_private_menu_local_tasks_alter(&$data, $router_item, $root_path
         $to_user = array_shift($router_item['page_arguments']);
       }
       // Only display the local task on other users profile, not current user's.
-      if (!empty($to_user) && !empty($to_user->uid) && $user->uid != $to_user->uid) {
+      if (!empty($to_user) && $user->uid != $to_user->uid) {
         $item = menu_get_item('message/create/private-message');
         $item['title'] = t('Create a new message for') . ' ' . $to_user->name;
         $item['localized_options']['query'] = array('field_message_user_ref' => $to_user->uid);
@@ -382,22 +388,6 @@ function message_private_menu_local_tasks_alter(&$data, $router_item, $root_path
       }
       break;
 
-  }
-}
-
-/**
- * Implements hook_form_FORM_ID_alter().
- *
- * Hide the message_text field from the message edit form. It is only useful
- * post creation. i.e. - contains user data. Also add custom validate function.
- */
-function message_private_form_message_private_instance_message_manage_alter(&$form, &$form_state, $form_id) {
-  if ($form['#bundle'] == 'private_message') {
-    if (isset($form['text']['#type'])) {
-      $form['text']['#type'] = 'hidden';
-    }
-    $form['owner']['#access'] = user_access('bypass private message access control');
-    $form['#validate'][] = 'message_private_form_message_private_instance_message_manage_validate';
   }
 }
 

@@ -112,7 +112,7 @@ displays sent messages and the "Group" local task which displays group messages.
 SECURITY
 --------
 This module does not come with any security features out-of-the-box, but you can
-easily configure your own, using methods and modules of you choice.
+easily configure your own, using methods and modules of your choice.
 
 Examples:
 
@@ -122,13 +122,14 @@ CAPTCHA method: https://www.drupal.org/project/recaptcha
 
 DEVELOPMENT AND TEST
 --------------------
- * Threads will be created: https://www.drupal.org/node/2367729#comment-9480579. 
+ * Threads will be created: https://www.drupal.org/node/2504863. 
    An admin setting can be used to enable or disable threads to turn on/off 
    replies on all private messages (Reply, Reply All). Perhaps a css file will 
    need to be added for indentation / presentation. Integrate with MessageJS,
    nodeJS or socket.io.
  * Flag module on user entity to block/unblock users from messaging them
- * Flag module on message entity to show/hide messages from users own display
+ * Flag module on message entity to show/hide (delete) messages from users own 
+   display
  * Allow Operations links to display correctly on views, i.e. - show 'View' for
    users with view permissions. Not showing currently due to custom permissions.
  * Integrate with rolereference module or similar to provide sending to users
