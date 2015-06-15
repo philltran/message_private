@@ -9,7 +9,7 @@
 function message_private_og_views_api() {
   return array(
     'api' => 3,
-    'path' => drupal_get_path('module', 'message_private_og') . '/views',
+    'path' => drupal_get_path('module', 'message_private_og'),
   );
 }
 

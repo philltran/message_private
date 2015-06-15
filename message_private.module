@@ -159,11 +159,6 @@ function message_private_menu_alter(&$items) {
   $items['message/%message/edit']['access callback'] = 'message_private_access_control';
   $items['message/%message/delete']['access callback'] = 'message_private_access_control';
 
-  $items['message/%message/delete']['page arguments'] = array('message_private_instance_delete', 1);
-
-  // Override page arguments for message edit forms.
-  $items['message/%message/edit']['page arguments'] = array('message_private_instance_message_manage', 1);
-
   // Override page created by message_ui to allow custom "Private Message" URI.
   $items['admin/content/message/create']['page callback'] = 'message_private_create_new_message_instance_list';
 
@@ -271,19 +266,15 @@ function message_private_create_new_message_instance_list() {
   return theme('item_list', array('items' => $items));
 }
 
+
 /**
- * The UI for creating/editing the message.
+ * Implements hook_form_FORM_ID_alter().
  *
  * This function is defined to override that provided by Message UI module. This
  * allows override specific values of the form such as the cancel link.
  */
-function message_private_instance_message_manage($form, &$form_state, $message) {
-  // Call message_ui to create the UI.
-  $form = message_ui_instance_message_manage($form, $form_state, $message);
-
-  // When the message is a private message override the cancel link.
-  if ((!empty($message->type) && $message->type == 'private_message')
-    || $message == 'private_message') {
+function message_private_form_message_ui_instance_message_manage_alter(&$form, &$form_state, $form_id) {
+  if (!empty($form_state['#entity']) && $form_state['#entity']->type == 'private_message') {
     global $user;
 
     $referer = $_SERVER['HTTP_REFERER']; // Get the referrer uri from globals.
@@ -291,57 +282,36 @@ function message_private_instance_message_manage($form, &$form_state, $message) 
     $form['actions']['cancel']['#markup'] =
       l(t('Cancel'), (!empty($referer) ? $referer : 'user/'. $user->uid . '/messages'));
   }
-
-  return $form;
 }
 
 /**
- * Deleting the message.
+ * Implements hook_form_FORM_ID_alter().
  *
- * Override message_ui : message_ui_instance_delete.
+ * Override redirect for private messages.
  */
-function message_private_instance_delete($form, &$form_state, Message $message) {
-  // When the bundle is exported - display a message to the user.
-  $form_state['#entity'] = $message;
-
-  $redirect_uri = 'admin/content/message'; // Set redirect uri to default.
-
-  // For private messages, alter the redirect url.
-  if ($message->type == 'private_message') {
+function message_private_form_message_ui_instance_delete_alter(&$form, &$form_state, $form_id) {
+  if (!empty($form_state['#entity']) && $form_state['#entity']->type == 'private_message') {
     global $user;
+    $referer = $_SERVER['HTTP_REFERER']; // Get the referrer uri from globals.
+    // Redirect back to referer uri is exists, otherwise to user message inbox.
+    $form['actions']['cancel']['#href'] = !empty($referer) ? $referer : 'user/'. $user->uid . '/messages';
 
-    // Redirect back to user message inbox.
-    $redirect_uri = 'user/' . $user->uid . '/messages';
+    // Call custom submit callback for private messages.
+    $form['#submit'] = array('message_private_instance_delete_submit');
   }
-
-  // Always provide entity id in the same form key as in the entity edit form.
-  return confirm_form($form,
-    t('Are you sure you want to delete the @type message instance?',
-      array('@type' => $message->type)),
-    $redirect_uri,
-    t('Are you sure you want to delete the message instance? This action cannot be undone.'),
-    t('Delete'),
-    t('Cancel'));
 }
 
 /**
- * Deleting the sub theme submit handler.
- *
- * Override message_ui : message_ui_instance_delete_submit.
+ * Custom submit callback for deleting private messages.
  */
 function message_private_instance_delete_submit($form, &$form_state) {
   if ($form_state['clicked_button']['#type']) {
+    global $user;
+
     $form_state['#entity']->delete();
 
-    $form_state['redirect'] = 'admin/content/message';
-
-    // For private messages, alter the redirect url.
-    if ($form_state['#entity']->type == 'private_message') {
-      global $user;
-
-      // Redirect back to user message inbox.
-      $form_state['redirect'] =  'user/' . $user->uid . '/messages';
-    }
+    // Redirect back to user message inbox.
+    $form_state['redirect'] =  'user/' . $user->uid . '/messages';
 
     drupal_set_message(t('The message instance @type deleted successfully', array(
       '@type' => $form_state['#entity']->type,
