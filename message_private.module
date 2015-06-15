@@ -332,7 +332,7 @@ function message_private_menu_local_tasks_alter(&$data, $router_item, $root_path
         $to_user = array_shift($router_item['page_arguments']);
       }
       // Only display the local task on other users profile, not current user's.
-      if (!empty($to_user) && $user->uid != $to_user->uid) {
+      if (!empty($to_user) && !empty($to_user->uid) && $user->uid != $to_user->uid) {
         $item = menu_get_item('message/create/private-message');
         $item['title'] = t('Create a new message for') . ' ' . $to_user->name;
         $item['localized_options']['query'] = array('field_message_user_ref' => $to_user->uid);
