@@ -1,0 +1,17 @@
+name: 'Message Private'
+description: 'Private messages with message access based on message fields.'
+core: 8.x
+dependencies:
+  - message
+  - message_ui
+  - message_notify
+  - entity
+  - entityreference
+  - entityreference_prepopulate
+  - views
+  - token
+  - entity_token
+  - options
+  - text
+package: Message
+type: module

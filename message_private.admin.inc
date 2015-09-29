@@ -12,20 +12,30 @@
 function message_private_admin_settings() {
 
   // Global email notifications on/off checkbox.
-  $form[MESSAGE_PRIVATE_EMAIL_NOTIFICATIONS] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Message Private Email Notifications'),
-    '#default_value' => variable_get(MESSAGE_PRIVATE_EMAIL_NOTIFICATIONS, TRUE),
-    '#description' => t('Global On / Off checkbox for emails notifying users of a new private message'),
-  );
+  // @FIXME
+// // @FIXME
+// // The correct configuration object could not be determined. You'll need to
+// // rewrite this call manually.
+// $form[MESSAGE_PRIVATE_EMAIL_NOTIFICATIONS] = array(
+//     '#type' => 'checkbox',
+//     '#title' => t('Message Private Email Notifications'),
+//     '#default_value' => variable_get(MESSAGE_PRIVATE_EMAIL_NOTIFICATIONS, TRUE),
+//     '#description' => t('Global On / Off checkbox for emails notifying users of a new private message'),
+//   );
+
 
   // Role based message create limit on/off checkbox.
-  $form[MESSAGE_PRIVATE_MESSAGE_LIMIT] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Limit Message Create By Role'),
-    '#default_value' => variable_get(MESSAGE_PRIVATE_MESSAGE_LIMIT, FALSE),
-    '#description' => t('Impose a message creation limit per interval. Users with multiple roles, get the highest limit from these roles'),
-  );
+  // @FIXME
+// // @FIXME
+// // The correct configuration object could not be determined. You'll need to
+// // rewrite this call manually.
+// $form[MESSAGE_PRIVATE_MESSAGE_LIMIT] = array(
+//     '#type' => 'checkbox',
+//     '#title' => t('Limit Message Create By Role'),
+//     '#default_value' => variable_get(MESSAGE_PRIVATE_MESSAGE_LIMIT, FALSE),
+//     '#description' => t('Impose a message creation limit per interval. Users with multiple roles, get the highest limit from these roles'),
+//   );
+
 
   // Conditional fieldset for all message limitation settings.
   $form['interval_limit'] = array(
@@ -49,19 +59,29 @@ function message_private_admin_settings() {
     '#collapsed' => FALSE,
   );
 
-  $form['interval_limit'][MESSAGE_PRIVATE_DEFAULT_INDEX][MESSAGE_PRIVATE_DEFAULT_LIMIT] = array(
-    '#type' => 'textfield',
-    '#title' => t('Limit'),
-    '#default_value' => variable_get(MESSAGE_PRIVATE_DEFAULT_LIMIT),
-    '#description' => t('Enter a message limit') . ' ' . MESSAGE_PRIVATE_MESSAGE_LIMIT_MIN . ' - ' . MESSAGE_PRIVATE_MESSAGE_LIMIT_MAX,
-  );
+  // @FIXME
+// // @FIXME
+// // The correct configuration object could not be determined. You'll need to
+// // rewrite this call manually.
+// $form['interval_limit'][MESSAGE_PRIVATE_DEFAULT_INDEX][MESSAGE_PRIVATE_DEFAULT_LIMIT] = array(
+//     '#type' => 'textfield',
+//     '#title' => t('Limit'),
+//     '#default_value' => variable_get(MESSAGE_PRIVATE_DEFAULT_LIMIT),
+//     '#description' => t('Enter a message limit') . ' ' . MESSAGE_PRIVATE_MESSAGE_LIMIT_MIN . ' - ' . MESSAGE_PRIVATE_MESSAGE_LIMIT_MAX,
+//   );
 
-  $form['interval_limit'][MESSAGE_PRIVATE_DEFAULT_INDEX][MESSAGE_PRIVATE_DEFAULT_INTERVAL] = array(
-    '#type' => 'textfield',
-    '#title' => t('Interval'),
-    '#default_value' => variable_get(MESSAGE_PRIVATE_DEFAULT_INTERVAL),
-    '#description' => t('Enter an interval in minutes') . ' ' . MESSAGE_PRIVATE_MESSAGE_INTERVAL_MIN . ' - ' . MESSAGE_PRIVATE_MESSAGE_INTERVAL_MAX,
-  );
+
+  // @FIXME
+// // @FIXME
+// // The correct configuration object could not be determined. You'll need to
+// // rewrite this call manually.
+// $form['interval_limit'][MESSAGE_PRIVATE_DEFAULT_INDEX][MESSAGE_PRIVATE_DEFAULT_INTERVAL] = array(
+//     '#type' => 'textfield',
+//     '#title' => t('Interval'),
+//     '#default_value' => variable_get(MESSAGE_PRIVATE_DEFAULT_INTERVAL),
+//     '#description' => t('Enter an interval in minutes') . ' ' . MESSAGE_PRIVATE_MESSAGE_INTERVAL_MIN . ' - ' . MESSAGE_PRIVATE_MESSAGE_INTERVAL_MAX,
+//   );
+
 
   // Generate variable names for all roles used with get/set in admin form.
   foreach (user_roles() as $id => $role) {
@@ -75,18 +95,28 @@ function message_private_admin_settings() {
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
     );
-    $form['interval_limit'][$id][$limit_name] = array(
-      '#type' => 'textfield',
-      '#title' => t('Limit'),
-      '#default_value' => variable_get($limit_name),
-      '#description' => t('Enter a message limit') . ' ' . MESSAGE_PRIVATE_MESSAGE_LIMIT_MIN . ' - ' . MESSAGE_PRIVATE_MESSAGE_LIMIT_MAX,
-    );
-    $form['interval_limit'][$id][$interval_name] = array(
-      '#type' => 'textfield',
-      '#title' => t('Interval'),
-      '#default_value' => variable_get($interval_name),
-      '#description' => t('Enter an interval in minutes') . ' ' . MESSAGE_PRIVATE_MESSAGE_INTERVAL_MIN . ' - ' . MESSAGE_PRIVATE_MESSAGE_INTERVAL_MAX,
-    );
+    // @FIXME
+// // @FIXME
+// // The correct configuration object could not be determined. You'll need to
+// // rewrite this call manually.
+// $form['interval_limit'][$id][$limit_name] = array(
+//       '#type' => 'textfield',
+//       '#title' => t('Limit'),
+//       '#default_value' => variable_get($limit_name),
+//       '#description' => t('Enter a message limit') . ' ' . MESSAGE_PRIVATE_MESSAGE_LIMIT_MIN . ' - ' . MESSAGE_PRIVATE_MESSAGE_LIMIT_MAX,
+//     );
+
+    // @FIXME
+// // @FIXME
+// // The correct configuration object could not be determined. You'll need to
+// // rewrite this call manually.
+// $form['interval_limit'][$id][$interval_name] = array(
+//       '#type' => 'textfield',
+//       '#title' => t('Interval'),
+//       '#default_value' => variable_get($interval_name),
+//       '#description' => t('Enter an interval in minutes') . ' ' . MESSAGE_PRIVATE_MESSAGE_INTERVAL_MIN . ' - ' . MESSAGE_PRIVATE_MESSAGE_INTERVAL_MAX,
+//     );
+
   }
 
   return system_settings_form($form);

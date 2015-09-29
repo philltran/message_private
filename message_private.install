@@ -12,7 +12,7 @@
 function message_private_install() {
 
   // Ensure translations don't break during installation.
-  $t = get_t();
+  $t = 't';
 
   $bundle = entity_import('message_type', '{
     "name" : "private_message",
@@ -41,7 +41,7 @@ function message_private_install() {
     }
   }');
   if (!entity_load_single('message_type', 'private_message')) {
-    entity_save('message_type', $bundle);
+    $bundle->save();
   }
   else {
     drupal_set_message($t('"private_message" bundle was previously defined on the system'), 'warning');
@@ -144,7 +144,14 @@ function message_private_install() {
   );
 
   foreach ($field_bases as $field_base) {
-    field_create_field($field_base);
+    // @FIXME
+// Fields and field instances are now exportable configuration entities, and
+// the Field Info API has been removed.
+// 
+// 
+// @see https://www.drupal.org/node/2012896
+// field_create_field($field_base);
+
   }
 
   $field_instances = array();
@@ -295,7 +302,14 @@ function message_private_install() {
   );
 
   foreach ($field_instances as $field_instance) {
-    field_create_instance($field_instance);
+    // @FIXME
+// Fields and field instances are now exportable configuration entities, and
+// the Field Info API has been removed.
+// 
+// 
+// @see https://www.drupal.org/node/2012896
+// field_create_instance($field_instance);
+
   }
 }
 
@@ -307,10 +321,10 @@ function message_private_install() {
 function message_private_uninstall() {
 
   // Ensure translations don't break during installation.
-  $t = get_t();
+  $t = 't';
 
   // Delete field instances as well as the field instances themselves.
-  field_attach_delete_bundle('message_type', 'private_message');
+  \Drupal::entityManager()->onBundleDelete('message_type', 'private_message');
 
   // Set indicator that the message type is not yet removed.
   $removed = FALSE;
@@ -318,11 +332,11 @@ function message_private_uninstall() {
   // Check if there are message types on the system. Get the message types and
   // get the id of the private_message type and remove it and set the indicator
   // to state removed.
-  if (entity_get_info('message_type')) {
-    $message_types = entity_load('message_type');
+  if (\Drupal::entityManager()->getDefinition('message_type')) {
+    $message_types = \Drupal::entityManager()->getStorage('message_type');
     foreach ($message_types as $message_type) {
       if ($message_type->name == 'private_message') {
-        entity_delete('message_type', $message_type->id);
+        $message_type->id->delete();
         $removed = TRUE;
       }
     }
@@ -334,21 +348,59 @@ function message_private_uninstall() {
   }
 
   // Ensure that all fields defined by this module are deleted.
-  field_delete_field('field_message_subject');
-  field_delete_field('field_message_body');
-  field_delete_field('field_message_user_ref');
+  // @FIXME
+// Fields and field instances are now exportable configuration entities, and
+// the Field Info API has been removed.
+// 
+// 
+// @see https://www.drupal.org/node/2012896
+// field_delete_field('field_message_subject');
+
+  // @FIXME
+// Fields and field instances are now exportable configuration entities, and
+// the Field Info API has been removed.
+// 
+// 
+// @see https://www.drupal.org/node/2012896
+// field_delete_field('field_message_body');
+
+  // @FIXME
+// Fields and field instances are now exportable configuration entities, and
+// the Field Info API has been removed.
+// 
+// 
+// @see https://www.drupal.org/node/2012896
+// field_delete_field('field_message_user_ref');
+
   // Field on user entity.
-  field_delete_field('field_private_message_notify');
+  // @FIXME
+// Fields and field instances are now exportable configuration entities, and
+// the Field Info API has been removed.
+// 
+// 
+// @see https://www.drupal.org/node/2012896
+// field_delete_field('field_private_message_notify');
+
 
   // Delete default variables for message limit.
-  variable_del('message_private_default_limit');
-  variable_del('message_private_default_interval');
+  \Drupal::config('message_private.settings')->clear('message_private_default_limit')->save();
+  \Drupal::config('message_private.settings')->clear('message_private_default_interval')->save();
 
   // Cycle through the roles and delete associated message limit variables.
   foreach (user_roles() as $role) {
     $role_name = str_replace(' ', '_', $role);
-    variable_del('message_private_' . $role_name . '_limit');
-    variable_del('message_private_' . $role_name . '_interval');
+    // @FIXME
+// // @FIXME
+// // The correct configuration object could not be determined. You'll need to
+// // rewrite this call manually.
+// variable_del('message_private_' . $role_name . '_limit');
+
+    // @FIXME
+// // @FIXME
+// // The correct configuration object could not be determined. You'll need to
+// // rewrite this call manually.
+// variable_del('message_private_' . $role_name . '_interval');
+
   }
 }
 
@@ -399,7 +451,7 @@ function _message_private_get_subject_field_base($field_name) {
  */
 function _message_private_get_subject_field_instance($field_name) {
   // Ensure translations don't break during installation.
-  $t = get_t();
+  $t = 't';
 
   // Field instance: 'message-private_message-field_message_subject_temp'.
   $field_instance = array(
@@ -460,7 +512,7 @@ function _message_private_get_subject_field_instance($field_name) {
 function message_private_update_7100() {
 
   // Ensure translations don't break during installation.
-  $t = get_t();
+  $t = 't';
 
   // Uninstall Flag data and delete flag.
   $flag = flag_get_flag('private_message_notify');
@@ -500,9 +552,16 @@ function message_private_update_7100() {
     'type' => 'list_boolean',
   );
 
-  if (!field_create_field($field_base)) {
-    throw new DrupalUpdateException('Could not create "field_private_message_notify" field base.');
-  }
+  // @FIXME
+// Fields and field instances are now exportable configuration entities, and
+// the Field Info API has been removed.
+// 
+// 
+// @see https://www.drupal.org/node/2012896
+// if (!field_create_field($field_base)) {
+//     throw new DrupalUpdateException('Could not create "field_private_message_notify" field base.');
+//   }
+
 
   $field_instance = array(
     'bundle' => 'user',
@@ -540,9 +599,16 @@ function message_private_update_7100() {
     ),
   );
 
-  if (!field_create_instance($field_instance)) {
-    throw new DrupalUpdateException('Could not create "field_private_message_notify" field instance.');
-  }
+  // @FIXME
+// Fields and field instances are now exportable configuration entities, and
+// the Field Info API has been removed.
+// 
+// 
+// @see https://www.drupal.org/node/2012896
+// if (!field_create_instance($field_instance)) {
+//     throw new DrupalUpdateException('Could not create "field_private_message_notify" field instance.');
+//   }
+
 
   return t('Updates were successful.');
 }
@@ -551,7 +617,7 @@ function message_private_update_7100() {
  * Converts field_message_subject from textarea to textfield.
  */
 function message_private_update_7101() {
-  $t = get_t(); // Ensure translations don't break during installation.
+  $t = 't'; // Ensure translations don't break during installation.
   $length = 255; // Length of new subject field.
   $field_name = 'field_message_subject';
   $field_name_temp = 'field_message_subject_temp';
@@ -559,16 +625,30 @@ function message_private_update_7101() {
   // Get base definition of temporary new subject text field.
   $field_base = _message_private_get_subject_field_base($field_name_temp);
 
-  if (!field_create_field($field_base)) {
-    throw new DrupalUpdateException('Could not create "' . $field_name_temp . '" field base.');
-  }
+  // @FIXME
+// Fields and field instances are now exportable configuration entities, and
+// the Field Info API has been removed.
+// 
+// 
+// @see https://www.drupal.org/node/2012896
+// if (!field_create_field($field_base)) {
+//     throw new DrupalUpdateException('Could not create "' . $field_name_temp . '" field base.');
+//   }
+
 
   // Get instance of temporary new subject text field.
   $field_instance = _message_private_get_subject_field_instance($field_name_temp);
 
-  if (!field_create_instance($field_instance)) {
-    throw new DrupalUpdateException('Could not create "' . $field_name_temp . '" field instance.');
-  }
+  // @FIXME
+// Fields and field instances are now exportable configuration entities, and
+// the Field Info API has been removed.
+// 
+// 
+// @see https://www.drupal.org/node/2012896
+// if (!field_create_instance($field_instance)) {
+//     throw new DrupalUpdateException('Could not create "' . $field_name_temp . '" field instance.');
+//   }
+
 
   // Get all private message instances on the system.
   $query = new EntityFieldQuery();
@@ -579,7 +659,7 @@ function message_private_update_7101() {
   // If we have messages, load them.
   if (isset($result['message'])) {
     $message_ids = array_keys($result['message']);
-    $messages = entity_load('message', $message_ids);
+    $messages = \Drupal::entityManager()->getStorage('message');
   }
 
   // For each private message, load the current subject.
@@ -617,22 +697,43 @@ function message_private_update_7101() {
   }
 
   // Remove field_message_subject field.
-  field_delete_field($field_name);
+  // @FIXME
+// Fields and field instances are now exportable configuration entities, and
+// the Field Info API has been removed.
+// 
+// 
+// @see https://www.drupal.org/node/2012896
+// field_delete_field($field_name);
+
 
   // Get base definition of new subject text field.
   $field_base = _message_private_get_subject_field_base($field_name);
 
   // Recreate field_message_subject as text field.
-  if (!field_create_field($field_base)) {
-    throw new DrupalUpdateException('Could not create "' . $field_name . '" field base.');
-  }
+  // @FIXME
+// Fields and field instances are now exportable configuration entities, and
+// the Field Info API has been removed.
+// 
+// 
+// @see https://www.drupal.org/node/2012896
+// if (!field_create_field($field_base)) {
+//     throw new DrupalUpdateException('Could not create "' . $field_name . '" field base.');
+//   }
+
 
   // Get instance of new subject text field.
   $field_instance = _message_private_get_subject_field_instance($field_name);
 
-  if (!field_create_instance($field_instance)) {
-    throw new DrupalUpdateException('Could not create "' . $field_name . '" field instance.');
-  }
+  // @FIXME
+// Fields and field instances are now exportable configuration entities, and
+// the Field Info API has been removed.
+// 
+// 
+// @see https://www.drupal.org/node/2012896
+// if (!field_create_instance($field_instance)) {
+//     throw new DrupalUpdateException('Could not create "' . $field_name . '" field instance.');
+//   }
+
 
   // Cycle through each private message, load the current subject.
   if (!empty($messages)) {
@@ -649,7 +750,14 @@ function message_private_update_7101() {
   }
 
   // Remove field_message_subject_temp field.
-  field_delete_field($field_name_temp);
+  // @FIXME
+// Fields and field instances are now exportable configuration entities, and
+// the Field Info API has been removed.
+// 
+// 
+// @see https://www.drupal.org/node/2012896
+// field_delete_field($field_name_temp);
+
 
   return $t('Success - changed Subject to textfield. Temp Subject field removed.');
 }
