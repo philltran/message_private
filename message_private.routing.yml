@@ -1,0 +1,30 @@
+message_private.admin_settings:
+  path: '/admin/config/system/message-private'
+  defaults:
+    _title:  'Message Private settings'
+  requirements:
+    _permission: 'administer message private'
+  options:
+    _admin_route: TRUE
+
+message_private.messages:
+  path: '/user/{user}/messages'
+  title: 'Inbox'
+  description: 'Message Private Inbox'
+  base_route: system.admin_content
+  requirements:
+    _permission: 'overview messages'
+
+message_private.messages.inbox:
+  route_name: message_private.messages
+  title: 'Inbox'
+  parent_id: message_private.messages
+
+message_private.create_message:
+  route_name: message_ui.create_message_by_type
+  title: 'Create Private Message'
+  description: 'Create a new message Private Message instance'
+  options:
+      parameters:
+        message_type: 'private-message'
+#'access callback' => 'message_private_access_control'

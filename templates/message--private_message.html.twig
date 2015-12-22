@@ -1,12 +1,11 @@
-<?php
-
+{#
 /**
  * @file
- * Default theme implementation for private_message message entities.
+ * Default theme implementation for message entities.
  *
  * Available variables:
- * - $content: An array of comment items. Use render($content) to print them
- *   all, or print a subset such as render($content['field_example']). Use
+ * - $content: An array of comment items. Use render($content) to print them all, or
+ *   print a subset such as render($content['field_example']). Use
  *   hide($content['field_example']) to temporarily suppress the printing of a
  *   given element.
  * - $title: The (sanitized) entity label.
@@ -27,14 +26,22 @@
  * @see template_preprocess_message()
  * @see template_process()
  */
-?>
-<div class="<?php print $classes; ?> clearfix"<?php print $attributes; ?>>
-  <?php if (!empty($submitted)): ?>
-    <div class="submitted">
-      <?php print $submitted; ?>
-    </div>
-  <?php endif; ?>
-  <div class="content"<?php print $content_attributes; ?>>
-    <?php print render($content); ?>
+#}
+
+<article{{ attributes }}>
+
+  {% if display_submitted %}
+    <footer>
+      {{ author_picture }}
+      <div{{ author_attributes }}>
+        {% trans %}Submitted by {{ author_name }} on {{ date }}{% endtrans %}
+        {{ metadata }}
+      </div>
+    </footer>
+  {% endif %}
+
+  <div{{ content_attributes }}>
+    {{ content }}
   </div>
-</div>
+
+</article>

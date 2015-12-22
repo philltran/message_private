@@ -1,3 +1,5 @@
+D8 Status : Under Development (non functional)
+
 CONTENTS OF THIS FILE
 ---------------------
  * Introduction
@@ -9,6 +11,7 @@ CONTENTS OF THIS FILE
  * Development and Test
  * Maintainers
 
+
 INTRODUCTION
 ------------
 A message type and entity reference fields, enabling sending and receiving 
@@ -19,10 +22,6 @@ user entities or OG group entities using the submodule message_private_og.
 The message_private module includes the following.
 + A message type "Private Message" with entity reference field referencing users
 + A message view, message_private for "User Messages"
-
-The sub-module message_private_og includes the following.
-+ An entity reference field for groups to associate messages to groups
-+ A "Group Messages" display for the message_private view
 
 
 DEPENDENCIES
@@ -39,18 +38,12 @@ The message_private module requires the following modules:
  * Views (https://www.drupal.org/project/views)
  * Token (https://www.drupal.org/project/token
 
-The message_private_og module requires the following modules:
- * OG (https://drupal.org/project/og)
-
 
 INSTALLATION
 ------------
  * Install as you would normally install a contributed drupal module. See:
-   https://drupal.org/documentation/install/modules-themes/modules-7
+   https://drupal.org/documentation/install/modules-themes/modules-8
    for further information.
- * If using message_private_og, make sure you have created an OG group content
-   type named "Group". Otherwise, you will need to manually configure the entity 
-   reference field to use your custom group content type.
 
 
 CONFIGURATION
@@ -85,13 +78,6 @@ role get the maximum limit by calculating the lowest time per message over each
 role. Users with the 'bypass private message access control' permission bypass
 these limitations.
 
-Message Private OG:
-When using the Message Private OG sub-module, the Group Messages display has
-a contextual filter which filters by group ID of the logged in user. This is
-developed taking into account that a content type called "Group" exists for all
-Group instances. Anything other than this setup requires user customisation. You
-must manually set the field_message_group_ref contextual filter to use group
-bundle to enable group filter on views.
 
 HOW TO USE
 ----------
@@ -101,13 +87,12 @@ or
 Visit the "Messages" tab detailed below and find the "Create a new message" 
 local action.
 
-To View inbox, sent and group messages:
+To View inbox and sent messages:
 Visit your user page at /user and find the "Messages" tab which displays 
 received messages (Inbox local task), the "Sent" local task under that tab which
 displays sent messages and the "Group" local task which displays group messages.
   /user/USER_ID/messages/inbox
   /user/USER_ID/messages/sent
-  /user/USER_ID/messages/group
 
 SECURITY
 --------
