@@ -1,0 +1,16 @@
+langcode: en
+status: true
+dependencies: {  }
+type: private_message
+label: 'Private Message'
+description: 'Private Message message type.'
+text:
+  - "<p>Private Message -</p>\r\n"
+data:
+  'token options':
+    clear: true
+  purge:
+    override: true
+    enabled: false
+    quota: null
+    days: null
