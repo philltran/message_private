@@ -1,4 +1,4 @@
-D8 Status : Under Development (non functional)
+**D8 Status : Under Development (non functional)**
 
 CONTENTS OF THIS FILE
 ---------------------
@@ -17,7 +17,7 @@ INTRODUCTION
 A message type and entity reference fields, enabling sending and receiving 
 private messages using The Message Stack. Messages of type "Private Message" can 
 be sent by creating the private_message message instance with fields referencing 
-user entities or OG group entities using the submodule message_private_og.
+user entities.
 
 The message_private module includes the following.
 + A message type "Private Message" with entity reference field referencing users
@@ -29,14 +29,6 @@ DEPENDENCIES
 The message_private module requires the following modules:
  * Message (https://drupal.org/project/message)
  * Message UI (https://drupal.org/project/message_ui)
- * Message Notify (https://drupal.org/project/message_notify)
- * Entity API (https://www.drupal.org/project/entity)
- * Entity Reference (https://www.drupal.org/project/entityreference)
- * Entityreference Prepopulate 
-   (https://www.drupal.org/project/entityreference_prepopulate)
- * Ctools (https://www.drupal.org/project/ctools)
- * Views (https://www.drupal.org/project/views)
- * Token (https://www.drupal.org/project/token
 
 
 INSTALLATION
@@ -52,24 +44,12 @@ Enabling Permissions:
 "View a new message instance for Private Message" &
 "Create a new message instance for Private Message" for users needing to create
 and view private messages.
-"View user profiles" for users needing to send messages to other users. This is
-due to issue: 'Restricted access results with user entityreference' - #2153463.
-This patch may also help if committed in future: #2247937
-"Administer message types" permission shows the user all private messages on the 
-admin/content/message view by default. To hide private messages from this view, 
+To hide private messages from this view, 
 you must override view provided by Message module:
 admin/structure/views/view/message/edit
 
 When enabled, the module will provide a new message type "Private Message" and a 
 Message Private View.
-
-Email Notifications:
-Email notifications are sent using message_notify module to users referenced by 
-the field_message_user_ref field and for all group members of the groups 
-referenced by field_message_group_ref if using message_private_og. Users can
-disable email notifications using the checkbox field 
-field_private_message_notify attached to the user entity, on their profile. The
-message notifications can be turned off globally on the module settings form.
 
 Message Create Limits:
 Message creation limits can be managed per role on the module settings form. A
@@ -94,20 +74,20 @@ displays sent messages and the "Group" local task which displays group messages.
   /user/USER_ID/messages/inbox
   /user/USER_ID/messages/sent
 
+
 SECURITY
 --------
 This module does not come with any security features out-of-the-box, but you can
 easily configure your own, using methods and modules of your choice.
 
-Examples:
-
+E.G:
 Honeypot and timestamp methods: https://www.drupal.org/project/honeypot
 CAPTCHA method: https://www.drupal.org/project/recaptcha
 
 
 DEVELOPMENT AND TEST
 --------------------
- * Threads will be created: https://www.drupal.org/node/2504863. 
+ * Threads / Conversations will be created: https://www.drupal.org/node/2504863. 
    An admin setting can be used to enable or disable threads to turn on/off 
    replies on all private messages (Reply, Reply All). Perhaps a css file will 
    need to be added for indentation / presentation. Integrate with MessageJS,
@@ -119,8 +99,8 @@ DEVELOPMENT AND TEST
    users with view permissions. Not showing currently due to custom permissions.
  * Integrate with rolereference module or similar to provide sending to users
    within a certain role.
- * Research the benefits of Rules module integration and what could be provided.
  * Tests should be created in a "tests" folder.
+
 
 MAINTAINERS
 -----------
