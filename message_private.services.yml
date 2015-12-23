@@ -1,0 +1,6 @@
+services:
+  access_check.message_private.add:
+    class: Drupal\message_private\Access\MessagePrivateAddAccessCheck
+    arguments: ['@entity.manager']
+    tags:
+      - { name: access_check, applies_to: _message_private_add_access }

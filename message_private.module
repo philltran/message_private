@@ -1,96 +1,61 @@
 <?php
 /**
+ * @file
  * Message Private with access permissions based on message fields.
  */
 
-/**
- * The string name for email notifications variable.
- */
-define('MESSAGE_PRIVATE_EMAIL_NOTIFICATIONS', 'message_private_email_notifications');
+use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
  * The string name for message limit variable.
  */
-define('MESSAGE_PRIVATE_MESSAGE_LIMIT', 'message_private_message_limit');
+const MESSAGE_PRIVATE_MESSAGE_LIMIT = 'message_private_message_limit';
 
 /**
  * The assoc index to be used when fetching default limit variable.
  */
-define('MESSAGE_PRIVATE_DEFAULT_LIMIT', 'message_private_default_limit');
+const MESSAGE_PRIVATE_DEFAULT_LIMIT = 'message_private_default_limit';
 
 /**
  * The assoc index to be used when fetching default interval variable.
  */
-define('MESSAGE_PRIVATE_DEFAULT_INTERVAL', 'message_private_default_interval');
+const MESSAGE_PRIVATE_DEFAULT_INTERVAL = 'message_private_default_interval';
 
 /**
  * The default index for settings such as role.
  */
-define('MESSAGE_PRIVATE_DEFAULT_INDEX', 0);
+const MESSAGE_PRIVATE_DEFAULT_INDEX = 0;
 
 /**
  * The maximum message limit.
  */
-define('MESSAGE_PRIVATE_MESSAGE_LIMIT_MAX', 1000);
+const MESSAGE_PRIVATE_MESSAGE_LIMIT_MAX = 1000;
 
 /**
  * The minimum message limit.
  */
-define('MESSAGE_PRIVATE_MESSAGE_LIMIT_MIN', 1);
+const MESSAGE_PRIVATE_MESSAGE_LIMIT_MIN = 1;
 
 /**
  * The maximum message interval in minutes.
  */
-define('MESSAGE_PRIVATE_MESSAGE_INTERVAL_MAX', 1440);
+const MESSAGE_PRIVATE_MESSAGE_INTERVAL_MAX = 1440;
 
 /**
  * The minimum message interval in minutes.
  */
-define('MESSAGE_PRIVATE_MESSAGE_INTERVAL_MIN', 1);
+const MESSAGE_PRIVATE_MESSAGE_INTERVAL_MIN = 1;
 
 
 /**
  * Implements hook_help().
  */
-function message_private_help($path, $arg) {
-  switch ($path) {
-    case 'admin/help#message_private':
+function message_private_help($route_name, RouteMatchInterface $arg) {
+  switch ($route_name) {
+    case 'help.page.message_private':
       $output = file_get_contents(drupal_get_path('module', 'message_private') . '/README.md');
       return \Drupal::moduleHandler()->moduleExists('markdown') ? \Drupal\Component\Utility\Xss::filterAdmin(\Drupal::moduleHandler()->invoke('markdown', 'filter', ['process', 0, -1, $output])) : '<h3>Message Private README</h3><pre>' . \Drupal\Component\Utility\Html::escape($output) . '</pre>';
   }
-}
-
-/**
- * Implements hook_views_api().
- */
-function message_private_views_api() {
-  list($module, $api) = func_get_args();
-  if ($module == 'views' && $api == 'views_default') {
-    return array('version' => '3.0');
-  }
-  return array();
-}
-
-/**
- * Implements hook_permission().
- */
-function message_private_permission() {
-
-  // Build the permissions.
-  $permissions = array();
-
-  $permissions['bypass private message access control'] = array(
-    'title' => t('Bypass message access control'),
-    'description' => t('Grant to the user the permission to apply CRUD option on any private messages.'),
-    'restrict access' => TRUE,
-  );
-
-  $permissions['administer message private'] = array(
-    'title' => t('Administer message private'),
-    'description' => t('Access the message private administration pages.'),
-  );
-
-  return $permissions;
 }
 
 /**
@@ -119,6 +84,7 @@ function message_private_access_callback($message) {
 function message_private_menu_alter(&$items) {
 
   // Override access callbacks.
+  // @todo: add appropriate callbacks to services refering to node.services.yml.
   $items['message/%message']['access callback'] = 'message_private_access_control';
   $items['message/%message/view']['access callback'] = 'message_private_access_control';
   $items['message/%message/edit']['access callback'] = 'message_private_access_control';

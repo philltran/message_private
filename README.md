@@ -41,38 +41,37 @@ INSTALLATION
 CONFIGURATION
 -------------
 Enabling Permissions: 
-"View a new message instance for Private Message" &
-"Create a new message instance for Private Message" for users needing to create
-and view private messages.
-To hide private messages from this view, 
-you must override view provided by Message module:
-admin/structure/views/view/message/edit
+ * "View a new message instance for Private Message" &
+ "Create a new message instance for Private Message" for users needing to create
+ and view private messages.
+ * To hide private messages from this view, you must override view provided by 
+ Message module: admin/structure/views/view/message/edit
 
 When enabled, the module will provide a new message type "Private Message" and a 
 Message Private View.
 
 Message Create Limits:
-Message creation limits can be managed per role on the module settings form. A
-message create limit can be set per interval per role. Users with more than one
-role get the maximum limit by calculating the lowest time per message over each 
-role. Users with the 'bypass private message access control' permission bypass
-these limitations.
+ * Message creation limits can be managed per role on the module settings form. 
+ A message create limit can be set per interval per role. Users with more than 
+ one role get the maximum limit by calculating the lowest time per message over 
+ each role. Users with the 'bypass private message access control' permission 
+ bypass these limitations.
 
 
 HOW TO USE
 ----------
 To Create messages:
-Visit /admin/content/message/create/private-message and Save the message to send
-or
-Visit the "Messages" tab detailed below and find the "Create a new message" 
+ * Visit /admin/content/message/create/private-message and Save the message to 
+ send, or
+ * Visit the "Messages" tab detailed below and find the "Create a new message" 
 local action.
 
 To View inbox and sent messages:
-Visit your user page at /user and find the "Messages" tab which displays 
+ * Visit your user page at /user and find the "Messages" tab which displays 
 received messages (Inbox local task), the "Sent" local task under that tab which
 displays sent messages and the "Group" local task which displays group messages.
-  /user/USER_ID/messages/inbox
-  /user/USER_ID/messages/sent
+   * /user/USER_ID/messages/inbox
+   * /user/USER_ID/messages/sent
 
 
 SECURITY
@@ -81,8 +80,8 @@ This module does not come with any security features out-of-the-box, but you can
 easily configure your own, using methods and modules of your choice.
 
 E.G:
-Honeypot and timestamp methods: https://www.drupal.org/project/honeypot
-CAPTCHA method: https://www.drupal.org/project/recaptcha
+ * Honeypot and timestamp methods: https://www.drupal.org/project/honeypot
+ * CAPTCHA method: https://www.drupal.org/project/recaptcha
 
 
 DEVELOPMENT AND TEST

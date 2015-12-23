@@ -26,6 +26,7 @@ message_private.create_message:
   title: 'Create Private Message'
   description: 'Create a new message Private Message instance'
   options:
-      parameters:
-        message_type: 'private-message'
-#'access callback' => 'message_private_access_control'
+    parameters:
+      message_type: 'private-message'
+  requirements:
+    _message_private_add_access: 'message:private_message'
