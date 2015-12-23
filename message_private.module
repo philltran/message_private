@@ -69,6 +69,7 @@ function message_private_help($route_name, RouteMatchInterface $arg) {
  * @return bool
  *   TRUE if the user is allowed perform the operation, FALSE otherwise.
  */
+// @todo: convert to Access class and add associated service and entry in route.
 function message_private_access_callback($message) {
   if ($message->type == 'private_message') {
     return \Drupal::currentUser()->hasPermission('bypass private message access control') || \Drupal::currentUser()->hasPermission('view a private_message message instance');
@@ -100,70 +101,6 @@ function message_private_menu_alter(&$items) {
 }
 
 /**
- * Message module access callback.
- *
- * @param string $operation
- *   The operation - create, view, update, delete.
- * @param object|string $message
- *   The message object or message type.
- * @param object|null $user_obj
- *   A user object. Optional.
- *
- * @return bool
- *   TRUE if user is allowed to perform the message operation, FALSE otherwise.
- */
-function message_private_access_control($operation, $message, $user_obj = NULL) {
-
-  if (empty($user_obj)) {
-    $user = \Drupal::currentUser();
-    $account = \Drupal::entityManager()->getStorage('user')->load($user->uid);
-  }
-  else {
-    $user = $user_obj;
-    $account = \Drupal::entityManager()->getStorage('user')->load($user->uid);
-  }
-
-  // Get the message type from the function argument or from the message object.
-  $type = is_object($message) ? $message->type : $message;
-
-  // If this is not a private message then use the message callback provided by
-  // message_ui module.
-  if ($type != 'private_message') {
-    return message_ui_access_control($operation, $message);
-  }
-  else {
-
-    if ($account->hasPermission('bypass private message access control')) {
-      return TRUE;
-    }
-
-    // Verify that the user can apply the op.
-    if ($account->hasPermission($operation . ' any message instance')
-      || $account->hasPermission($operation . ' a ' . $type . ' message instance')
-    ) {
-      if ($type == 'private_message' && $operation != 'create') {
-        // Check if the user is message author.
-        if ($message->uid == $account->uid) {
-          return TRUE;
-        }
-        $users = field_get_items('message', $message, 'field_message_user_ref');
-        if ($users && is_array($users)) {
-          foreach ($users as $user_ref) {
-            if ($user_ref['target_id'] == $account->uid) {
-              return TRUE;
-            }
-          }
-        }
-      }
-      else {
-        return TRUE;
-      }
-    }
-  }
-  return FALSE;
-}
-
-/**
  * Override instance list provided by Message UI.
  *
  * Create links to all message create forms by type, allowing for creation of
@@ -172,6 +109,7 @@ function message_private_access_control($operation, $message, $user_obj = NULL) 
  * @return null|string
  * @throws Exception
  */
+// @todo - remove in place of getAllowedInstanceList() override in Message UI.
 function message_private_create_new_message_instance_list() {
   $items = array();
   $allowed_types = message_ui_user_can_create_message();
@@ -222,6 +160,7 @@ function message_private_create_new_message_instance_list() {
  * allows override specific values of the form such as the cancel link. It hides
  * the message_text on the edit and create form, and adds custom validation.
  */
+// @todo - check form ID is matching D8 form id.
 function message_private_form_message_ui_instance_message_manage_alter(&$form, &$form_state, $form_id) {
   if (!empty($form_state['#entity']) && $form_state['#entity']->type == 'private_message') {
     $user = \Drupal::currentUser();
@@ -247,6 +186,7 @@ function message_private_form_message_ui_instance_message_manage_alter(&$form, &
  *
  * Override redirect for private messages.
  */
+// @todo - check form ID is matching D8 form id.
 function message_private_form_message_ui_instance_delete_alter(&$form, &$form_state, $form_id) {
   if (!empty($form_state['#entity']) && $form_state['#entity']->type == 'private_message') {
     $user = \Drupal::currentUser();
@@ -262,6 +202,7 @@ function message_private_form_message_ui_instance_delete_alter(&$form, &$form_st
 /**
  * Custom submit callback for deleting private messages.
  */
+// @todo - extend MessageForm provided by Message UI and override submitForm().
 function message_private_instance_delete_submit($form, &$form_state) {
   if ($form_state['clicked_button']['#type']) {
     $user = \Drupal::currentUser();
@@ -280,6 +221,7 @@ function message_private_instance_delete_submit($form, &$form_state) {
 /**
  * Implements hook_menu_local_tasks_alter().
  */
+// @todo - remove in place of a dynamic local task class.
 function message_private_menu_local_tasks_alter(&$data, $router_item, $root_path) {
   $user = \Drupal::currentUser();
 
@@ -384,6 +326,7 @@ function message_private_menu_local_tasks_alter(&$data, $router_item, $root_path
  * @param mixed $form_state
  *   The form state including values submitted.
  */
+// @todo - extend MessageForm in Message UI and override validateForm().
 function message_private_form_message_private_instance_message_manage_validate($form, &$form_state) {
   // If there is an imposed message limit set in the admin settings interface.
   // @FIXME
@@ -435,7 +378,7 @@ function message_private_form_message_private_instance_message_manage_validate($
  * this may be an issue with the message module itself as I don't
  * think escaping strings for email should be done in this module.
  */
-function message_private_message_insert($message) {
+function message_private_message_insert(\Drupal\message\MessageInterface $message) {
   // Prepare message notifications for private messages if notifications are on.
   // @FIXME
 // // @FIXME
@@ -478,6 +421,7 @@ function message_private_message_insert($message) {
  * If email notifications are disabled, hide the per user setting on user
  * profiles, unless the user is in role with bypass access control permission.
  */
+// @todo - check form ID is matching D8 form id.
 function message_private_form_user_profile_form_alter(&$form, &$form_state, $form_id) {
   // @FIXME
 // // @FIXME
@@ -493,6 +437,7 @@ function message_private_form_user_profile_form_alter(&$form, &$form_state, $for
 /**
  * Implements hook_theme().
  */
+// @todo - Is this still required in D8 to make twig template discoverable?
 function message_private_theme() {
   $info['message_private'] = array(
     'render element' => 'elements',
@@ -506,6 +451,7 @@ function message_private_theme() {
 /**
  * Implements hook_message_view_alter().
  */
+// @todo - Is this still required in D8 to make twig template discoverable?
 function message_private_message_view_alter(&$build) {
   // Use template_preprocess_message_private for private_message messages only.
   if (!empty($build['#bundle']) && $build['#bundle'] == 'private_message') {
@@ -514,8 +460,9 @@ function message_private_message_view_alter(&$build) {
 }
 
 /**
- * Process variables for message--private_message.tpl.php.
+ * Process variables for message--private_message.html.twig.
  */
+// @todo - Is there a better alternative to this?
 function template_preprocess_message_private(&$variables) {
   // Call the parent message template function defined in message module.
   if (function_exists('template_preprocess_message')) {
@@ -557,6 +504,7 @@ function template_preprocess_message_private(&$variables) {
  * @return mixed
  *   Either a role id or null.
  */
+// @todo - Is there a better location for this?
 function _message_private_max_message_limit_role($roles) {
   $limits = array();
   // @FIXME

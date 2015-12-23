@@ -66,6 +66,57 @@ class MessagePrivateAddAccessCheck implements AccessInterface {
       }
     }
 
+    // @todo: go through the below, previously message_private_access_control().
+    /**
+    if (empty($user_obj)) {
+    $user = \Drupal::currentUser();
+    $account = \Drupal::entityManager()->getStorage('user')->load($user->uid);
+    }
+    else {
+    $user = $user_obj;
+    $account = \Drupal::entityManager()->getStorage('user')->load($user->uid);
+    }
+
+    // Get the message type from the function argument or from the message object.
+    $type = is_object($message) ? $message->type : $message;
+
+    // If this is not a private message then use the message callback provided by
+    // message_ui module.
+    if ($type != 'private_message') {
+    return message_ui_access_control($operation, $message);
+    }
+    else {
+
+    if ($account->hasPermission('bypass private message access control')) {
+    return TRUE;
+    }
+
+    // Verify that the user can apply the op.
+    if ($account->hasPermission($operation . ' any message instance')
+    || $account->hasPermission($operation . ' a ' . $type . ' message instance')
+    ) {
+    if ($type == 'private_message' && $operation != 'create') {
+    // Check if the user is message author.
+    if ($message->uid == $account->uid) {
+    return TRUE;
+    }
+    $users = field_get_items('message', $message, 'field_message_user_ref');
+    if ($users && is_array($users)) {
+    foreach ($users as $user_ref) {
+    if ($user_ref['target_id'] == $account->uid) {
+    return TRUE;
+    }
+    }
+    }
+    }
+    else {
+    return TRUE;
+    }
+    }
+    }
+    return FALSE;
+     */
+
     // No opinion.
     return AccessResult::neutral();
   }
