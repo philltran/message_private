@@ -101,59 +101,6 @@ function message_private_menu_alter(&$items) {
 }
 
 /**
- * Override instance list provided by Message UI.
- *
- * Create links to all message create forms by type, allowing for creation of
- * link to custom Private Message create form URI.
- *
- * @return null|string
- * @throws Exception
- */
-// @todo - remove in place of getAllowedInstanceList() override in Message UI.
-function message_private_create_new_message_instance_list() {
-  $items = array();
-  $allowed_types = message_ui_user_can_create_message();
-
-  if ($types = message_ui_get_types()) {
-    foreach ($types as $type => $title) {
-      if ($allowed_types || (is_array($allowed_types) && $allowed_types[$type])) {
-        // Create links to message create forms.
-        if ($type != 'private_message') {
-          // @FIXME
-// l() expects a Url object, created from a route name or external URI.
-// $items[] = l($title, 'admin/content/message/create/' . str_replace('_', '-', $type));
-
-        }
-        else {
-          // Create link to customised menu item for private_message create.
-          // @FIXME
-// l() expects a Url object, created from a route name or external URI.
-// $items[] = l($title, 'message/create/' . str_replace('_', '-', $type));
-
-        }
-      }
-    }
-  }
-  else {
-    // @FIXME
-// url() expects a route name or an external URI.
-// return t("There are no messages types. You can create a new message type <a href='@url'>here</a>.", array('@url' => url('admin/structure/messages/add')));
-
-  }
-
-  // @FIXME
-// theme() has been renamed to _theme() and should NEVER be called directly.
-// Calling _theme() directly can alter the expected output and potentially
-// introduce security issues (see https://www.drupal.org/node/2195739). You
-// should use renderable arrays instead.
-// 
-// 
-// @see https://www.drupal.org/node/2195739
-// return theme('item_list', array('items' => $items));
-
-}
-
-/**
  * Implements hook_form_FORM_ID_alter().
  *
  * This function is defined to override that provided by Message UI module. This
