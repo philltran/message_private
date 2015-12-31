@@ -59,6 +59,20 @@ function message_private_help($route_name, RouteMatchInterface $arg) {
 }
 
 /**
+ * Implements hook_entity_type_alter.
+ *
+ * Extend the message entity type by providing form handlers.
+ * @todo : can access handler be added to certain bundle only?
+ */
+function message_ui_entity_type_alter(array &$entity_types) {
+  if (isset($entity_types['message'])) {
+    /* @var $message_config \Drupal\Core\Config\Entity\ConfigEntityType */
+    $message_config = $entity_types['message'];
+    $message_config->setAccessClass('Drupal\message_private\MessagePrivateAccessControlHandler');
+  }
+}
+
+/**
  * Access callback for Messages tab.
  *
  * Checks for the private_message bundle and user permissions.
@@ -108,60 +122,27 @@ function message_private_menu_alter(&$items) {
  * the message_text on the edit and create form, and adds custom validation.
  */
 // @todo - check form ID is matching D8 form id.
-function message_private_form_message_ui_instance_message_manage_alter(&$form, &$form_state, $form_id) {
-  if (!empty($form_state['#entity']) && $form_state['#entity']->type == 'private_message') {
+
+function message_private_form_message_private_message_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+  $entity = $form_state->getFormObject()->getEntity();
+  if ($entity->bundle() == 'private_message') {
     $user = \Drupal::currentUser();
 
-    $referer = $_SERVER['HTTP_REFERER']; // Get the referrer uri from globals.
+    /* // There is no cancel link on node form, so this may be unnecessary now.
+     $referer = $_SERVER['HTTP_REFERER']; // Get the referrer uri from globals.
     // Redirect back to referer uri is exists, otherwise to user message inbox.
     // @FIXME
 // l() expects a Url object, created from a route name or external URI.
 // $form['actions']['cancel']['#markup'] =
-      l(t('Cancel'), (!empty($referer) ? $referer : 'user/'. $user->uid . '/messages'));
-
+      l(t('Cancel'), (!empty($referer) ? $referer : 'user/'. $user->uid . '/messages'));*/
 
     if (isset($form['text']['#type'])) {
-      $form['text']['#type'] = 'hidden';
+      $form['text']['#type'] = 'hidden'; // @todo - is this necessary now?
     }
+
+    // @todo - owner access and validation callback needs testing.
     $form['owner']['#access'] = \Drupal::currentUser()->hasPermission('bypass private message access control');
-    $form['#validate'][] = 'message_private_form_message_private_instance_message_manage_validate';
-  }
-}
-
-/**
- * Implements hook_form_FORM_ID_alter().
- *
- * Override redirect for private messages.
- */
-// @todo - check form ID is matching D8 form id.
-function message_private_form_message_ui_instance_delete_alter(&$form, &$form_state, $form_id) {
-  if (!empty($form_state['#entity']) && $form_state['#entity']->type == 'private_message') {
-    $user = \Drupal::currentUser();
-    $referer = $_SERVER['HTTP_REFERER']; // Get the referrer uri from globals.
-    // Redirect back to referer uri is exists, otherwise to user message inbox.
-    $form['actions']['cancel']['#href'] = !empty($referer) ? $referer : 'user/'. $user->uid . '/messages';
-
-    // Call custom submit callback for private messages.
-    $form['#submit'] = array('message_private_instance_delete_submit');
-  }
-}
-
-/**
- * Custom submit callback for deleting private messages.
- */
-// @todo - extend MessageForm provided by Message UI and override submitForm().
-function message_private_instance_delete_submit($form, &$form_state) {
-  if ($form_state['clicked_button']['#type']) {
-    $user = \Drupal::currentUser();
-
-    $form_state['#entity']->delete();
-
-    // Redirect back to user message inbox.
-    $form_state['redirect'] =  'user/' . $user->uid . '/messages';
-
-    drupal_set_message(t('The message instance @type deleted successfully', array(
-      '@type' => $form_state['#entity']->type,
-    )));
+    $form['#validate'][] = 'message_private_form_message_private_message_form_validate';
   }
 }
 
@@ -273,8 +254,8 @@ function message_private_menu_local_tasks_alter(&$data, $router_item, $root_path
  * @param mixed $form_state
  *   The form state including values submitted.
  */
-// @todo - extend MessageForm in Message UI and override validateForm().
-function message_private_form_message_private_instance_message_manage_validate($form, &$form_state) {
+// @todo - test this is called and if form should be passed by reference.
+function message_private_form_message_private_message_form_validate($form, \Drupal\Core\Form\FormStateInterface $form_state) {
   // If there is an imposed message limit set in the admin settings interface.
   // @FIXME
 // // @FIXME
