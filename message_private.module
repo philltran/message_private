@@ -5,6 +5,7 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\user\Entity\Role;
 
 /**
  * The string name for message limit variable.
@@ -83,7 +84,7 @@ function message_ui_entity_type_alter(array &$entity_types) {
  * @return bool
  *   TRUE if the user is allowed perform the operation, FALSE otherwise.
  */
-// @todo: convert to Access class and add associated service and entry in route.
+// @todo: code as Access class & associate service entry to local task/actions.
 function message_private_access_callback($message) {
   if ($message->type == 'private_message') {
     return \Drupal::currentUser()->hasPermission('bypass private message access control') || \Drupal::currentUser()->hasPermission('view a private_message message instance');
@@ -99,20 +100,9 @@ function message_private_access_callback($message) {
  * the message_text on the edit and create form, and adds custom validation.
  */
 // @todo - check form ID is matching D8 form id.
-
-function message_private_form_message_private_message_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+function message_private_form_message_private_message_form_alter($form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
   $entity = $form_state->getFormObject()->getEntity();
   if ($entity->bundle() == 'private_message') {
-    $user = \Drupal::currentUser();
-
-    /* // There is no cancel link on node form, so this may be unnecessary now.
-     $referer = $_SERVER['HTTP_REFERER']; // Get the referrer uri from globals.
-    // Redirect back to referer uri is exists, otherwise to user message inbox.
-    // @FIXME
-// l() expects a Url object, created from a route name or external URI.
-// $form['actions']['cancel']['#markup'] =
-      l(t('Cancel'), (!empty($referer) ? $referer : 'user/'. $user->uid . '/messages'));*/
-
     if (isset($form['text']['#type'])) {
       $form['text']['#type'] = 'hidden'; // @todo - is this necessary now?
     }
@@ -134,44 +124,41 @@ function message_private_form_message_private_message_form_alter(&$form, \Drupal
 // @todo - test this is called and if form should be passed by reference.
 function message_private_form_message_private_message_form_validate($form, \Drupal\Core\Form\FormStateInterface $form_state) {
   // If there is an imposed message limit set in the admin settings interface.
-  // @FIXME
-// // @FIXME
-// // The correct configuration object could not be determined. You'll need to
-// // rewrite this call manually.
-// if (variable_get(MESSAGE_PRIVATE_MESSAGE_LIMIT, FALSE)
-//     && !\Drupal::currentUser()->hasPermission('bypass private message access control')) {
-//     $user = \Drupal::currentUser();
-// 
-//     // Get the role belonging to user with max message limit.
-//     $rid = _message_private_max_message_limit_role($user->roles);
-//     $role = user_role_load($rid);
-// 
-//     // Get the message limitation settings for this role.
-//     $role_name = str_replace(' ', '_', $role->name);
-//     $limit_name = 'message_private_' . $role_name . '_limit';
-//     $interval_name = 'message_private_' . $role_name . '_interval';
-//     $interval = variable_get($interval_name);
-//     $limit = variable_get($limit_name);
-// 
-//     // Calculate timestamp of the last interval.
-//     $current_timestamp = time();
-//     $interval_timestamp = strtotime('-' . $interval . ' minutes', $current_timestamp);
-// 
-//     // Get total amount of this user's messages since last interval.
-//     $query = new EntityFieldQuery();
-//     $total = $query->entityCondition('entity_type', 'message')
-//       ->entityCondition('bundle', 'private_message')
-//       ->propertyCondition('timestamp', $interval_timestamp, '>')
-//       ->propertyCondition('uid', $user->uid)
-//       ->count()
-//       ->execute();
-// 
-//     // Display error preventing message create when total messages over limit.
-//     if ($total >= $limit) {
-//       form_error($form, t('Message create limit reached. Please try again later.'));
-//     }
-//   }
+  // The correct configuration object could not be determined. You'll need to
+  // rewrite this call manually.
+  if (\Drupal::config('message_private.settings')->get('message_private_message_limit')
+    && !\Drupal::currentUser()->hasPermission('bypass private message access control')) {
+    $user = \Drupal::currentUser();
 
+    // Get the role belonging to user with max message limit.
+    $rid = _message_private_max_message_limit_role($user->getRoles());
+    /* @var $role Role */
+    $role = Role::load($rid);
+
+    // Get the message limitation settings for this role.
+    $role_name = str_replace(' ', '_', $role->get('name'));
+    $limit_name = 'message_private_' . $role_name . '_limit';
+    $interval_name = 'message_private_' . $role_name . '_interval';
+    $interval = \Drupal::config('message_private.settings')->get($interval_name);
+    $limit = \Drupal::config('message_private.settings')->get($limit_name);
+
+    // Calculate timestamp of the last interval.
+    $current_timestamp = time();
+    $interval_timestamp = strtotime('-' . $interval . ' minutes', $current_timestamp);
+
+    // Get total amount of this user's messages since last interval.
+    $query = \Drupal::entityQuery('message');
+    $total = $query->condition('type', 'private_message')
+     ->condition('timestamp', $interval_timestamp, '>')
+     ->condition('uid', $user->id())
+     ->count()
+     ->execute();
+
+    // Display error preventing message create when total messages over limit.
+    if ($total >= $limit) {
+      $form_state->setError($form, t('Message create limit reached. Please try again later.'));
+    }
+  }
 }
 
 /**
@@ -227,7 +214,7 @@ function message_private_message_insert(\Drupal\message\MessageInterface $messag
  * profiles, unless the user is in role with bypass access control permission.
  */
 // @todo - check form ID matches D8 form id & add config for user notify field.
-function message_private_form_user_profile_form_alter(&$form, &$form_state, $form_id) {
+function message_private_form_user_profile_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
   // @FIXME
 // // @FIXME
 // // The correct configuration object could not be determined. You'll need to
