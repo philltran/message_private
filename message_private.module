@@ -5,22 +5,24 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\message\Entity\Message;
 use Drupal\user\Entity\Role;
 
+// @todo : perhaps the string constants can be removed and values used directly.
 /**
  * The string name for message limit variable.
  */
-const MESSAGE_PRIVATE_MESSAGE_LIMIT = 'message_private_message_limit';
+const MESSAGE_PRIVATE_MESSAGE_LIMIT = 'message_limit';
 
 /**
  * The assoc index to be used when fetching default limit variable.
  */
-const MESSAGE_PRIVATE_DEFAULT_LIMIT = 'message_private_default_limit';
+const MESSAGE_PRIVATE_DEFAULT_LIMIT = 'default_limit';
 
 /**
  * The assoc index to be used when fetching default interval variable.
  */
-const MESSAGE_PRIVATE_DEFAULT_INTERVAL = 'message_private_default_interval';
+const MESSAGE_PRIVATE_DEFAULT_INTERVAL = 'default_interval';
 
 /**
  * The default index for settings such as role.
@@ -172,39 +174,36 @@ function message_private_form_message_private_message_form_validate($form, \Drup
  */
 function message_private_message_insert(\Drupal\message\MessageInterface $message) {
   // Prepare message notifications for private messages if notifications are on.
-  // @FIXME
-// // @FIXME
-// // The correct configuration object could not be determined. You'll need to
-// // rewrite this call manually.
-// if ($message->type == 'private_message'
-//     && variable_get(MESSAGE_PRIVATE_EMAIL_NOTIFICATIONS, TRUE)) {
-//     // Use message load as the $message object has issue with mail function.
-//     // It causes duplicate entry, possibly as mid is missing and the mail
-//     // function message_notify_send_message tries to re-save as a new message.
-//     $message = message_load($message->mid);
-//     $wrapper = entity_metadata_wrapper('message', $message);
-// 
-//     $mail = array();
-//     $users = $wrapper->field_message_user_ref->value();
-// 
-//     if (is_array($users)) {
-//       foreach ($users as $user) {
-//         $notify = field_get_items('user', $user, 'field_private_message_notify');
-//         if (!empty($notify) && is_array($notify)) {
-//           // Get the 1st value of the array as there is only 1 possible item.
-//           $notify = array_shift($notify);
-//         }
-//         // If the user has set field for notifications, add their email.
-//         if (isset($notify['value']) && $notify['value']) {
-//           $mail[] = $user->mail;
-//         }
-//       }
-//     }
-//     if (!empty($mail)) {
-//       message_notify_send_message($message, array('mail' => implode(',', $mail)));
-//     }
-//   }
+  // The correct configuration object could not be determined. You'll need to
+  // rewrite this call manually.
+  if ($message->type == 'private_message'
+   && \Drupal::config('message_private.settings')->get('email_notify')) {
+    // Use message load as the $message object has issue with mail function.
+    // It causes duplicate entry, possibly as mid is missing and the mail
+    // function message_notify_send_message tries to re-save as a new message.
+    $message = Message::load($message->id());
 
+    $mail = array();
+    $users = $message->get('field_message_private_to_user');
+
+    if (is_array($users)) {
+     foreach ($users as $user) {
+       $notify = $user->get('field_private_message_notify');
+       if (!empty($notify) && is_array($notify)) {
+         // Get the 1st value of the array as there is only 1 possible item.
+         $notify = array_shift($notify);
+       }
+       // If the user has set field for notifications, add their email.
+       if (isset($notify['value']) && $notify['value']) {
+         $mail[] = $user->mail;
+       }
+     }
+    }
+    if (!empty($mail)) {
+      // @todo: wait for D8 version of message_notify or use alternative?
+      message_notify_send_message($message, array('mail' => implode(',', $mail)));
+    }
+  }
 }
 
 /**
@@ -215,15 +214,12 @@ function message_private_message_insert(\Drupal\message\MessageInterface $messag
  */
 // @todo - check form ID matches D8 form id & add config for user notify field.
 function message_private_form_user_profile_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
-  // @FIXME
-// // @FIXME
-// // The correct configuration object could not be determined. You'll need to
-// // rewrite this call manually.
-// if (!\Drupal::currentUser()->hasPermission('bypass private message access control')
-//     && !variable_get(MESSAGE_PRIVATE_EMAIL_NOTIFICATIONS, TRUE)) {
-//     $form['field_private_message_notify']['#access'] = FALSE;
-//   }
-
+  // The correct configuration object could not be determined. You'll need to
+  // rewrite this call manually.
+  if (!\Drupal::currentUser()->hasPermission('bypass private message access control')
+    && !\Drupal::config('message_private.settings')->get('email_notify')) {
+    $form['field_private_message_notify']['#access'] = FALSE;
+  }
 }
 
 /**
@@ -299,17 +295,15 @@ function template_preprocess_message_private(&$variables) {
 // @todo - Is there a better location for this?
 function _message_private_max_message_limit_role($roles) {
   $limits = array();
-  // @FIXME
-// // @FIXME
-// // The correct configuration object could not be determined. You'll need to
-// // rewrite this call manually.
-// $limit = variable_get(MESSAGE_PRIVATE_DEFAULT_LIMIT);
 
-  // @FIXME
-// // @FIXME
-// // The correct configuration object could not be determined. You'll need to
-// // rewrite this call manually.
-// $interval = variable_get(MESSAGE_PRIVATE_DEFAULT_INTERVAL);
+  // The correct configuration object could not be determined. You'll need to
+  // rewrite this call manually.
+  // @todo : default limit init to 0 in yml, needs implementation accordingly.
+  $limit = \Drupal::config('message_private.settings')->get('default_limit');
+
+  // The correct configuration object could not be determined. You'll need to
+  // rewrite this call manually.
+  $interval = \Drupal::config('message_private.settings')->get('default_interval');
 
   // Ensure we have existing valid numerical values for both variables.
   if (!empty($limit) && ctype_digit($limit) && !empty($interval) && ctype_digit($interval)) {
@@ -321,17 +315,13 @@ function _message_private_max_message_limit_role($roles) {
     $role_name = str_replace(' ', '_', $role);
     $limit_name = 'message_private_' . $role_name . '_limit';
     $interval_name = 'message_private_' . $role_name . '_interval';
-    // @FIXME
-// // @FIXME
-// // The correct configuration object could not be determined. You'll need to
-// // rewrite this call manually.
-// $interval = variable_get($interval_name);
+    // The correct configuration object could not be determined. You'll need to
+    // rewrite this call manually.
+    $interval = \Drupal::config('message_private.settings')->get($interval_name);
 
-    // @FIXME
-// // @FIXME
-// // The correct configuration object could not be determined. You'll need to
-// // rewrite this call manually.
-// $limit = variable_get($limit_name);
+    // The correct configuration object could not be determined. You'll need to
+    // rewrite this call manually.
+    $limit = \Drupal::config('message_private.settings')->get($limit_name);
 
 
     // Ensure we have existing valid numerical values for both variables.
