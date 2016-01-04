@@ -1,0 +1,74 @@
+#message_ui.create_message:
+#  route_name: message_ui.create_message
+#  title: 'Add message'
+#  appears_on:
+#    - view.message.page_1
+
+#case 'user/%':
+#      // Add a 'Create a new message for %user' action link.
+#      if (is_array($router_item['page_arguments'])) {
+#        // Get the user object from page arguments.
+#        foreach ($router_item['page_arguments'] as $arg) {
+#          if (is_object($arg) && !empty($arg->uid)) {
+#            $to_user = $arg;
+#          }
+#        }
+#      }
+#      // Only display the local task on other users profile, not current user's.
+#      if (!empty($to_user) && $user->uid != $to_user->uid) {
+#        // @FIXME
+#// menu_get_item() has been removed. To retrieve route information, use the
+#// RouteMatch object, which you can retrieve by calling \Drupal::routeMatch().
+#//
+#//
+#// @see https://www.drupal.org/node/2203305
+#// $item = menu_get_item('message/create/private-message');
+#
+#        $item['title'] = t('Create a new message for') . ' ' . $to_user->name;
+#        $item['localized_options']['query'] = array('field_message_user_ref' => $to_user->uid);
+#        $data['actions']['output'][] = array(
+#          '#theme' => 'menu_local_action',
+#          '#link' => $item,
+#        );
+#
+#      }
+#      break;
+
+#case 'user/%/messages':
+#      // Add a 'Create a new message' action link above message_private view.
+#      // @FIXME
+#// menu_get_item() has been removed. To retrieve route information, use the
+#// RouteMatch object, which you can retrieve by calling \Drupal::routeMatch().
+#//
+#//
+#// @see https://www.drupal.org/node/2203305
+#// $item = menu_get_item('message/create/private-message');
+#
+#      $item['title'] = t('Create a new message');
+#      $data['actions']['output'][] = array(
+#        '#theme' => 'menu_local_action',
+#        '#link' => $item,
+#      );
+#
+#      break;
+#
+#// Get from user to Add a 'Create a new message for %user' action link.
+#        $to_user = \Drupal::entityManager()->getStorage('user')->load($message->uid);
+#        // Display the local task on other users profile, not current user's.
+#        if (!empty($to_user) && $user->uid != $to_user->uid) {
+#          // @FIXME
+#// menu_get_item() has been removed. To retrieve route information, use the
+#// RouteMatch object, which you can retrieve by calling \Drupal::routeMatch().
+#//
+#//
+#// @see https://www.drupal.org/node/2203305
+#// $item = menu_get_item('message/create/private-message');
+#
+#          $item['title'] = t('Create a new message for') . ' ' . $to_user->name;
+#          $item['localized_options']['query'] = array('field_message_user_ref' => $to_user->uid);
+#          $data['actions']['output'][] = array(
+#            '#theme' => 'menu_local_action',
+#            '#link' => $item,
+#          );
+#
+#        }

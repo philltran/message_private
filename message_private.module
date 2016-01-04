@@ -92,29 +92,6 @@ function message_private_access_callback($message) {
 }
 
 /**
- * Implements hook_menu_alter().
- *
- * Override some of the menu paths set in message ui module.
- */
-function message_private_menu_alter(&$items) {
-
-  // Override access callbacks.
-  // @todo: add appropriate callbacks to services refering to node.services.yml.
-  $items['message/%message']['access callback'] = 'message_private_access_control';
-  $items['message/%message/view']['access callback'] = 'message_private_access_control';
-  $items['message/%message/edit']['access callback'] = 'message_private_access_control';
-  $items['message/%message/delete']['access callback'] = 'message_private_access_control';
-
-  // Override page created by message_ui to allow custom "Private Message" URI.
-  $items['admin/content/message/create']['page callback'] = 'message_private_create_new_message_instance_list';
-
-  // Unset menu item created by message_ui for private_message type.
-  unset($items['admin/content/message/create/private-message']);
-
-  return $items;
-}
-
-/**
  * Implements hook_form_FORM_ID_alter().
  *
  * This function is defined to override that provided by Message UI module. This
@@ -143,106 +120,6 @@ function message_private_form_message_private_message_form_alter(&$form, \Drupal
     // @todo - owner access and validation callback needs testing.
     $form['owner']['#access'] = \Drupal::currentUser()->hasPermission('bypass private message access control');
     $form['#validate'][] = 'message_private_form_message_private_message_form_validate';
-  }
-}
-
-/**
- * Implements hook_menu_local_tasks_alter().
- */
-// @todo - remove in place of a dynamic local task class.
-function message_private_menu_local_tasks_alter(&$data, $router_item, $root_path) {
-  $user = \Drupal::currentUser();
-
-  switch ($root_path) {
-    case 'user/%':
-      // Add a 'Create a new message for %user' action link.
-      if (is_array($router_item['page_arguments'])) {
-        // Get the user object from page arguments.
-        foreach ($router_item['page_arguments'] as $arg) {
-          if (is_object($arg) && !empty($arg->uid)) {
-            $to_user = $arg;
-          }
-        }
-      }
-      // Only display the local task on other users profile, not current user's.
-      if (!empty($to_user) && $user->uid != $to_user->uid) {
-        // @FIXME
-// menu_get_item() has been removed. To retrieve route information, use the
-// RouteMatch object, which you can retrieve by calling \Drupal::routeMatch().
-// 
-// 
-// @see https://www.drupal.org/node/2203305
-// $item = menu_get_item('message/create/private-message');
-
-        $item['title'] = t('Create a new message for') . ' ' . $to_user->name;
-        $item['localized_options']['query'] = array('field_message_user_ref' => $to_user->uid);
-        $data['actions']['output'][] = array(
-          '#theme' => 'menu_local_action',
-          '#link' => $item,
-        );
-
-      }
-      break;
-
-    case 'user/%/messages':
-      // Add a 'Create a new message' action link above message_private view.
-      // @FIXME
-// menu_get_item() has been removed. To retrieve route information, use the
-// RouteMatch object, which you can retrieve by calling \Drupal::routeMatch().
-// 
-// 
-// @see https://www.drupal.org/node/2203305
-// $item = menu_get_item('message/create/private-message');
-
-      $item['title'] = t('Create a new message');
-      $data['actions']['output'][] = array(
-        '#theme' => 'menu_local_action',
-        '#link' => $item,
-      );
-
-      break;
-
-    case 'message/%':
-      $message = \Drupal::routeMatch()->getParameter('message', 1, $router_item['href']);
-      if (isset($message->type) && $message->type == 'private_message') {
-        // Add a Messages tab to the private_message Message entities.
-        // @FIXME
-// menu_get_item() has been removed. To retrieve route information, use the
-// RouteMatch object, which you can retrieve by calling \Drupal::routeMatch().
-// 
-// 
-// @see https://www.drupal.org/node/2203305
-// $item = menu_get_item('user/' . $user->uid . '/messages');
-
-        $item['title'] = t('Messages');
-        $data['tabs'][0]['output'][] = array(
-          '#theme' => 'menu_local_task',
-          '#link' => $item,
-        );
-
-        // Get from user to Add a 'Create a new message for %user' action link.
-        $to_user = \Drupal::entityManager()->getStorage('user')->load($message->uid);
-        // Display the local task on other users profile, not current user's.
-        if (!empty($to_user) && $user->uid != $to_user->uid) {
-          // @FIXME
-// menu_get_item() has been removed. To retrieve route information, use the
-// RouteMatch object, which you can retrieve by calling \Drupal::routeMatch().
-// 
-// 
-// @see https://www.drupal.org/node/2203305
-// $item = menu_get_item('message/create/private-message');
-
-          $item['title'] = t('Create a new message for') . ' ' . $to_user->name;
-          $item['localized_options']['query'] = array('field_message_user_ref' => $to_user->uid);
-          $data['actions']['output'][] = array(
-            '#theme' => 'menu_local_action',
-            '#link' => $item,
-          );
-
-        }
-      }
-      break;
-
   }
 }
 
@@ -349,7 +226,7 @@ function message_private_message_insert(\Drupal\message\MessageInterface $messag
  * If email notifications are disabled, hide the per user setting on user
  * profiles, unless the user is in role with bypass access control permission.
  */
-// @todo - check form ID is matching D8 form id.
+// @todo - check form ID matches D8 form id & add config for user notify field.
 function message_private_form_user_profile_form_alter(&$form, &$form_state, $form_id) {
   // @FIXME
 // // @FIXME

@@ -1,0 +1,37 @@
+# MENU_DEFAULT_LOCAL_TASK for 'message/%message/view'.
+#message_ui.show_message.view:
+#  route_name: message_ui.show_message
+#  title: 'View'
+#  parent_id: message_ui.show_message
+#  weight: -10
+#
+#message_ui.edit_message:
+#  route_name: message_ui.edit_message
+#  base_route: message_ui.show_message
+#  title:  'Edit'
+#  weight: 0
+#
+#message_ui.delete_message:
+#  route_name: message_ui.delete_message
+#  base_route: message_ui.show_message
+#  title: 'Delete'
+#  weight: 10
+
+#    case 'message/%':
+#      $message = \Drupal::routeMatch()->getParameter('message', 1, $router_item['href']);
+#      if (isset($message->type) && $message->type == 'private_message') {
+#        // Add a Messages tab to the private_message Message entities.
+#        // @FIXME
+#// menu_get_item() has been removed. To retrieve route information, use the
+#// RouteMatch object, which you can retrieve by calling \Drupal::routeMatch().
+#//
+#//
+#// @see https://www.drupal.org/node/2203305
+#// $item = menu_get_item('user/' . $user->uid . '/messages');
+#
+#        $item['title'] = t('Messages');
+#        $data['tabs'][0]['output'][] = array(
+#          '#theme' => 'menu_local_task',
+#          '#link' => $item,
+#        );
+#      }

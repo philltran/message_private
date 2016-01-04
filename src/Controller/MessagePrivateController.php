@@ -12,6 +12,7 @@ use Drupal\message\MessageInterface;
 use Drupal\message\Entity\MessageType;
 use Drupal\message\Entity\Message;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\message_ui\Controller\MessageViewController;
 
 
 class MessagePrivateController extends ControllerBase implements ContainerInjectionInterface {
