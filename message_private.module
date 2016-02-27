@@ -463,7 +463,9 @@ function message_private_message_insert($message) {
     $mail = array();
     $users = $wrapper->field_message_user_ref->value();
 
-    if (is_array($users)) {
+    if (!empty($users)) {
+      // Make users an array if user ref field is configured to 1 entry.
+      $users = is_array($users) ? $users : array($users);
       foreach ($users as $user) {
         $notify = field_get_items('user', $user, 'field_private_message_notify');
         if (!empty($notify) && is_array($notify)) {

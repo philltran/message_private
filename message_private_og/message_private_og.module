@@ -303,7 +303,9 @@ function message_private_og_message_insert($message) {
     $mail = array();
     $groups = $wrapper->field_message_group_ref->value();
 
-    if (!empty($groups) && is_array($groups)) {
+    if (!empty($groups)) {
+      // Make groups an array if group ref field is configured to 1 entry.
+      $groups = is_array($groups) ? $groups : array($groups);
       foreach ($groups as $group) {
         $uids = og_get_group_members_properties($group,
           array(), 'members', 'node');
