@@ -186,18 +186,20 @@ function message_private_message_insert(\Drupal\message\MessageInterface $messag
     $mail = array();
     $users = $message->get('field_message_private_to_user');
 
-    if (is_array($users)) {
-     foreach ($users as $user) {
-       $notify = $user->get('field_private_message_notify');
-       if (!empty($notify) && is_array($notify)) {
-         // Get the 1st value of the array as there is only 1 possible item.
-         $notify = array_shift($notify);
-       }
-       // If the user has set field for notifications, add their email.
-       if (isset($notify['value']) && $notify['value']) {
-         $mail[] = $user->mail;
-       }
-     }
+    if (!empty($users)) {
+      // Make users an array if user ref field is configured to 1 entry.
+      $users = is_array($users) ? $users : array($users);
+      foreach ($users as $user) {
+        $notify = $user->get('field_private_message_notify');
+        if (!empty($notify) && is_array($notify)) {
+          // Get the 1st value of the array as there is only 1 possible item.
+          $notify = array_shift($notify);
+        }
+        // If the user has set field for notifications, add their email.
+        if (isset($notify['value']) && $notify['value']) {
+          $mail[] = $user->mail;
+        }
+      }
     }
     if (!empty($mail)) {
       // @todo: wait for D8 version of message_notify or use alternative?
