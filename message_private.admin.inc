@@ -19,6 +19,14 @@ function message_private_admin_settings() {
     '#description' => t('Global On / Off checkbox for emails notifying users of a new private message'),
   );
 
+  // Local action links on/off checkbox.
+  $form[MESSAGE_PRIVATE_LOCAL_ACTION] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Disable Create a New Message local action links'),
+    '#default_value' => variable_get(MESSAGE_PRIVATE_LOCAL_ACTION, FALSE),
+    '#description' => t('Disable local action links to create new message on user pages.'),
+  );
+
   // Role based message create limit on/off checkbox.
   $form[MESSAGE_PRIVATE_MESSAGE_LIMIT] = array(
     '#type' => 'checkbox',
