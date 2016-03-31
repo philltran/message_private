@@ -72,6 +72,47 @@ function message_private_views_api() {
 }
 
 /**
+ * Implements hook_views_plugins().
+ */
+function message_private_views_plugins() {
+  $plugins = array(
+      'access' => array(
+          'message_private' => array(
+              'title' => t('Message Private Inbox'),
+              'help' => t('Message Private access plugin.'),
+              'handler' => 'message_private_access_plugin',
+              'path' => drupal_get_path('module', 'message_private'),
+          ),
+      ),
+  );
+  return $plugins;
+}
+
+/**
+ * Custom access callback for checking user inbox access.
+ *
+ * @param stdClass|null $account
+ * @return bool
+ */
+function message_private_inbox_access($account = NULL) {
+  // Get global user if account is undefined.
+  if ($account == NULL) {
+    global $user;
+    $account = user_load($user->uid);
+  }
+
+  // Get the user ID from the inbox URL.
+  $uid = arg(1);
+
+  // Check if the current user owns the inbox or has bypass access permission.
+  if ($account->uid == $uid || user_access('bypass private message access control')) {
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+/**
  * Implements hook_permission().
  */
 function message_private_permission() {

@@ -653,3 +653,19 @@ function message_private_update_7101() {
 
   return $t('Success - changed Subject to textfield. Temp Subject field removed.');
 }
+
+/**
+ * Update message_private view to use new access plugin.
+ */
+function message_private_update_7102() {
+  $t = get_t(); // Get translation function.
+  $view_name = 'message_private';
+  $view = views_get_view($view_name, TRUE);
+  // Check we have a view and if so, set to use new access plugin.
+  if (!empty($view)) {
+    $view->display['default']->display_options['access'] = array('type' => 'message_private');
+    views_save_view($view);
+    return $t('Success - Updated the message_private view to use the new access plugin.');
+  }
+  return $t('Message Private view not found, no changes made.');
+}
