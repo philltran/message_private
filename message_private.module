@@ -275,7 +275,7 @@ function template_preprocess_message_private(&$variables) {
 // @see https://www.drupal.org/node/2195739
 // $variables['name'] = theme('username', array('account' => user_load($uid)));
 
-    $variables['submitted'] = t('Submitted by !username on !datetime', array(
+    $variables['submitted'] = t('Sent by !username on !datetime', array(
         '!username' => $variables['name'],
         '!datetime' => $variables['date'],
     ));
