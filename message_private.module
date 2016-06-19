@@ -72,117 +72,33 @@ function message_private_help($route_name, RouteMatchInterface $arg) {
 function message_private_message_access(EntityInterface $message, $operation, AccountInterface $account) {
   // Customise access check only for private messages.
   if ($message->bundle() == 'private_message') {
-    // Perform operation specific access control.
-    switch ($operation) {
-      case 'view':
-        /*
-        $access_control_handler = $this->entityManager->getAccessControlHandler('message');
-        // If checking whether a node of a particular type may be created.
-        if ($account->hasPermission('administer message private')
-          || $account->hasPermission('bypass private message access control')) {
+    // If checking whether a node of a particular type may be created.
+    if ($account->hasPermission('administer message private')
+      || $account->hasPermission('bypass private message access control')) {
+      return AccessResult::allowed()->cachePerPermissions();
+    }
+    // Verify that the user can apply the op.
+    if ($account->hasPermission($operation . ' any message instance')
+        || $account->hasPermission($operation . ' a private_message message instance', $account)
+    ) {
+      if ($operation != 'create') {
+        // Check if the user is message author.
+        /* @var Drupal\message\Entity\message $message */
+        if ($message->getOwnerId() == $account->id()) {
           return AccessResult::allowed()->cachePerPermissions();
         }
-        if ($message_type) {
-          return $access_control_handler->createAccess($message_type->id(), $account, [], TRUE);
-        }
-        // If checking whether a message of any type may be created.
-        foreach ($this->entityManager->getStorage('message_type')->loadMultiple() as $message_type) {
-          if (($access = $access_control_handler->createAccess($message_type->id(), $account, [], TRUE)) && $access->isAllowed()) {
-            return $access;
-          }
-        }
-        */
-            break;
-      case 'add':
-        /*
-        if ($account->hasPermission('administer message private')
-            || $account->hasPermission('bypass private message access control')) {
-          return AccessResult::allowed()->cachePerPermissions();
-        }
-        if ($message_type) {
-          return $access_control_handler->createAccess($message_type->id(), $account, [], TRUE);
-        }
-        // If checking whether a message of any type may be created.
-        foreach ($this->entityManager->getStorage('message_type')->loadMultiple() as $message_type) {
-          if (($access = $access_control_handler->createAccess($message_type->id(), $account, [], TRUE)) && $access->isAllowed()) {
-            return $access;
-          }
-        }
-        */
-            break;
-      case 'edit':
-        /*
-          $access_control_handler = $this->entityManager->getAccessControlHandler('message');
-          // If checking whether a node of a particular type may be created.
-          if ($account->hasPermission('administer message private')
-          || $account->hasPermission('bypass private message access control')) {
-          return AccessResult::allowed()->cachePerPermissions();
-          }
-
-          // @todo: go through the below, previously message_private_access_control().
-
-          // Get the message type from the function argument or from the message object.
-          $type = $message->bundle();
-
-          // If this is not a private message then use the message callback provided
-          // by message_ui module.
-          if ($type != 'private_message') {
-          // No opinion.
-          return AccessResult::neutral();
-          }
-          else {
-          if ($account->hasPermission('bypass private message access control')) {
-          return TRUE;
-          }
-
-          $operation = 'edit';
-
-          // Verify that the user can apply the op.
-          if ($account->hasPermission($operation . ' any message instance')
-          || $account->hasPermission($operation . ' a ' . $type . ' message instance')
-          ) {
-          if ($type == 'private_message' && $operation != 'create') {
-          // Check if the user is message author.
-          // @var $message \Drupal\message\Entity\Message
-          if ($message->getAuthorId() == $account->id()) {
-            return TRUE;
-          }
-          $users = $message->get('field_message_user_ref');
-          if ($users && is_array($users)) {
-            foreach ($users as $user_ref) {
-              if ($user_ref['target_id'] == $account->id()) {
-                return TRUE;
-              }
+        $users = $message->get('field_message_private_to_user')->getValue();
+        if ($users && is_array($users)) {
+          foreach ($users as $user_ref) {
+            if ($user_ref['target_id'] == $account->id()) {
+              return AccessResult::allowed()->cachePerPermissions();
             }
           }
         }
-          else {
-              return TRUE;
-            }
-          }
-        }
-        return FALSE;
-           */
-            break;
-      case 'delete':
-          /*
-          $access_control_handler = $this->entityManager->getAccessControlHandler('message');
-          // If checking whether a node of a particular type may be created.
-          if ($account->hasPermission('administer message private')
-              || $account->hasPermission('bypass private message access control')) {
-            return AccessResult::allowed()->cachePerPermissions();
-          }
-          if ($message_type) {
-            return $access_control_handler->createAccess($message_type->id(), $account, [], TRUE);
-          }
-          // If checking whether a message of any type may be created.
-          foreach ($this->entityManager->getStorage('message_type')->loadMultiple() as $message_type) {
-            if (($access = $access_control_handler->createAccess($message_type->id(), $account, [], TRUE)) && $access->isAllowed()) {
-              return $access;
-            }
-          }
-          */
-            break;
+      }
+      else {
+        return AccessResult::allowed()->cachePerPermissions();
+      }
     }
   }
 
@@ -317,8 +233,10 @@ function message_private_message_insert(\Drupal\message\MessageInterface $messag
       }
     }
     if (!empty($mail)) {
-      // @todo: wait for D8 version of message_notify or use alternative?
-      message_notify_send_message($message, array('mail' => implode(',', $mail)));
+      /* @var \Drupal\message_notify\MessageNotifier $message_notifier */
+      $message_notifier = $this->container->get('message_notify.sender');
+      // @todo - figure out how to pass the email addresses to the notify plugin / hook.
+      $message_notifier->send($message, array('mail' => implode(',', $mail), 'email'));
     }
   }
 }

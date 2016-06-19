@@ -5,6 +5,7 @@ package: Message
 type: module
 configure: message_private.admin_settings
 dependencies:
-  - message
-  - message_ui
   - views
+  - message
+  - message_notify
+  - message_ui

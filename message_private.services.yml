@@ -1,5 +1,0 @@
-services:
-  message_private.route_subscriber:
-      class: Drupal\message_private\Routing\RouteSubscriber
-      tags:
-        - { name: event_subscriber }

@@ -23,7 +23,7 @@ class DynamicLocalTasks extends DeriverBase {
     $this->derivatives['message_private.messages'] = $base_plugin_definition;
     $this->derivatives['message_private.messages']['title'] = 'Messages';
     // @todo: this should pass a user / uid argument also.
-    $this->derivatives['message_private.messages']['route_name'] = 'message_private.user.create_message';
+    $this->derivatives['message_private.messages']['route_name'] = 'message_private.user.add';
     return $this->derivatives;
   }
 }

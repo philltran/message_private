@@ -1,17 +1,17 @@
-uuid: 1ae7f899-eed6-442b-9018-249dca166c0a
+uuid: bcfc43e3-2726-4b76-99b6-2602ad6a4610
 langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.message.field_message_to_user
+    - field.storage.message.field_message_private_to_user
     - message.type.private_message
-id: message.private_message.field_message_to_user
-field_name: field_message_to_user
+id: message.private_message.field_message_private_to_user
+field_name: field_message_private_to_user
 entity_type: message
 bundle: private_message
 label: 'To User'
 description: 'Private message to user reference.'
-required: true
+required: false
 translatable: false
 default_value: {  }
 default_value_callback: ''
@@ -23,6 +23,6 @@ settings:
       type: _none
     target_bundles: null
     sort:
-      field: name
-      direction: ASC
+      field: _none
+    auto_create: false
 field_type: entity_reference
