@@ -28,6 +28,7 @@ DEPENDENCIES
 ------------
 The message_private module requires the following modules:
  * Message (https://drupal.org/project/message)
+ * Message Notify (https://drupal.org/project/message_notify)
  * Message UI (https://drupal.org/project/message_ui)
 
 
@@ -86,11 +87,7 @@ E.G:
 
 DEVELOPMENT AND TEST
 --------------------
- * Threads / Conversations will be created: https://www.drupal.org/node/2504863. 
-   An admin setting can be used to enable or disable threads to turn on/off 
-   replies on all private messages (Reply, Reply All). Perhaps a css file will 
-   need to be added for indentation / presentation. Integrate with MessageJS,
-   nodeJS or socket.io.
+ * Integrate with Message FOS (FOSMessage) bridge module.
  * Flag module on user entity to block/unblock users from messaging them
  * Flag module on message entity to show/hide (delete) messages from users own 
    display

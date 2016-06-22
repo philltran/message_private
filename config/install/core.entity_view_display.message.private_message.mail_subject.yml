@@ -1,0 +1,22 @@
+uuid: e6d9fdf0-63fb-4518-a2ff-31f9dc3079d8
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.message.mail_subject
+    - field.field.message.private_message.field_message_private_body
+    - field.field.message.private_message.field_message_private_subject
+    - field.field.message.private_message.field_message_private_to_user
+    - message.type.private_message
+id: message.private_message.mail_subject
+targetEntityType: message
+bundle: private_message
+mode: mail_subject
+content:
+  partial_0:
+    weight: 0
+hidden:
+  field_message_private_body: true
+  field_message_private_subject: true
+  field_message_private_to_user: true
+  partial_1: true

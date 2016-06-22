@@ -1,0 +1,39 @@
+uuid: d1c2b0f2-5dc9-43f4-ad7c-6f48b3a3cff4
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.message.private_message.field_message_private_body
+    - field.field.message.private_message.field_message_private_subject
+    - field.field.message.private_message.field_message_private_to_user
+    - message.type.private_message
+id: message.private_message.default
+targetEntityType: message
+bundle: private_message
+mode: default
+content:
+  field_message_private_body:
+    type: basic_string
+    weight: 0
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+  field_message_private_subject:
+    type: string
+    weight: 0
+    label: inline
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+  field_message_private_to_user:
+    type: entity_reference_label
+    weight: 0
+    label: inline
+    settings:
+      link: true
+    third_party_settings: {  }
+  partial_0:
+    weight: 0
+    settings: {  }
+    third_party_settings: {  }
+hidden: {  }
