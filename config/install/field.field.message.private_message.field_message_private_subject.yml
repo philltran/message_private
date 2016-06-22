@@ -17,7 +17,7 @@ required: false
 translatable: false
 default_value:
   -
-    value: 'Private Message'
+    value: ''
 default_value_callback: ''
 settings: {  }
 field_type: string
