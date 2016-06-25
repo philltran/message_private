@@ -8,7 +8,7 @@ CONTENTS OF THIS FILE
  * Configuration
  * How to use
  * Security
- * Development and Test
+ * Development road-map
  * Maintainers
 
 
@@ -41,28 +41,16 @@ INSTALLATION
 
 CONFIGURATION
 -------------
-Enabling Permissions: 
- * "View a new message instance for Private Message" &
- "Create a new message instance for Private Message" for users needing to create
- and view private messages.
- * To hide private messages from this view, you must override view provided by 
- Message module: admin/structure/views/view/message/edit
-
-When enabled, the module will provide a new message type "Private Message" and a 
-Message Private View.
-
-Message Create Limits:
- * Message creation limits can be managed per role on the module settings form. 
- A message create limit can be set per interval per role. Users with more than 
- one role get the maximum limit by calculating the lowest time per message over 
- each role. Users with the 'bypass private message access control' permission 
- bypass these limitations.
+Show message form fields at: admin/structure/message/manage/private_message/form-display
+Show message display fields at: admin/structure/message/manage/private_message/display
+Show user form fields: /admin/config/people/accounts/form-display
+This will be addressed automatically later.
 
 
 HOW TO USE
 ----------
 To Create messages:
- * Visit /admin/content/message/create/private-message and Save the message to 
+ * Visit /message/add/private_message and Create the message to
  send, or
  * Visit the "Messages" tab detailed below and find the "Create a new message" 
 local action.
@@ -85,7 +73,7 @@ E.G:
  * CAPTCHA method: https://www.drupal.org/project/recaptcha
 
 
-DEVELOPMENT AND TEST
+DEVELOPMENT ROAD-MAP
 --------------------
  * Integrate with Message FOS (FOSMessage) bridge module.
  * Flag module on user entity to block/unblock users from messaging them
@@ -93,9 +81,6 @@ DEVELOPMENT AND TEST
    display
  * Allow Operations links to display correctly on views, i.e. - show 'View' for
    users with view permissions. Not showing currently due to custom permissions.
- * Integrate with rolereference module or similar to provide sending to users
-   within a certain role.
- * Tests should be created in a "tests" folder.
 
 
 MAINTAINERS
