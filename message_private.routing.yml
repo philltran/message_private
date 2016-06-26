@@ -1,7 +1,7 @@
 message_private.admin_settings:
   path: '/admin/config/system/message-private'
   defaults:
-    _form: '\Drupal\message_private\Form\MessagePrivateSettingsForm'
+    _form: '\Drupal\message_private\Form\SettingsForm'
     _title:  'Message Private settings'
   requirements:
     _permission: 'administer message private'

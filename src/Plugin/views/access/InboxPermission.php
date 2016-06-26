@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\message_private\Plugin\views\access\MessagePrivateInbox.
+ * Contains \Drupal\message_private\Plugin\views\access\InboxPermission.
  */
 
 namespace Drupal\message_private\Plugin\views\access;
@@ -23,13 +23,13 @@ use Symfony\Component\Routing\Route;
  * @ingroup views_access_plugins
  *
  * @ViewsAccess(
- *   id = "perm",
+ *   id = "message_private",
  *   title = @Translation("Message Private Inbox"),
  *   help = @Translation("Access will be granted for user's own inbox / users with bypass permissions.")
  * )
  */
 // @todo: rework access plugin to that of D7: http://cgit.drupalcode.org/message_private/tree/message_private_access_plugin.inc
-class Permission extends AccessPluginBase implements CacheableDependencyInterface {
+class InboxPermission extends AccessPluginBase implements CacheableDependencyInterface {
 
   /**
    * {@inheritdoc}
@@ -87,29 +87,29 @@ class Permission extends AccessPluginBase implements CacheableDependencyInterfac
    * {@inheritdoc}
    */
   public function access(AccountInterface $account) {
-    return $account->hasPermission($this->options['perm']);
+    return $account->hasPermission($this->options['message_private']);
   }
 
   /**
    * {@inheritdoc}
    */
   public function alterRouteDefinition(Route $route) {
-    $route->setRequirement('_permission', $this->options['perm']);
+    $route->setRequirement('_permission', $this->options['message_private']);
   }
 
   public function summaryTitle() {
     $permissions = $this->permissionHandler->getPermissions();
-    if (isset($permissions[$this->options['perm']])) {
-      return $permissions[$this->options['perm']]['title'];
+    if (isset($permissions[$this->options['message_private']])) {
+      return $permissions[$this->options['message_private']]['title'];
     }
 
-    return $this->t($this->options['perm']);
+    return $this->t($this->options['message_private']);
   }
 
 
   protected function defineOptions() {
     $options = parent::defineOptions();
-    $options['perm'] = array('default' => 'access content');
+    $options['message_private'] = array('default' => 'access content');
 
     return $options;
   }
@@ -125,11 +125,11 @@ class Permission extends AccessPluginBase implements CacheableDependencyInterfac
       $perms[$display_name][$perm] = strip_tags($perm_item['title']);
     }
 
-    $form['perm'] = array(
+    $form['message_private'] = array(
       '#type' => 'select',
       '#options' => $perms,
       '#title' => $this->t('Permission'),
-      '#default_value' => $this->options['perm'],
+      '#default_value' => $this->options['message_private'],
       '#description' => $this->t('Only users with the selected permission flag will be able to access this display.'),
     );
   }

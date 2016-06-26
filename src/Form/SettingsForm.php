@@ -3,7 +3,7 @@
 /**
  * @file
  *
- * Contains \Drupal\message_private\Form\MessagePrivateSettingsForm.
+ * Contains \Drupal\message_private\Form\SettingsForm.
  */
 
 namespace Drupal\message_private\Form;
@@ -17,7 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Configure file system settings for this site.
  */
-class MessagePrivateSettingsForm extends ConfigFormBase {
+class SettingsForm extends ConfigFormBase {
 
   /**
    * The entity manager object.

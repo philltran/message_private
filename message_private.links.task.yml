@@ -5,5 +5,5 @@ message_private.messages:
   title: 'Messages'
 # Provide dynamic local tasks.
 message_private.messages:
-  deriver: 'Drupal\message_private\Plugin\Derivative\MessagePrivateLocalTasks'
+  deriver: 'Drupal\message_private\Plugin\Derivative\DynamicLocalTasks'
   weight: -10

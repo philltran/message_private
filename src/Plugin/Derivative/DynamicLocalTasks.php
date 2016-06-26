@@ -1,7 +1,7 @@
 <?php
 /**
 * @file
-* Contains \Drupal\message_private\Plugin\Derivative\MessagePrivateLocalTasks.
+* Contains \Drupal\message_private\Plugin\Derivative\DyanmicLocalTasks.
 */
 
 namespace Drupal\message_private\Plugin\Derivative;

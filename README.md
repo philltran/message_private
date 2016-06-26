@@ -41,10 +41,8 @@ INSTALLATION
 
 CONFIGURATION
 -------------
-Show message form fields at: admin/structure/message/manage/private_message/form-display
-Show message display fields at: admin/structure/message/manage/private_message/display
-Show user form fields: /admin/config/people/accounts/form-display
-This will be addressed automatically later.
+Show notification boolean on user form fields: /admin/config/people/accounts/form-display
+This will be addressed automatically in a hook later.
 
 
 HOW TO USE
