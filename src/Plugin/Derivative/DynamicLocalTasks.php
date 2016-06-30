@@ -1,7 +1,7 @@
 <?php
 /**
 * @file
-* Contains \Drupal\message_private\Plugin\Derivative\DyanmicLocalTasks.
+* Contains \Drupal\message_private\Plugin\Derivative\DynamicLocalTasks.
 */
 
 namespace Drupal\message_private\Plugin\Derivative;
@@ -27,5 +27,3 @@ class DynamicLocalTasks extends DeriverBase {
     return $this->derivatives;
   }
 }
-
-?>

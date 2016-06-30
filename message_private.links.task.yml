@@ -3,6 +3,17 @@ message_private.messages:
   route_name: message_private.messages
   base_route: entity.user.canonical
   title: 'Messages'
+
+message_private.messages.inbox:
+  route_name: message_private.messages
+  base_route: message_private.messages
+  title: 'Inbox'
+
+message_private.messages.sent:
+  route_name: message_private.messages.sent
+  base_route: message_private.messages
+  title: 'Sent'
+
 # Provide dynamic local tasks.
 message_private.messages:
   deriver: 'Drupal\message_private\Plugin\Derivative\DynamicLocalTasks'

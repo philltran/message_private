@@ -10,18 +10,16 @@ message_private.admin_settings:
 
 message_private.messages:
   path: '/user/{user}/messages'
-  title: 'Inbox'
+  defaults:
+    _title: 'Inbox'
   description: 'Message Private Inbox'
-  base_route: system.admin_content
   requirements:
     _permission: 'overview messages'
 
-message_private.messages.inbox:
-  route_name: message_private.messages
-  title: 'Inbox'
-  parent_id: message_private.messages
-
 message_private.messages.sent:
-  route_name: message_private.messages
-  title: 'Sent'
-  parent_id: message_private.messages
+  path: '/user/{user}/messages/sent'
+  defaults:
+    _title: 'Sent'
+  description: 'Message Private Inbox'
+  requirements:
+    _permission: 'overview messages'

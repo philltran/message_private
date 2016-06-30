@@ -10,7 +10,7 @@ dependencies:
     - message_private
     - system
 _core:
-  default_config_hash: jsUTeO74uA5Ft0ThwwfWSAOa4WyOxJC-SEBRXAZLlPM
+  default_config_hash: bVibi5tmBTw8tXLLgtnOwJPfY7PdJAaKIC8KgGX0mS0
 id: message_private
 label: 'Message Private'
 module: views
@@ -468,7 +468,20 @@ display:
       title: 'Message Private'
       header: {  }
       footer: {  }
-      empty: {  }
+      empty:
+        area:
+          id: area
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: true
+          tokenize: false
+          content:
+            value: 'No messages here yet.'
+            format: basic_html
+          plugin_id: text
       relationships: {  }
       arguments:
         field_message_private_to_user_target_id:
@@ -528,15 +541,16 @@ display:
     position: 1
     display_options:
       display_extenders: {  }
-      path: user/%user/messages
+      path: user/%/messages
       menu:
         type: tab
         title: 'Message Inbox'
         description: ''
-        parent: system.admin_content
+        expanded: false
+        parent: ''
         weight: 0
         context: '0'
-        menu_name: admin
+        menu_name: account
       tab_options:
         type: none
         title: ''
