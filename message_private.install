@@ -24,7 +24,9 @@ function message_private_uninstall() {
     /* @var \Drupal\Core\Field\FieldConfigBase $field */
     // If we have the user notify field, purge the data and remove.
     if(!empty($field->getName() == 'field_message_private_usr_notify')) {
-      field_cron(); // Purge previously deleted field tables.
+      // Purge previously deleted field tables for entity type.
+      Drupal::entityManager()->getStorage($field->getTargetEntityTypeId())->purgeFieldData($field, 100);
+      field_cron();
       $field->delete();
     }
   }

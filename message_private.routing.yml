@@ -16,10 +16,18 @@ message_private.messages:
   requirements:
     _permission: 'overview messages'
 
+message_private.messages.inbox:
+  path: '/user/{user}/messages'
+  defaults:
+    _title: 'Inbox'
+  description: 'Message Private Inbox'
+  requirements:
+    _permission: 'overview messages'
+
 message_private.messages.sent:
   path: '/user/{user}/messages/sent'
   defaults:
     _title: 'Sent'
-  description: 'Message Private Inbox'
+  description: 'Message Private Sent'
   requirements:
     _permission: 'overview messages'

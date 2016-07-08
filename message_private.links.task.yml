@@ -5,13 +5,13 @@ message_private.messages:
   title: 'Messages'
 
 message_private.messages.inbox:
-  route_name: message_private.messages
-  base_route: message_private.messages
+  route_name: message_private.messages.inbox
+  parent_id: message_private.messages
   title: 'Inbox'
 
 message_private.messages.sent:
   route_name: message_private.messages.sent
-  base_route: message_private.messages
+  parent_id: message_private.messages
   title: 'Sent'
 
 # Provide dynamic local tasks.
