@@ -9,10 +9,7 @@ namespace Drupal\message_private\Plugin\views\access;
 
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheableDependencyInterface;
-use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\user\PermissionHandlerInterface;
 use Drupal\views\Plugin\views\access\AccessPluginBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Route;
@@ -28,27 +25,7 @@ use Symfony\Component\Routing\Route;
  *   help = @Translation("Access will be granted for user's own inbox / users with bypass permissions.")
  * )
  */
-// @todo: rework access plugin to that of D7: http://cgit.drupalcode.org/message_private/tree/message_private_access_plugin.inc
 class InboxPermission extends AccessPluginBase implements CacheableDependencyInterface {
-
-  /**
-   * {@inheritdoc}
-   */
-  protected $usesOptions = TRUE;
-
-  /**
-   * The permission handler.
-   *
-   * @var \Drupal\user\PermissionHandlerInterface
-   */
-  protected $permissionHandler;
-
-  /**
-   * The module handler.
-   *
-   * @var \Drupal\Core\Extension\ModuleHandlerInterface
-   */
-  protected $moduleHandler;
 
   /**
    * Constructs a Permission object.
@@ -59,15 +36,9 @@ class InboxPermission extends AccessPluginBase implements CacheableDependencyInt
    *   The plugin_id for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
-   * @param \Drupal\user\PermissionHandlerInterface $permission_handler
-   *   The permission handler.
-   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
-   *   The module handler.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, PermissionHandlerInterface $permission_handler, ModuleHandlerInterface $module_handler) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->permissionHandler = $permission_handler;
-    $this->moduleHandler = $module_handler;
   }
 
   /**
@@ -77,9 +48,7 @@ class InboxPermission extends AccessPluginBase implements CacheableDependencyInt
     return new static(
       $configuration,
       $plugin_id,
-      $plugin_definition,
-      $container->get('user.permissions'),
-      $container->get('module_handler')
+      $plugin_definition
     );
   }
 
@@ -87,51 +56,18 @@ class InboxPermission extends AccessPluginBase implements CacheableDependencyInt
    * {@inheritdoc}
    */
   public function access(AccountInterface $account) {
-    return $account->hasPermission($this->options['message_private']);
+    return _message_private_inbox_access();
   }
 
   /**
    * {@inheritdoc}
    */
   public function alterRouteDefinition(Route $route) {
-    $route->setRequirement('_permission', $this->options['message_private']);
+    $route->setRequirement('_custom_access', '_message_private_inbox_access');
   }
 
   public function summaryTitle() {
-    $permissions = $this->permissionHandler->getPermissions();
-    if (isset($permissions[$this->options['message_private']])) {
-      return $permissions[$this->options['message_private']]['title'];
-    }
-
-    return $this->t($this->options['message_private']);
-  }
-
-
-  protected function defineOptions() {
-    $options = parent::defineOptions();
-    $options['message_private'] = array('default' => 'access content');
-
-    return $options;
-  }
-
-  public function buildOptionsForm(&$form, FormStateInterface $form_state) {
-    parent::buildOptionsForm($form, $form_state);
-    // Get list of permissions
-    $perms = [];
-    $permissions = $this->permissionHandler->getPermissions();
-    foreach ($permissions as $perm => $perm_item) {
-      $provider = $perm_item['provider'];
-      $display_name = $this->moduleHandler->getName($provider);
-      $perms[$display_name][$perm] = strip_tags($perm_item['title']);
-    }
-
-    $form['message_private'] = array(
-      '#type' => 'select',
-      '#options' => $perms,
-      '#title' => $this->t('Permission'),
-      '#default_value' => $this->options['message_private'],
-      '#description' => $this->t('Only users with the selected permission flag will be able to access this display.'),
-    );
+    return $this->t('InboxPermission');
   }
 
   /**

@@ -367,3 +367,22 @@ function _message_private_max_message_limit_role($roles) {
   // The min value corresponds to the lowest interval required per message.
   return array_search(min($limits), $limits);
 }
+
+/**
+ * Views Plugin access callback.
+ *
+ * @return \Drupal\Core\Access\AccessResult
+ */
+function _message_private_inbox_access() {
+  $account = \Drupal::currentUser();
+  // Load the current node.
+  $uid = \Drupal::routeMatch()->getParameter('user');
+
+  // Check if the current user owns the inbox.
+  if (!empty($uid) && $account->id() == $uid) {
+    return AccessResult::allowed();
+  }
+
+  // Allow if the user has the bypass permission
+  return AccessResult::allowedIfHasPermission($account, 'bypass private message access control');
+}
