@@ -9,6 +9,8 @@ dependencies:
     - message.type.private_message
   module:
     - user
+_core:
+  default_config_hash: lpvYrgS_H2-h-ZgjM4cMoH-_ogf4CCDFbNZbUiG7zyg
 id: message.private_message.default
 targetEntityType: message
 bundle: private_message
@@ -28,10 +30,12 @@ content:
       link_to_entity: false
     third_party_settings: {  }
   field_message_private_to_user:
-    type: author
+    type: entity_reference_entity_view
     weight: 1
     label: inline
-    settings: {  }
+    settings:
+      view_mode: default
+      link: false
     third_party_settings: {  }
   partial_0:
     weight: 0
