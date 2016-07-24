@@ -3,7 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
-    - message.type.private_message
+    - message.template.private_message
 id: message.private_message.field_message_private_subject
 field_name: field_message_private_subject
 entity_type: message

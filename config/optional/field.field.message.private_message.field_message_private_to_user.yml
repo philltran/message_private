@@ -4,7 +4,7 @@ status: true
 dependencies:
   config:
     - field.storage.message.field_message_private_to_user
-    - message.type.private_message
+    - message.template.private_message
 _core:
   default_config_hash: t64WDBnlclOIEL1--tV8MkrvOrIGJ121lW3NJa9Xpsk
 id: message.private_message.field_message_private_to_user

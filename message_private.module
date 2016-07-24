@@ -72,7 +72,7 @@ function message_private_help($route_name, RouteMatchInterface $arg) {
 function message_private_message_access(EntityInterface $message, $operation, AccountInterface $account) {
   // Customise access check only for private messages.
   if ($message->bundle() == 'private_message') {
-    // If checking whether a node of a particular type may be created.
+    // If checking whether a message of a particular template may be created.
     if ($account->hasPermission('administer message private')
       || $account->hasPermission('bypass private message access control')) {
       return AccessResult::allowed()->cachePerPermissions();
@@ -119,7 +119,7 @@ function message_private_message_access(EntityInterface $message, $operation, Ac
  */
 // @todo: code as Access class & associate service entry to local task/actions.
 function message_private_access_callback($message) {
-  if ($message->type == 'private_message') {
+  if ($message->template == 'private_message') {
     return \Drupal::currentUser()->hasPermission('bypass private message access control') || \Drupal::currentUser()->hasPermission('view a private_message message instance');
   }
   return FALSE;
@@ -181,7 +181,7 @@ function message_private_form_message_private_message_form_validate($form, \Drup
 
     // Get total amount of this user's messages since last interval.
     $query = \Drupal::entityQuery('message');
-    $total = $query->condition('type', 'private_message')
+    $total = $query->condition('template', 'private_message')
      ->condition('timestamp', $interval_timestamp, '>')
      ->condition('uid', $user->id())
      ->count()
@@ -207,7 +207,7 @@ function message_private_message_insert(\Drupal\message\MessageInterface $messag
   // Prepare message notifications for private messages if notifications are on.
   // The correct configuration object could not be determined. You'll need to
   // rewrite this call manually.
-  if ($message->type == 'private_message'
+  if ($message->bundle() == 'private_message'
    && \Drupal::config('message_private.settings')->get('email_notify')) {
     // Use message load as the $message object has issue with mail function.
     // It causes duplicate entry, possibly as mid is missing and the mail

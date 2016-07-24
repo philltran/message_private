@@ -5,7 +5,7 @@ dependencies:
   config:
     - field.storage.message.field_message_private_subject
     - field.storage.message.field_message_private_to_user
-    - message.type.private_message
+    - message.template.private_message
   module:
     - message
     - message_private

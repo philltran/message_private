@@ -158,10 +158,10 @@ class MessagePrivatePermissions extends MessageTestBase {
       'update' => FALSE,
     );
 
-    // Get the message type and create an instance.
-    $message_type = $this->loadMessageType('private_message');
+    // Get the message template and create an instance.
+    $message_template = $this->loadMessageTemplate('private_message');
     /* @var $message Message */
-    $message = Message::create(array('type' => $message_type->id()));
+    $message = Message::create(array('template' => $message_template->id()));
     $message->setOwner($this->account);
     $message->save();
 

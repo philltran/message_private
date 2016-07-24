@@ -14,13 +14,13 @@ CONTENTS OF THIS FILE
 
 INTRODUCTION
 ------------
-A message type and entity reference fields, enabling sending and receiving 
-private messages using The Message Stack. Messages of type "Private Message" can 
+A message template and entity reference fields, enabling sending and receiving 
+private messages using The Message Stack. Messages of template "Private Message" can 
 be sent by creating the private_message message instance with fields referencing 
 user entities.
 
 The message_private module includes the following.
-+ A message type "Private Message" with entity reference field referencing users
++ A message template "Private Message" with entity reference field referencing users
 + A message view, message_private for "User Messages"
 
 

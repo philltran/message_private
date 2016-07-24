@@ -6,7 +6,7 @@ dependencies:
     - field.field.message.private_message.field_message_private_body
     - field.field.message.private_message.field_message_private_subject
     - field.field.message.private_message.field_message_private_to_user
-    - message.type.private_message
+    - message.template.private_message
   module:
     - user
 _core:
