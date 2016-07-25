@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  *
@@ -37,20 +36,20 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   protected function getEditableConfigNames() {
-    return array('message_private.settings');
+    return ['message_private.settings'];
   }
+
 
   /**
    * Holds the name of the keys we holds in the variable.
    */
   public function defaultKeys() {
-    // @todo - update with message_private keys.
-    return array(
-      'purge_enable',
-      'purge_quota',
-      'purge_days',
-      'delete_on_entity_delete',
-    );
+    return [
+      'message_limit',
+      'email_notify',
+      'default_limit',
+      'default_interval',
+    ];
   }
 
   /**
