@@ -11,21 +11,6 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\message\Entity\Message;
 use Drupal\user\Entity\Role;
 
-// @todo : perhaps the string constants can be removed and values used directly.
-/**
- * The string name for message limit variable.
- */
-const MESSAGE_PRIVATE_MESSAGE_LIMIT = 'message_limit';
-
-/**
- * The assoc index to be used when fetching default limit variable.
- */
-const MESSAGE_PRIVATE_DEFAULT_LIMIT = 'default_limit';
-
-/**
- * The assoc index to be used when fetching default interval variable.
- */
-const MESSAGE_PRIVATE_DEFAULT_INTERVAL = 'default_interval';
 
 /**
  * The default index for settings such as role.
